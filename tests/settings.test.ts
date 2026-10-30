@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { SETTINGS_KEY, loadSettings, saveSettings, type SettingsStore } from '../src/shared/settings';
+import {
+  DEFAULT_THRESHOLDS,
+  SETTINGS_KEY,
+  loadSettings,
+  saveSettings,
+  thresholdsOf,
+  type SettingsStore,
+} from '../src/shared/settings';
 
 function memoryStore(): SettingsStore & { data: Map<string, unknown> } {
   const data = new Map<string, unknown>();
@@ -43,5 +50,18 @@ describe('settings', () => {
     expect(saved).toEqual({ malClientId: 'm', tmdbKey: 'eyJabc' });
     store.data.set(SETTINGS_KEY, { tmdbKey: 'k', omdbKey: 7 });
     expect(await loadSettings(store)).toEqual({ tmdbKey: 'k' });
+  });
+});
+
+describe('settings thresholds', () => {
+  it('falls back to defaults when nothing is stored', async () => {
+    expect(thresholdsOf(await loadSettings(memoryStore()))).toBe(DEFAULT_THRESHOLDS);
+  });
+
+  it('keeps a valid stored set and replaces a malformed one with its default', async () => {
+    const store = memoryStore();
+    const mal = { ...DEFAULT_THRESHOLDS.mal, maybe: { score: 6 } };
+    store.data.set(SETTINGS_KEY, { thresholds: { mal, imdb: { highly: 'x' } } });
+    expect((await loadSettings(store)).thresholds).toEqual({ mal, imdb: DEFAULT_THRESHOLDS.imdb, tmdb: DEFAULT_THRESHOLDS.tmdb });
   });
 });

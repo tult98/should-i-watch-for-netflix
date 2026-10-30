@@ -68,3 +68,18 @@ export type LookupResult =
   | { status: 'match'; info: TitleInfo }
   | { status: 'no_match' }
   | { status: 'error'; reason: LookupErrorReason };
+
+export type Verdict = 'highly_recommended' | 'recommended' | 'maybe' | 'skip';
+
+export interface ThresholdSet {
+  highly: { score: number; votes: number; rankMax?: number };
+  recommended: { score: number; votes: number };
+  maybe: { score: number };
+  lowVotesBelow: number;
+}
+
+export interface Thresholds {
+  mal: ThresholdSet;
+  imdb: ThresholdSet;
+  tmdb: ThresholdSet;
+}

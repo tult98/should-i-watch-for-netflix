@@ -18,7 +18,7 @@ export async function saveAndInvalidate(
   cacheStore: KeyValueStore,
 ): Promise<SaveOutcome> {
   const before = await loadSettings(settingsStore);
-  const saved = await saveSettings(draft, settingsStore);
+  const saved = await saveSettings({ ...before, ...draft }, settingsStore);
   const cacheCleared = sourceKeysChanged(before, saved);
   if (cacheCleared) await clearLookupCache(cacheStore);
   return { saved, cacheCleared };

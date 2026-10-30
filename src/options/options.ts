@@ -1,14 +1,14 @@
 import './options.css';
 import { appName } from '../shared/appName';
 import { chromeLocalStore, clearLookupCache } from '../background/cache';
-import { chromeSettingsStore, loadSettings, type Settings } from '../shared/settings';
+import { chromeSettingsStore, loadSettings, type Settings, type SourceKey } from '../shared/settings';
 import { saveAndInvalidate } from './save';
 import { strings } from '../shared/strings.vi';
 
 const t = strings.options;
 
 interface Field {
-  key: keyof Settings;
+  key: SourceKey;
   id: string;
   label: string;
   hintBefore: string;
