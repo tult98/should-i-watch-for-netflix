@@ -7,49 +7,7 @@
     <link rel="stylesheet" href="options.css" />
   </head>
   <body>
-    <main>
-      <h1 id="app-name"></h1>
-      <form id="settings-form">
-        <label for="mal-client-id" id="mal-client-id-label"></label>
-        <input id="mal-client-id" type="password" autocomplete="off" spellcheck="false" />
-        <p class="hint" id="mal-client-id-hint"></p>
-        <label for="tmdb-key" id="tmdb-key-label"></label>
-        <input id="tmdb-key" type="password" autocomplete="off" spellcheck="false" />
-        <p class="hint" id="tmdb-key-hint"></p>
-        <label for="omdb-key" id="omdb-key-label"></label>
-        <input id="omdb-key" type="password" autocomplete="off" spellcheck="false" />
-        <p class="hint" id="omdb-key-hint"></p>
-        <section class="ai">
-          <h2 id="ai-heading"></h2>
-          <p class="hint" id="ai-description"></p>
-          <label for="ai-base-url" id="ai-base-url-label"></label>
-          <input id="ai-base-url" type="text" inputmode="url" autocomplete="off" spellcheck="false" />
-          <p class="hint" id="ai-base-url-hint"></p>
-          <label for="ai-model" id="ai-model-label"></label>
-          <input id="ai-model" type="text" autocomplete="off" spellcheck="false" />
-          <p class="hint" id="ai-model-hint"></p>
-          <label for="ai-key" id="ai-key-label"></label>
-          <input id="ai-key" type="password" autocomplete="off" spellcheck="false" />
-          <p class="hint" id="ai-key-hint"></p>
-          <div class="actions test">
-            <button type="button" class="secondary" id="ai-test"></button>
-            <span class="status" id="ai-test-status" role="status" aria-live="polite"></span>
-          </div>
-        </section>
-        <div class="actions">
-          <button type="submit" id="save"></button>
-          <span class="status" id="status" role="status" aria-live="polite"></span>
-        </div>
-      </form>
-      <section class="cache">
-        <h2 id="cache-heading"></h2>
-        <p class="hint" id="cache-description"></p>
-        <div class="actions">
-          <button type="button" id="clear-cache"></button>
-          <span class="status" id="cache-status" role="status" aria-live="polite"></span>
-        </div>
-      </section>
-    </main>
+    <main id="app"></main>
     <script src="options.js"></script>
   </body>
 </html>
