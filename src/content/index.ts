@@ -17,6 +17,10 @@ function isCurrent(id: number, card: Element): boolean {
   return id === requestId && state.name !== 'idle' && state.card === card;
 }
 
+function staleSuffix(id: number, card: Element): string {
+  return isCurrent(id, card) ? '' : ' (stale)';
+}
+
 function describe(result: LookupResult): string {
   switch (result.status) {
     case 'match': {
@@ -66,16 +70,15 @@ const controller = createHoverController({
     const id = ++requestId;
     sendLookup({ title, year, lang, netflixId }).then(
       (result) => {
-        if (!isCurrent(id, card)) return;
-        console.log(`[lookup] ${title} -> ${describe(result)}`);
+        console.log(`[lookup] ${title} -> ${describe(result)}${staleSuffix(id, card)}`);
       },
       (err: unknown) => {
         if (isInvalidated(err)) {
           handleInvalidated();
           return;
         }
-        if (!isCurrent(id, card)) return;
-        console.log(`[lookup] ${title} -> error ${err instanceof Error ? err.message : String(err)}`);
+        const message = err instanceof Error ? err.message : String(err);
+        console.log(`[lookup] ${title} -> error ${message}${staleSuffix(id, card)}`);
       },
     );
   },
