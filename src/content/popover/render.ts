@@ -3,6 +3,7 @@ import type { QuickBadge } from '../../shared/quickBadge';
 import { strings } from '../../shared/strings.vi';
 import type { AnimeInfo, MovieInfo, Rating, Score, ScoreSource, SeriesInfo, TitleInfo } from '../../shared/types';
 import { h, icon, type Child } from './dom';
+import { scoreIcon } from './scoreIcons';
 import {
   formatAired,
   formatCompact,
@@ -30,10 +31,11 @@ const MAX_MAKERS = 2;
 interface Cell {
   label: string;
   value: string;
+  icon?: SVGSVGElement;
 }
 
-function cell(label: string, value: string | undefined): Cell | null {
-  return value === undefined || value === '' ? null : { label, value };
+function cell(label: string, value: string | undefined, badge?: SVGSVGElement): Cell | null {
+  return value === undefined || value === '' ? null : { label, value, icon: badge };
 }
 
 function cells(list: (Cell | null)[]): Cell[] {
@@ -78,7 +80,9 @@ function scoreBlock(badge: QuickBadge, sourceName: string | null, votesText: (co
     h(
       'div',
       { class: 'score-meta' },
-      sourceName && h('span', { class: 'score-source' }, sourceName),
+      sourceName &&
+        badge.source &&
+        h('span', { class: 'score-label' }, scoreIcon(badge.source, badge.score.value), h('span', { class: 'score-source' }, sourceName)),
       votes !== undefined && h('span', null, votesText(formatCount(votes))),
     ),
   );
@@ -95,7 +99,7 @@ function statsRow(list: Cell[]): HTMLElement | null {
     'div',
     { class: 'stats' },
     ...list.map((c) =>
-      h('div', { class: 'stat' }, h('span', { class: 'label' }, c.label), h('span', { class: 'stat-value' }, c.value)),
+      h('div', { class: 'stat' }, h('div', { class: 'stat-head' }, c.icon, h('span', { class: 'label' }, c.label)), h('span', { class: 'stat-value' }, c.value)),
     ),
   );
   row.style.setProperty('--cols', String(list.length === 4 ? 2 : list.length));
@@ -202,7 +206,7 @@ function renderAnime(info: AnimeInfo, badge: QuickBadge, now: Date, hooks: Popov
     cell(t.ranked, info.rank !== undefined ? `#${formatCount(info.rank)}` : undefined),
     cell(t.popularity, info.popularity !== undefined ? `#${formatCount(info.popularity)}` : undefined),
     cell(t.members, info.members !== undefined ? formatCompact(info.members) : undefined),
-    cell(t.imdb, imdb && formatScore(imdb)),
+    cell(t.imdb, imdb && formatScore(imdb), imdb && scoreIcon('imdb', imdb.value)),
   ]);
   const meta = cells([
     cell(t.type, info.format === 'Unknown' ? undefined : info.format),
@@ -213,7 +217,7 @@ function renderAnime(info: AnimeInfo, badge: QuickBadge, now: Date, hooks: Popov
   const aired = formatAired(info.aired, info.status === 'Currently Airing');
   return shell(topBar({ text: t.malPill, cls: 'pill-mal' }, t.malName, badge), [
     heading(info, t.malPill),
-    scoreBlock(badge, null, t.animeVotes),
+    scoreBlock(badge, t.malName, t.animeVotes),
     lowVotesWarning(badge),
     statsRow(stats),
     synopsisBlock(info, t.synopsisMalEn),
@@ -233,7 +237,7 @@ function filmStats(info: MovieInfo | SeriesInfo, badge: QuickBadge): Cell[] {
       .filter((source) => source !== badge.source)
       .map((source) => {
         const score = findScore(info, source);
-        return cell(labels[source], score && formatScore(score));
+        return cell(labels[source], score && formatScore(score), score && scoreIcon(source, score.value));
       }),
   );
 }

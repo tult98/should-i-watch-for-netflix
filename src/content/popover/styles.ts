@@ -37,6 +37,9 @@ export const POPOVER_CSS = `
 .score-main { display: flex; align-items: center; gap: 8px; }
 .score-value { font-size: 40px; line-height: 1; font-weight: 800; letter-spacing: -0.02em; }
 .score-meta { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: #b3b3b3; padding-bottom: 4px; }
+.score-label { display: inline-flex; align-items: center; gap: 6px; }
+.score-icon { flex: none; display: block; }
+.stat-head { display: flex; align-items: center; gap: 5px; min-width: 0; }
 .score-source { font-weight: 700; color: #e5e5e5; }
 .warn {
   display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 6px;
