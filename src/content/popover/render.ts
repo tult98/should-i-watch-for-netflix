@@ -102,7 +102,8 @@ function statsRow(list: Cell[]): HTMLElement | null {
       h('div', { class: 'stat' }, h('div', { class: 'stat-head' }, c.icon, h('span', { class: 'label' }, c.label)), h('span', { class: 'stat-value' }, c.value)),
     ),
   );
-  row.style.setProperty('--cols', String(list.length === 4 ? 2 : list.length));
+  // A lone cell takes half the row, not all of it.
+  row.style.setProperty('--cols', String(list.length === 4 ? 2 : Math.max(list.length, 2)));
   return row;
 }
 

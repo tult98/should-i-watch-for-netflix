@@ -217,6 +217,18 @@ describe('renderTitle series', () => {
     expect(full.querySelector('.score-source')?.textContent).toBe('IMDb');
     expect(statLabels(full)).toEqual(['Rotten Tomatoes', 'TMDB']);
   });
+
+  it('gives a lone stats cell half the row and keeps two cells at two columns', () => {
+    const cols = (node: HTMLElement) => (node.querySelector('.stats') as HTMLElement).style.getPropertyValue('--cols');
+    const one = render({ ...lights, scores: [...lights.scores, { source: 'imdb', value: 8.5, votes: 200000 }] });
+    expect(statLabels(one)).toEqual(['TMDB']);
+    expect(cols(one)).toBe('2');
+    const two = render({
+      ...lights,
+      scores: [...lights.scores, { source: 'imdb', value: 8.5, votes: 200000 }, { source: 'rt', value: 94 }],
+    });
+    expect(cols(two)).toBe('2');
+  });
 });
 
 describe('render safety', () => {
