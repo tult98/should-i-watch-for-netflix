@@ -1,6 +1,10 @@
 export interface Settings {
   malClientId?: string;
+  tmdbKey?: string;
+  omdbKey?: string;
 }
+
+const KEYS = ['malClientId', 'tmdbKey', 'omdbKey'] as const satisfies readonly (keyof Settings)[];
 
 export const SETTINGS_KEY = 'settings';
 
@@ -27,8 +31,12 @@ function cleanString(value: unknown): string | undefined {
 
 function sanitize(value: unknown): Settings {
   if (typeof value !== 'object' || value === null) return {};
-  const malClientId = cleanString((value as Record<string, unknown>).malClientId);
-  return malClientId ? { malClientId } : {};
+  const clean: Settings = {};
+  for (const key of KEYS) {
+    const v = cleanString((value as Record<string, unknown>)[key]);
+    if (v) clean[key] = v;
+  }
+  return clean;
 }
 
 export async function loadSettings(store: SettingsStore = chromeSettingsStore()): Promise<Settings> {

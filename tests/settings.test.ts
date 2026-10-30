@@ -36,4 +36,12 @@ describe('settings', () => {
     store.data.set(SETTINGS_KEY, { malClientId: 42 });
     expect(await loadSettings(store)).toEqual({});
   });
+
+  it('keeps all three keys, trimmed, and drops blank ones', async () => {
+    const store = memoryStore();
+    const saved = await saveSettings({ malClientId: ' m ', tmdbKey: ' eyJabc ', omdbKey: '  ' }, store);
+    expect(saved).toEqual({ malClientId: 'm', tmdbKey: 'eyJabc' });
+    store.data.set(SETTINGS_KEY, { tmdbKey: 'k', omdbKey: 7 });
+    expect(await loadSettings(store)).toEqual({ tmdbKey: 'k' });
+  });
 });
