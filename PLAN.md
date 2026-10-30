@@ -21,7 +21,7 @@ Every data source runs on a free tier. No paid wrapper such as CollectAPI.
 |---|---|---|---|
 | MyAnimeList API v2 | Free Client ID | not published, the queue sends 3 per second | Used when the options page has a Client ID. `MalOfficialAdapter.ts` |
 | Jikan (MAL) | Free, no key | about 3 per second, 60 per minute | Fallback without a Client ID, and for titles under 3 characters. `JikanAdapter.ts` |
-| TMDB | Free key | about 50 per second | Required for movies and series |
+| TMDB | Free key | about 50 per second | Required for movies and series. The options page takes either the v3 API key or the v4 read access token. |
 | OMDb | Free key | 1,000 per day | Optional. One call per new movie or series, then cached 7 days |
 | AI provider | DeepSeek, paid per request | Depends on your DeepSeek balance | Only called on click. Any OpenAI-compatible provider works by changing the base URL and model. |
 
@@ -99,10 +99,12 @@ type TitleInfo = AnimeInfo | MovieInfo | SeriesInfo;
 type LookupResult =
   | { status: 'match'; info: TitleInfo }
   | { status: 'no_match' }
-  | { status: 'error'; reason: 'missing_tmdb_key' | 'network' | 'rate_limited' | 'bad_mal_client_id' };
+  | { status: 'error'; reason: 'network' | 'rate_limited' | 'bad_mal_client_id' | 'bad_tmdb_key' };
 ```
 
 An anime movie stays `kind: 'anime'` and gets an extra `imdb` entry in `scores` when an OMDb key exists.
+
+A missing TMDB key is not an error. Without one, the lookup works like step (b): anime only, and `no_match` for everything else. The service worker logs `[sw] no tmdb key` when that `no_match` happens. OMDb never fails a lookup. A bad OMDb key, the daily limit, or any other OMDb failure only means no extra scores, and the service worker logs `[sw] omdb skipped <reason>`.
 
 ### Hover state machine
 
@@ -141,7 +143,7 @@ The content script computes the badge at render time from cached `TitleInfo` and
 
 `route()` is a pure function over the two best matches. The adapters run in parallel and feed it.
 
-| Jikan best match | TMDB best match | Result |
+| MAL best match | TMDB best match | Result |
 |---|---|---|
 | Confidence ≥ threshold | None | Anime, MAL primary |
 | Confidence ≥ threshold | Genre 16 (Animation), or `origin_country` has `JP`, or `original_language` is `ja` | Anime, MAL primary. If MAL `type` is Movie and an OMDb key exists, add IMDb from TMDB's `imdb_id`. |
@@ -151,20 +153,26 @@ The content script computes the badge at render time from cached `TitleInfo` and
 
 Netflix cards with both versions in their catalog break the naive rule. "One Piece" matches the anime on MAL and the 2023 live action on TMDB. The year from the Netflix card decides it when present. Without a year, TMDB's live-action result wins.
 
+`route()` needs no extra rule for that. The card year is already part of both confidences, so a year more than one off drops a candidate under the threshold. With year 1999 the live action fails on TMDB, and with year 2023 the anime fails on MAL. Without a year both pass, and the third row sends a live action TMDB match to TMDB. TMDB picks its own best match among same-name results by `vote_count`, so a year-less "One Piece" goes to TMDB only when the live action has more TMDB votes than the anime.
+
+The IMDb score for an anime movie comes only from a TMDB match of type `movie`. A TMDB `tv` match would carry the IMDb id of a different title.
+
+A failed search only fails the lookup when its answer could change the route. A TMDB failure always can, so it returns its error. An anime search failure next to a live action TMDB match cannot, because rows 3 and 4 both pick TMDB, so that lookup still answers from TMDB.
+
 ### Name matching
 
 The extension works with a Netflix profile in any language. Netflix shows titles in the profile language, and the content script reads that language from `document.documentElement.lang`.
 
 `normalizeTitle()` lowercases, applies Unicode NFKD, strips combining marks, and replaces anything that isn't a letter or digit in any script (`\p{L}\p{N}`) with a space. Japanese, Korean, Thai and other scripts survive normalization. `matchConfidence(query, candidate)` returns the best score across every name the source has for the title. That score is 1.0 for an exact normalized match, otherwise a Dice coefficient over character bigrams. Bigrams work for scripts without spaces between words, where a token-based score fails. A matching year adds 0.05. A year more than one off subtracts 0.2. Results under 0.85 count as no match. The unit tests pin these numbers with titles in English, Vietnamese, Japanese, Korean and German. Tune them after step (b) with real Netflix titles.
 
-TMDB is the bridge between languages. It stores a title in many languages, so a search in the profile language finds it. The search runs with `language=<profile language>`, and matching compares against `title` and `original_title`. If nothing passes, the adapter retries once with `language=en-US`. The details call then uses `language=vi-VN` so the overview is Vietnamese, and adds `alternative_titles` so the English and romaji names are available for Jikan.
+TMDB is the bridge between languages. It stores a title in many languages, so a search in the profile language finds it. The search uses `/3/search/multi` with `language=<profile language>`, skips `person` results, and compares against `title` or `name` and `original_title` or `original_name`. If nothing passes and the profile language is not English, the adapter retries once with `language=en-US`. The details call then uses `language=vi-VN` so the overview is Vietnamese. It appends `translations`, which gives the English overview when the Vietnamese one is empty and the English name for the anime search.
 
-Jikan only knows the Japanese, romaji, English, and a few synonym names. A German or Vietnamese card title usually finds nothing there. The lookup handles that in two passes:
+MAL only knows the Japanese, romaji, English, and a few synonym names. A German or Vietnamese card title usually finds nothing there. The lookup handles that in two passes:
 
-1. Jikan with the card title and TMDB with the card title run in parallel.
-2. If Jikan has no confident match and TMDB's match is animated or Japanese, Jikan runs once more with TMDB's English or original title. Confidence for that second search comes from comparing against the TMDB name, not the card title.
+1. The anime search and TMDB search both run with the card title, in parallel.
+2. If the anime search has no confident match and TMDB's match is animated or Japanese, the lookup fetches TMDB details and searches anime once more with TMDB's English title, or the original title when TMDB has no English one. Confidence for that second search comes from comparing against the TMDB name, not the card title. The second pass is skipped when that name normalizes to the card title.
 
-For an English profile like yours, the second pass almost never runs. For other languages it adds one Jikan request per new anime title, and only on a cache miss. Live testing of Jikan with non-English queries is still to do in step (b). Jikan didn't respond from this machine when I tried.
+For an English profile like yours, the second pass almost never runs. For other languages it adds one TMDB details call and one anime search per new anime title, and only on a cache miss. When the second pass finds nothing, the TMDB route reuses the details it already fetched.
 
 ### Cache
 
@@ -247,6 +255,7 @@ should-i-watch-for-netflix/
       index.ts
       netflixSelectors.ts        every Netflix selector and the title and year readers
       hoverController.ts         the state machine above
+      describeResult.ts          the [lookup] console line
       popover/
         host.ts                  Shadow DOM host and positioning
         render.ts                TitleInfo to DOM, one function per section
@@ -280,6 +289,9 @@ should-i-watch-for-netflix/
     matching.test.ts
     jikanAdapter.test.ts
     malOfficialAdapter.test.ts
+    tmdbAdapter.test.ts
+    omdbAdapter.test.ts
+    describeResult.test.ts
     requestQueue.test.ts
     lookup.test.ts
     settings.test.ts
@@ -333,9 +345,17 @@ Check on Netflix: a well-known anime logs the right MAL entry. A live-action fil
 
 ### (c) TMDB and OMDb adapters and routing
 
-Files: `TmdbAdapter.ts`, `OmdbAdapter.ts`, `routing.ts`, `lookup.ts`, a minimal options page with the two key fields, and the `routing` test.
+Files: `TmdbAdapter.ts`, `OmdbAdapter.ts`, `routing.ts`, `lookup.ts`, `content/describeResult.ts`, the TMDB and OMDb key fields on the options page, and the `routing`, `tmdbAdapter`, `omdbAdapter`, `describeResult` and `lookup` tests.
+
+`TmdbAdapter` sends a key that starts with `eyJ` as `Authorization: Bearer`, since that is a v4 read access token. Any other key goes in `api_key`. A 401 fails the lookup with `bad_tmdb_key`. The search result carries the routing signals: `animated` when `genre_ids` has 16, and `japanese` when `origin_country` has `JP` or `original_language` is `ja`. Routing needs no details call. A series gets `endYear` only when its status is `Ended` or `Canceled`, since `last_air_date` of a running show is just its latest episode.
+
+`OmdbAdapter` reads `imdbRating`, `imdbVotes`, `Metascore`, and the `Ratings` list. It returns `imdb`, `rt` and `metacritic` scores, and drops every `N/A`. It never throws.
+
+The service worker logs `[sw] route <anime|tmdb|none> <title>`. The page console logs `[lookup] <title> -> <kind> <matched name> <confidence>% <id> <scores>`, for example `movie The Irishman 100% tmdb:movie:398978 imdb=7.8(1.2M) rt=95% mc=94 tmdb=7.6(8.2k)`.
 
 Check on Netflix: an anime routes to MAL, a film and a series route to TMDB, an anime film such as a Ghibli title routes to MAL with an IMDb score, and "One Piece" picks the version the card's year points to.
+
+The TMDB and OMDb field names come from memory and the test fixtures are hand-written. One live call to each API still needs to confirm them. A cached `no_match` from step (b) stays for up to a day, so a film hovered before the TMDB key was set stays silent until it expires.
 
 ### (d) Popover and quick badge
 
