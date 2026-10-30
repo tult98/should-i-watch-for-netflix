@@ -31,6 +31,22 @@ describe('nameSimilarity', () => {
   it('is 0 when either side normalizes to nothing', () => {
     expect(nameSimilarity('!!!', 'Attack on Titan')).toBe(0);
   });
+
+  it('ignores a trailing edition label on either side', () => {
+    const edition = "Re:ZERO -Starting Life in Another World- Director's Cut";
+    const base = 'Re:ZERO -Starting Life in Another World-';
+    expect(nameSimilarity(edition, base)).toBeGreaterThanOrEqual(MATCH_THRESHOLD);
+    expect(nameSimilarity(base, edition)).toBeGreaterThanOrEqual(MATCH_THRESHOLD);
+  });
+
+  it('keeps a title that is only an edition label', () => {
+    expect(nameSimilarity("Director's Cut", "Director's Cut")).toBe(1);
+    expect(nameSimilarity("Director's Cut", 'Attack on Titan')).toBeLessThan(0.5);
+  });
+
+  it('stays low for unrelated titles with the same edition label', () => {
+    expect(nameSimilarity("Alien Director's Cut", "Blade Runner Director's Cut")).toBeLessThan(MATCH_THRESHOLD);
+  });
 });
 
 describe('matchConfidence', () => {
