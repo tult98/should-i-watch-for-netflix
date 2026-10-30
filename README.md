@@ -250,4 +250,6 @@ This product uses the TMDB API but is not endorsed or certified by TMDB.
 
 Anime data comes from MyAnimeList through its official API, with Jikan as the fallback. IMDb, Rotten Tomatoes, and Metacritic scores come from OMDb.
 
-License: not set yet.
+The names and marks of IMDb, Rotten Tomatoes, Metacritic, TMDB, and MyAnimeList belong to their owners. The icons in the popover are simple drawings and not official logos, and this project is not affiliated with any of them.
+
+License: MIT. See the `LICENSE` file.

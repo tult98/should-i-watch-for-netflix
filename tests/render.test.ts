@@ -74,6 +74,17 @@ function render(info: TitleInfo): HTMLElement {
   return renderTitle(info, quickVerdict(info, DEFAULT_THRESHOLDS), now);
 }
 
+function iconCount(el: Element): number {
+  return el.querySelectorAll('svg.score-icon[aria-hidden="true"]').length;
+}
+
+function expectIcons(el: HTMLElement): void {
+  expect(iconCount(el.querySelector('.score-label') as Element)).toBe(1);
+  const stats = [...el.querySelectorAll('.stat')];
+  expect(stats.length).toBeGreaterThan(0);
+  for (const stat of stats) expect(iconCount(stat)).toBe(1);
+}
+
 function statLabels(el: HTMLElement): string[] {
   return [...el.querySelectorAll('.stat .label')].map((n) => n.textContent ?? '');
 }
@@ -206,6 +217,18 @@ describe('renderTitle series', () => {
     expect(full.querySelector('.score-source')?.textContent).toBe('IMDb');
     expect(statLabels(full)).toEqual(['Rotten Tomatoes', 'TMDB']);
   });
+
+  it('gives a lone stats cell half the row and keeps two cells at two columns', () => {
+    const cols = (node: HTMLElement) => (node.querySelector('.stats') as HTMLElement).style.getPropertyValue('--cols');
+    const one = render({ ...lights, scores: [...lights.scores, { source: 'imdb', value: 8.5, votes: 200000 }] });
+    expect(statLabels(one)).toEqual(['TMDB']);
+    expect(cols(one)).toBe('2');
+    const two = render({
+      ...lights,
+      scores: [...lights.scores, { source: 'imdb', value: 8.5, votes: 200000 }, { source: 'rt', value: 94 }],
+    });
+    expect(cols(two)).toBe('2');
+  });
 });
 
 describe('render safety', () => {
@@ -336,5 +359,36 @@ describe('AI block', () => {
     applyAiError(el, 'ai_no_balance', () => {});
     expect(el.querySelector('.ai-error')?.textContent).toBe('Tài khoản AI đã hết số dư');
     expect(el.querySelector('.ai-error button')).toBeNull();
+  });
+});
+
+describe('score icons in the popover', () => {
+  it('movie has icons in the headline label and every stats cell', () => expectIcons(render(irishman)));
+
+  it('series has icons in the headline label and every stats cell', () => {
+    const scores = [
+      ...lights.scores,
+      { source: 'imdb' as const, value: 8.1, votes: 50000 },
+      { source: 'rt' as const, value: 88 },
+    ];
+    expectIcons(render({ ...lights, scores }));
+  });
+
+  it('anime has a MAL icon in the headline label and none on MAL-only stats', () => {
+    const el = render(frieren);
+    expect(el.querySelector('.score-label svg')?.textContent).toBe('MAL');
+    expect(iconCount(el.querySelector('.stats') as Element)).toBe(0);
+  });
+
+  it('anime with IMDb has an IMDb icon in its IMDb cell', () => {
+    const el = render({ ...frieren, scores: [...frieren.scores, { source: 'imdb', value: 8.6, votes: 400000 }] });
+    const cellsWithIcon = [...el.querySelectorAll('.stat')].filter((n) => n.querySelector('svg'));
+    expect(cellsWithIcon).toHaveLength(1);
+    expect(cellsWithIcon[0]?.querySelector('svg')?.textContent).toBe('IMDb');
+    expect(cellsWithIcon[0]?.querySelector('.label')?.textContent).toBe('IMDb');
+  });
+
+  it('keeps the visible label text for screen readers', () => {
+    expect(render(irishman).querySelector('.score-source')?.textContent).toBe('IMDb');
   });
 });
