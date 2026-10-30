@@ -1,0 +1,28 @@
+{
+  "results": [
+    {
+      "id": 37854,
+      "media_type": "tv",
+      "name": "One Piece",
+      "original_name": "ワンピース",
+      "first_air_date": "1999-10-20",
+      "genre_ids": [10759, 35, 16],
+      "origin_country": ["JP"],
+      "original_language": "ja",
+      "popularity": 150.3,
+      "vote_count": 4900
+    },
+    {
+      "id": 111110,
+      "media_type": "tv",
+      "name": "One Piece",
+      "original_name": "ONE PIECE",
+      "first_air_date": "2023-08-31",
+      "genre_ids": [10759, 10765],
+      "origin_country": ["US"],
+      "original_language": "en",
+      "popularity": 90.5,
+      "vote_count": 2400
+    }
+  ]
+}

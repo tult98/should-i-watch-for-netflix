@@ -1,0 +1,35 @@
+{
+  "page": 1,
+  "results": [
+    {
+      "id": 9999,
+      "media_type": "person",
+      "name": "The Irishman",
+      "popularity": 99,
+      "known_for_department": "Acting"
+    },
+    {
+      "id": 398978,
+      "media_type": "movie",
+      "title": "Người Đàn Ông Ireland",
+      "original_title": "The Irishman",
+      "release_date": "2019-11-01",
+      "genre_ids": [80, 18, 36],
+      "origin_country": ["US"],
+      "original_language": "en",
+      "popularity": 40.1,
+      "vote_count": 8200
+    },
+    {
+      "id": 123,
+      "media_type": "movie",
+      "title": "The Irishman",
+      "original_title": "The Irishman",
+      "release_date": "1978-06-01",
+      "genre_ids": [18],
+      "original_language": "en",
+      "popularity": 1.2,
+      "vote_count": 12
+    }
+  ]
+}

@@ -12,7 +12,7 @@ export interface RateWindow {
 
 export type FetchFn = (url: string, init?: RequestInit) => Promise<Response>;
 
-export type RequestErrorReason = 'network' | 'rate_limited' | 'bad_mal_client_id';
+export type RequestErrorReason = 'network' | 'rate_limited' | 'bad_mal_client_id' | 'bad_tmdb_key';
 
 export class RequestError extends Error {
   constructor(readonly reason: RequestErrorReason, message?: string) {

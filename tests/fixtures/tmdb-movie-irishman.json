@@ -1,0 +1,37 @@
+{
+  "id": 398978,
+  "title": "Người Đàn Ông Ireland",
+  "original_title": "The Irishman",
+  "overview": "Một sát thủ già nhìn lại cuộc đời mình.",
+  "release_date": "2019-11-01",
+  "runtime": 209,
+  "genres": [{ "id": 80, "name": "Hình Sự" }, { "id": 18, "name": "Chính Kịch" }],
+  "vote_average": 7.6,
+  "vote_count": 8200,
+  "credits": {
+    "cast": [
+      { "name": "Joe Pesci", "order": 2 },
+      { "name": "Robert De Niro", "order": 0 },
+      { "name": "Al Pacino", "order": 1 },
+      { "name": "Harvey Keitel", "order": 4 },
+      { "name": "Ray Romano", "order": 3 }
+    ],
+    "crew": [
+      { "name": "Martin Scorsese", "job": "Director" },
+      { "name": "Steven Zaillian", "job": "Screenplay" },
+      { "name": "Martin Scorsese", "job": "Director" }
+    ]
+  },
+  "release_dates": {
+    "results": [
+      { "iso_3166_1": "US", "release_dates": [{ "certification": "R", "type": 3 }] },
+      { "iso_3166_1": "VN", "release_dates": [{ "certification": "", "type": 4 }, { "certification": "T18", "type": 3 }] }
+    ]
+  },
+  "external_ids": { "imdb_id": "tt1302006" },
+  "translations": {
+    "translations": [
+      { "iso_639_1": "en", "iso_3166_1": "US", "data": { "title": "The Irishman", "overview": "An aging hitman looks back." } }
+    ]
+  }
+}

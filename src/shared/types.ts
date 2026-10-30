@@ -62,7 +62,7 @@ export interface SeriesInfo extends BaseInfo {
 
 export type TitleInfo = AnimeInfo | MovieInfo | SeriesInfo;
 
-export type LookupErrorReason = 'missing_tmdb_key' | 'network' | 'rate_limited' | 'bad_mal_client_id';
+export type LookupErrorReason = 'network' | 'rate_limited' | 'bad_mal_client_id' | 'bad_tmdb_key';
 
 export type LookupResult =
   | { status: 'match'; info: TitleInfo }

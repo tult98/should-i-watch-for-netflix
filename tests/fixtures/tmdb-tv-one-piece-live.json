@@ -1,0 +1,27 @@
+{
+  "id": 111110,
+  "name": "One Piece",
+  "original_name": "ONE PIECE",
+  "overview": "Monkey D. Luffy ra khơi tìm kho báu.",
+  "first_air_date": "2023-08-31",
+  "last_air_date": "2023-08-31",
+  "number_of_seasons": 1,
+  "number_of_episodes": 8,
+  "status": "Returning Series",
+  "genres": [{ "id": 10759, "name": "Action & Adventure" }],
+  "vote_average": 8.2,
+  "vote_count": 2400,
+  "created_by": [{ "name": "Matt Owens" }, { "name": "Steven Maeda" }],
+  "aggregate_credits": {
+    "cast": [
+      { "name": "Iñaki Godoy", "order": 0 },
+      { "name": "Mackenyu", "order": 1 },
+      { "name": "Emily Rudd", "order": 2 },
+      { "name": "Jacob Romero", "order": 3 },
+      { "name": "Taz Skylar", "order": 4 }
+    ]
+  },
+  "content_ratings": { "results": [{ "iso_3166_1": "DE", "rating": "12" }, { "iso_3166_1": "US", "rating": "TV-14" }] },
+  "external_ids": { "imdb_id": "tt11737520" },
+  "translations": { "translations": [{ "iso_639_1": "en", "iso_3166_1": "US", "data": { "name": "One Piece", "overview": "Luffy sets sail." } }] }
+}
