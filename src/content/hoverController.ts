@@ -19,6 +19,7 @@ export interface Timers {
 export interface CardReader {
   findCard(target: Element): Element | null;
   findPreview(target: Element): Element | null;
+  readPreviewId(preview: Element): string | undefined;
   readTitle(card: Element): string | null;
   readNetflixId(card: Element): string | undefined;
   readYear(card: Element): number | undefined;
@@ -197,12 +198,22 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
       arm(card);
       return;
     }
-    if (card || (currentCard() && reader.findPreview(target))) cancelHide();
+    const current = currentCard();
+    if (card || (current && inPreviewOf(target, current))) cancelHide();
+  }
+
+  // A preview for another title can still be open, so a preview counts only when its id matches the card's.
+  function inPreviewOf(el: Element, card: Element): boolean {
+    const preview = reader.findPreview(el);
+    if (!preview) return false;
+    const previewId = reader.readPreviewId(preview);
+    const cardId = reader.readNetflixId(card);
+    return !previewId || !cardId || previewId === cardId;
   }
 
   // The preview and the popover open in separate layers, so both count as part of the current card.
   function belongsToCurrent(el: Element, card: Element): boolean {
-    return reader.findCard(el) === card || reader.findPreview(el) !== null || view.contains(el);
+    return reader.findCard(el) === card || inPreviewOf(el, card) || view.contains(el);
   }
 
   function pointerOut(target: Element | null, relatedTarget: Element | null): void {

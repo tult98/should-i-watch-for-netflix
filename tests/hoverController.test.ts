@@ -5,6 +5,7 @@ interface FakeNode {
   card: FakeNode | null;
   title: string;
   preview?: boolean;
+  previewId?: string;
   popover?: boolean;
 }
 
@@ -35,6 +36,7 @@ function setup() {
     reader: {
       findCard: (el) => (el as unknown as FakeNode).card as unknown as Element | null,
       findPreview: (el) => ((el as unknown as FakeNode).preview ? el : null),
+      readPreviewId: (preview) => (preview as unknown as FakeNode).previewId,
       readTitle: (card) => title(card),
       readNetflixId: (card) => `id-${title(card)}`,
       readYear: () => 2023,
@@ -177,6 +179,44 @@ describe('hoverController arming', () => {
     expect(fires.map((f) => f.title)).toEqual(['Frieren', 'Bleach']);
   });
 
+  it('keeps the hover in a preview whose id matches the card', () => {
+    const { controller, fires } = setup();
+    const a = makeCard('Frieren');
+    const ownPreview = { card: null, title: '', preview: true, previewId: 'id-Frieren' } as unknown as Element;
+    enter(controller, outside, a.child);
+    vi.advanceTimersByTime(100);
+    enter(controller, a.child, ownPreview);
+
+    vi.advanceTimersByTime(200);
+    expect(fires.map((f) => f.title)).toEqual(['Frieren']);
+    expect(controller.state().name).toBe('loading');
+  });
+
+  it('counts moving into a preview for another title as leaving the card', () => {
+    const { controller, fires } = setup();
+    const a = makeCard('Frieren');
+    const otherPreview = { card: null, title: '', preview: true, previewId: 'id-Bleach' } as unknown as Element;
+    enter(controller, outside, a.child);
+    vi.advanceTimersByTime(100);
+    enter(controller, a.child, otherPreview);
+
+    vi.advanceTimersByTime(1000);
+    expect(fires).toHaveLength(0);
+    expect(controller.state().name).toBe('idle');
+  });
+
+  it('keeps the hover in a preview with no id, as before ids were read', () => {
+    const { controller, fires } = setup();
+    const a = makeCard('Frieren');
+    enter(controller, outside, a.child);
+    vi.advanceTimersByTime(100);
+    enter(controller, a.child, preview);
+
+    vi.advanceTimersByTime(200);
+    expect(fires.map((f) => f.title)).toEqual(['Frieren']);
+    expect(controller.state().name).toBe('loading');
+  });
+
   it('ignores the preview when no card is current', () => {
     const { controller, fires } = setup();
     enter(controller, outside, preview);
@@ -239,6 +279,17 @@ describe('hoverController popover', () => {
     expect(controller.state().name).toBe('shown');
 
     controller.pointerOut(popover, outside);
+    vi.advanceTimersByTime(149);
+    expect(calls).toEqual(['show A info-A']);
+    vi.advanceTimersByTime(1);
+    expect(calls).toEqual(['show A info-A', 'hide']);
+    expect(controller.state().name).toBe('idle');
+  });
+
+  it('hides 150 ms after the pointer moves into a preview for another title', async () => {
+    const { controller, calls, a } = await showA();
+    const otherPreview = { card: null, title: '', preview: true, previewId: 'id-B' } as unknown as Element;
+    enter(controller, a.child, otherPreview);
     vi.advanceTimersByTime(149);
     expect(calls).toEqual(['show A info-A']);
     vi.advanceTimersByTime(1);

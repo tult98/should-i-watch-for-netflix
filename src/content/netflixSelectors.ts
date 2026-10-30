@@ -12,6 +12,7 @@
  * - the hover preview is still a dialog with data-uia
  *   "modal-motion-container-MINI_MODAL" and a "videoMetadata--container"
  *   inside (findPreview, findOpenPreview, readYear)
+ * - the preview still links to /title/<id> or /watch/<id> (readPreviewId)
  * - whether <html lang> still carries the profile language (readProfileLanguage)
  *
  * Episode cards (data-uia "episodic-card") are never cards here: their
@@ -37,8 +38,18 @@ export function findPreview(target: Element): Element | null {
   return target.closest(PREVIEW_SELECTOR);
 }
 
-export function findOpenPreview(doc: Document): Element | null {
-  return doc.querySelector(PREVIEW_SELECTOR);
+// Returns the open preview only when it shows the card's title; a missing id on either side counts as a match.
+export function findOpenPreview(doc: Document, card: Element): Element | null {
+  const preview = doc.querySelector(PREVIEW_SELECTOR);
+  if (!preview) return null;
+  const previewId = readPreviewId(preview);
+  const cardId = readNetflixId(card);
+  return !previewId || !cardId || previewId === cardId ? preview : null;
+}
+
+export function readPreviewId(preview: Element): string | undefined {
+  const link = preview.querySelector('a[href*="/title/"]') ?? preview.querySelector('a[href*="/watch/"]');
+  return link?.getAttribute('href')?.match(/\/(?:title|watch)\/(\d+)/)?.[1];
 }
 
 function clean(text: string | null | undefined): string | null {

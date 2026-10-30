@@ -2,8 +2,10 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   findCard,
+  findOpenPreview,
   findPreview,
   readNetflixId,
+  readPreviewId,
   readTitle,
   readYear,
 } from '../src/content/netflixSelectors';
@@ -82,6 +84,31 @@ describe('netflixSelectors', () => {
     const dialog = q('[data-uia="modal-motion-container-MINI_MODAL"]');
     expect(findPreview(q('[data-uia="mini-modal-controls"] button'))).toBe(dialog);
     expect(findPreview(q('#bleach-img'))).toBeNull();
+  });
+
+  it('reads the preview id from the title link, then the play link', () => {
+    const root = (links: string) =>
+      `<div role="dialog" aria-modal="true" data-uia="modal-motion-container-MINI_MODAL" class="previewModal--container mini-modal">${links}</div>`;
+    const title = '<a href="/title/70196252?dpRightClick=1&amp;trackId=1">Info</a>';
+    const watch = '<a href="/watch/70196252?trackId=255824129" data-uia="play-button">Play</a>';
+
+    document.body.innerHTML = root(watch + title);
+    expect(readPreviewId(q('[role="dialog"]'))).toBe('70196252');
+    document.body.innerHTML = root(watch);
+    expect(readPreviewId(q('[role="dialog"]'))).toBe('70196252');
+    document.body.innerHTML = root('<a href="/browse">Home</a>');
+    expect(readPreviewId(q('[role="dialog"]'))).toBeUndefined();
+  });
+
+  it('returns the open preview only for the card it shows', () => {
+    const dialog = q('[data-uia="modal-motion-container-MINI_MODAL"]');
+    const bleach = q('[data-uia="progress-card"]');
+    const frieren = q('[data-uia="standard-card"]');
+    expect(findOpenPreview(document, bleach)).toBe(dialog);
+
+    dialog.insertAdjacentHTML('beforeend', '<a href="/watch/70204957?trackId=1">Play</a>');
+    expect(findOpenPreview(document, bleach)).toBe(dialog);
+    expect(findOpenPreview(document, frieren)).toBeNull();
   });
 
   it('reads no year from show metadata without one', () => {

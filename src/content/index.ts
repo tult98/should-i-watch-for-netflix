@@ -9,6 +9,7 @@ import {
   findOpenPreview,
   findPreview,
   readNetflixId,
+  readPreviewId,
   readProfileLanguage,
   readTitle,
   readYear,
@@ -110,7 +111,7 @@ function present(card: Element, content: HTMLElement): void {
     return;
   }
   anchoredCard = card;
-  host.show(() => findOpenPreview(document) ?? card, content);
+  host.show(() => findOpenPreview(document, card) ?? card, content);
 }
 
 const controller = createHoverController<HTMLElement>({
@@ -121,6 +122,7 @@ const controller = createHoverController<HTMLElement>({
   reader: {
     findCard,
     findPreview,
+    readPreviewId,
     readTitle,
     readNetflixId,
     readYear,
