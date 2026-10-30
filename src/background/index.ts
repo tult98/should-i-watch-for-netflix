@@ -2,6 +2,8 @@ import { isLookupRequest, type LookupResponse } from '../shared/messages';
 import { loadSettings } from '../shared/settings';
 import { createJikanAdapter } from './adapters/JikanAdapter';
 import { createMalOfficialAdapter } from './adapters/MalOfficialAdapter';
+import { createOmdbAdapter } from './adapters/OmdbAdapter';
+import { createTmdbAdapter } from './adapters/TmdbAdapter';
 import { chromeLocalStore, createLookupCache } from './cache';
 import { createLookup } from './lookup';
 import { createRequestQueue } from './requestQueue';
@@ -13,6 +15,8 @@ const lookup = createLookup({
   loadSettings: () => loadSettings(),
   jikan: createJikanAdapter(queue.fetch),
   malOfficial: (clientId) => createMalOfficialAdapter(queue.fetch, clientId),
+  tmdb: (key) => createTmdbAdapter(queue.fetch, key),
+  omdb: (key) => createOmdbAdapter(queue.fetch, key),
   log: (message) => console.log(message),
 });
 
