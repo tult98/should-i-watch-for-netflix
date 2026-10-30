@@ -19,7 +19,8 @@ function confident<T extends { confidence: number }>(match: T | null): match is 
 /**
  * The card year is already inside both confidences, so "One Piece" with year 1999 loses the
  * 2023 live action on TMDB and with year 2023 loses the anime on MAL. Without a year both
- * match, and a live action TMDB result wins.
+ * match. TMDB then picks its best result by `vote_count`, so the live action wins only when it
+ * has more votes than the anime.
  */
 export function route(mal: AnimeCandidate | null, tmdb: TmdbCandidate | null): Route {
   const tmdbOk = confident(tmdb);

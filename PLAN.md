@@ -151,13 +151,13 @@ The content script computes the badge at render time from cached `TitleInfo` and
 | Below threshold or none | Confident match | TMDB and OMDb |
 | Below threshold or none | None | `no_match`, popover stays hidden |
 
-Netflix cards with both versions in their catalog break the naive rule. "One Piece" matches the anime on MAL and the 2023 live action on TMDB. The year from the Netflix card decides it when present. Without a year, TMDB's live-action result wins.
+Netflix cards with both versions in their catalog break the naive rule. "One Piece" matches the anime on MAL and the 2023 live action on TMDB. The year from the Netflix card decides it when present. Without a year, the result with more TMDB votes wins.
 
 `route()` needs no extra rule for that. The card year is already part of both confidences, so a year more than one off drops a candidate under the threshold. With year 1999 the live action fails on TMDB, and with year 2023 the anime fails on MAL. Without a year both pass, and the third row sends a live action TMDB match to TMDB. TMDB picks its own best match among same-name results by `vote_count`, so a year-less "One Piece" goes to TMDB only when the live action has more TMDB votes than the anime.
 
 The IMDb score for an anime movie comes only from a TMDB match of type `movie`. A TMDB `tv` match would carry the IMDb id of a different title.
 
-A failed search only fails the lookup when its answer could change the route. A TMDB failure always can, so it returns its error. An anime search failure next to a live action TMDB match cannot, because rows 3 and 4 both pick TMDB, so that lookup still answers from TMDB.
+A failed search only fails the lookup when its answer could change the route. A TMDB failure can, so it returns its error, with one exception. When the first anime search has a confident match, the lookup routes as anime and treats TMDB as having no result. It skips the anime movie IMDb step and logs `[sw] tmdb failed <reason>, using anime`. A bad TMDB key therefore only surfaces for titles with no confident anime match. The cache only holds results computed with both sources, so that degraded match is returned but not stored. An anime search failure next to a live action TMDB match cannot, because rows 3 and 4 both pick TMDB, so that lookup still answers from TMDB.
 
 ### Name matching
 

@@ -341,9 +341,38 @@ describe('lookup with TMDB', () => {
     expect(logs).not.toContain('[sw] no tmdb key');
   });
 
-  it('returns a bad TMDB key as an uncached error', async () => {
+  it('routes a confident anime match when TMDB returns 401, without caching it', async () => {
+    const { lookup, mal, tmdbAdapter, omdbAdapter, data, logs } = setup({
+      settings: keys,
+      tmdbSearch: async () => {
+        throw new RequestError('bad_tmdb_key');
+      },
+    });
+    expect(await lookup(request)).toEqual({ status: 'match', info: anime });
+    expect(logs).toContain('[sw] tmdb failed bad_tmdb_key, using anime');
+    expect(data.size).toBe(0);
+    await lookup(request);
+    expect(mal.search).toHaveBeenCalledTimes(2);
+    expect(tmdbAdapter.search).toHaveBeenCalledTimes(2);
+    expect(tmdbAdapter.details).not.toHaveBeenCalled();
+    expect(omdbAdapter.scores).not.toHaveBeenCalled();
+  });
+
+  it('routes a confident anime match when the TMDB search times out', async () => {
+    const { lookup, logs } = setup({
+      settings: keys,
+      tmdbSearch: async () => {
+        throw new RequestError('network');
+      },
+    });
+    expect(await lookup(request)).toEqual({ status: 'match', info: anime });
+    expect(logs).toContain('[sw] tmdb failed network, using anime');
+  });
+
+  it('returns bad_tmdb_key when TMDB fails and the anime search has no match', async () => {
     const { lookup, data } = setup({
       settings: keys,
+      anime: async () => null,
       tmdbSearch: async () => {
         throw new RequestError('bad_tmdb_key');
       },

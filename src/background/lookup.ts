@@ -1,5 +1,5 @@
 import type { LookupRequest } from '../shared/messages';
-import { normalizeTitle } from '../shared/normalize';
+import { MATCH_THRESHOLD, normalizeTitle } from '../shared/normalize';
 import type { Settings } from '../shared/settings';
 import type { AnimeInfo, LookupResult, Score } from '../shared/types';
 import type { AnimeAdapter } from './adapters/AnimeAdapter';
@@ -18,6 +18,11 @@ export interface LookupDeps {
   tmdb: (key: string) => TmdbAdapter;
   omdb: (key: string) => OmdbAdapter;
   log?: (message: string) => void;
+}
+
+interface Resolved {
+  result: LookupResult;
+  cacheable: boolean;
 }
 
 export type Lookup = (request: LookupRequest) => Promise<LookupResult>;
@@ -90,7 +95,7 @@ export function createLookup(deps: LookupDeps): Lookup {
     return imdb.length ? { ...anime, scores: [...anime.scores, ...imdb] } : anime;
   }
 
-  async function resolve(request: LookupRequest): Promise<LookupResult> {
+  async function resolve(request: LookupRequest): Promise<Resolved> {
     try {
       const settings = await deps.loadSettings();
       const tmdb = settings.tmdbKey ? deps.tmdb(settings.tmdbKey) : null;
@@ -102,10 +107,18 @@ export function createLookup(deps: LookupDeps): Lookup {
       ]);
 
       // A failed side only blocks the result when its answer could change the route.
-      if (tmdbResult.status === 'rejected') return toError(tmdbResult.reason);
+      if (tmdbResult.status === 'rejected') {
+        const found = animeResult.status === 'fulfilled' ? animeResult.value : null;
+        if (found && found.match.confidence >= MATCH_THRESHOLD) {
+          log(`[sw] tmdb failed ${errorReason(tmdbResult.reason)}, using anime`);
+          log(`[sw] route anime ${request.title}`);
+          return { result: { status: 'match', info: found }, cacheable: false };
+        }
+        return { result: toError(tmdbResult.reason), cacheable: false };
+      }
       const tmdbMatch = tmdbResult.value;
       if (animeResult.status === 'rejected' && (!tmdbMatch || isAnimeLike(tmdbMatch))) {
-        return toError(animeResult.reason);
+        return { result: toError(animeResult.reason), cacheable: false };
       }
       let anime = animeResult.status === 'fulfilled' ? animeResult.value : null;
 
@@ -119,17 +132,23 @@ export function createLookup(deps: LookupDeps): Lookup {
       log(`[sw] route ${decision} ${request.title}`);
 
       if (decision === 'anime' && anime) {
-        return { status: 'match', info: await withImdb(anime, tmdb, tmdbMatch, omdb, details) };
+        return {
+          result: { status: 'match', info: await withImdb(anime, tmdb, tmdbMatch, omdb, details) },
+          cacheable: true,
+        };
       }
       if (decision === 'tmdb' && tmdb && tmdbMatch) {
         details ??= await tmdb.details(tmdbMatch);
         const extra = omdb ? await omdbScores(omdb, details.imdbId) : [];
-        return { status: 'match', info: { ...details.info, scores: [...details.info.scores, ...extra] } };
+        return {
+          result: { status: 'match', info: { ...details.info, scores: [...details.info.scores, ...extra] } },
+          cacheable: true,
+        };
       }
       if (!tmdb) log('[sw] no tmdb key');
-      return { status: 'no_match' };
+      return { result: { status: 'no_match' }, cacheable: true };
     } catch (err) {
-      return toError(err);
+      return { result: toError(err), cacheable: false };
     }
   }
 
@@ -139,8 +158,8 @@ export function createLookup(deps: LookupDeps): Lookup {
       log(`[sw] cache hit ${key}`);
       return cached;
     }
-    const result = await resolve(request);
-    await deps.cache.set(key, result);
+    const { result, cacheable } = await resolve(request);
+    if (cacheable) await deps.cache.set(key, result);
     return result;
   }
 
