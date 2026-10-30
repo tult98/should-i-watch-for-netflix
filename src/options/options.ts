@@ -17,7 +17,7 @@ import {
   type Settings,
   type SourceKey,
 } from '../shared/settings';
-import { strings } from '../shared/strings.vi';
+import { strings } from '../shared/i18n';
 import type { Kind } from '../shared/types';
 import { testAiConnection, type ConnectionResult } from './ai';
 import { saveAndInvalidate, saveThresholdSet, saveWithPermission } from './save';

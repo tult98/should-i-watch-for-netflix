@@ -1,4 +1,4 @@
-export const strings = {
+export const vi = {
   options: {
     eyebrow: 'Cài đặt extension',
     privacy: 'Mọi cài đặt và dữ liệu gu chỉ lưu trong trình duyệt của bạn.',
@@ -218,4 +218,6 @@ export const strings = {
     likeTitle: 'Thích tiêu đề này',
     dislikeTitle: 'Không thích tiêu đề này',
   },
-} as const;
+};
+
+export type Strings = typeof vi;

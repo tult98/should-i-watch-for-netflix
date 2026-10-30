@@ -1,4 +1,4 @@
-import { strings } from '../../shared/strings.vi';
+import { strings } from '../../shared/i18n';
 import type { Kind, Score } from '../../shared/types';
 
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

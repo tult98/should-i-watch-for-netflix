@@ -1,4 +1,4 @@
-import { strings } from '../shared/strings.vi';
+import { strings } from '../shared/i18n';
 import type { ThresholdSet, Thresholds } from '../shared/types';
 
 const t = strings.options;

@@ -1,6 +1,6 @@
 import type { RatedTitle } from '../background/taste/tasteStore';
 import { enabledOf, type Settings } from '../shared/settings';
-import { strings } from '../shared/strings.vi';
+import { strings } from '../shared/i18n';
 import type { Kind } from '../shared/types';
 
 const t = strings.popup;

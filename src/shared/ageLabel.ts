@@ -1,4 +1,4 @@
-import { strings } from './strings.vi';
+import { strings } from './i18n';
 
 export function ageLabel(year: number | undefined, now: Date): string | undefined {
   if (year === undefined) return undefined;

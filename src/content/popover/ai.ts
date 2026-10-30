@@ -1,6 +1,6 @@
 import type { AiOk } from '../../shared/messages';
 import { needSummary } from '../../shared/needSummary';
-import { strings } from '../../shared/strings.vi';
+import { strings } from '../../shared/i18n';
 import type { AIErrorReason, TitleInfo } from '../../shared/types';
 import { h, icon } from './dom';
 import { kindLabel } from './format';

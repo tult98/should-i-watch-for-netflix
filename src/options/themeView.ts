@@ -1,6 +1,6 @@
 import { h } from '../content/popover/dom';
 import { THEME_PREFS, themeOf, type Settings, type ThemePref } from '../shared/settings';
-import { strings } from '../shared/strings.vi';
+import { strings } from '../shared/i18n';
 import { actions, section, setStatus, statusLine } from './ui';
 
 const t = strings.options;

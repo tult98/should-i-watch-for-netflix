@@ -1,6 +1,6 @@
 import { ageLabel } from '../../shared/ageLabel';
 import type { QuickBadge } from '../../shared/quickBadge';
-import { strings } from '../../shared/strings.vi';
+import { strings } from '../../shared/i18n';
 import type { AnimeInfo, MovieInfo, Rating, Score, ScoreSource, SeriesInfo, TitleInfo } from '../../shared/types';
 import { h, icon, type Child } from './dom';
 import { scoreIcon } from './scoreIcons';

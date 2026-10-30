@@ -1,6 +1,6 @@
 import type { TasteProfile } from '../background/taste/tasteProfile';
 import { h } from '../content/popover/dom';
-import { strings } from '../shared/strings.vi';
+import { strings } from '../shared/i18n';
 
 const t = strings.options;
 
