@@ -1,12 +1,16 @@
 import type { LookupRequest } from '../shared/messages';
+import type { Settings } from '../shared/settings';
 import type { LookupResult } from '../shared/types';
 import type { AnimeAdapter } from './adapters/AnimeAdapter';
+import { canUseMalOfficial } from './adapters/MalOfficialAdapter';
 import { lookupCacheKey, type LookupCache } from './cache';
 import { RequestError } from './requestQueue';
 
 export interface LookupDeps {
   cache: LookupCache;
-  mal: AnimeAdapter;
+  loadSettings: () => Promise<Settings>;
+  jikan: AnimeAdapter;
+  malOfficial: (clientId: string) => AnimeAdapter;
   log?: (message: string) => void;
 }
 
@@ -21,10 +25,19 @@ export function createLookup(deps: LookupDeps): Lookup {
   const log = deps.log ?? (() => {});
   const inFlight = new Map<string, Promise<LookupResult>>();
 
+  async function pickAdapter(title: string): Promise<{ name: string; adapter: AnimeAdapter }> {
+    const { malClientId } = await deps.loadSettings();
+    if (malClientId && canUseMalOfficial(title)) {
+      return { name: 'mal-official', adapter: deps.malOfficial(malClientId) };
+    }
+    return { name: 'jikan', adapter: deps.jikan };
+  }
+
   async function resolve(request: LookupRequest): Promise<LookupResult> {
-    log(`[sw] fetch jikan ${request.title}`);
     try {
-      const anime = await deps.mal.search(request.title, request.year);
+      const { name, adapter } = await pickAdapter(request.title);
+      log(`[sw] fetch ${name} ${request.title}`);
+      const anime = await adapter.search(request.title, request.year);
       return anime ? { status: 'match', info: anime } : { status: 'no_match' };
     } catch (err) {
       return toError(err);
