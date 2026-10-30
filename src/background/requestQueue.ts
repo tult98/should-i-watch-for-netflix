@@ -45,6 +45,8 @@ export interface RequestQueueOptions {
   fetch: FetchFn;
   clock?: Clock;
   limits?: Record<string, RateWindow[]>;
+  // A function rather than a map because the AI host comes from settings and can change at runtime.
+  timeoutFor?: (host: string) => number | undefined;
 }
 
 export interface RequestQueue {
@@ -98,14 +100,15 @@ export function createRequestQueue(options: RequestQueueOptions): RequestQueue {
   }
 
   // The race matters as much as the abort: a fetch that ignores the signal must still fail on time.
-  async function fetchWithTimeout(url: string, init?: RequestInit): Promise<Response> {
+  async function fetchWithTimeout(url: string, host: string, init?: RequestInit): Promise<Response> {
     const controller = new AbortController();
+    const ms = options.timeoutFor?.(host) ?? REQUEST_TIMEOUT_MS;
     let timer: unknown;
     const timeout = new Promise<never>((_, reject) => {
       timer = clock.setTimeout(() => {
         controller.abort();
-        reject(new RequestError('network', `timed out after ${REQUEST_TIMEOUT_MS} ms`));
-      }, REQUEST_TIMEOUT_MS);
+        reject(new RequestError('network', `timed out after ${ms} ms`));
+      }, ms);
     });
     try {
       return await Promise.race([options.fetch(url, { ...init, signal: controller.signal }), timeout]);
@@ -121,7 +124,7 @@ export function createRequestQueue(options: RequestQueueOptions): RequestQueue {
     const host = new URL(url).host;
     for (let attempt = 0; ; attempt++) {
       await acquire(host);
-      const response = await fetchWithTimeout(url, init);
+      const response = await fetchWithTimeout(url, host, init);
       if (response.status !== 429) return response;
       if (attempt >= RETRY_DELAYS_MS.length) throw new RequestError('rate_limited');
       const delay =

@@ -17,7 +17,10 @@ function tooMany(retryAfter?: string): Response {
   return new Response('', { status: 429, headers: retryAfter ? { 'Retry-After': retryAfter } : {} });
 }
 
-function setup(respond: (init?: RequestInit) => Response | Promise<Response> = ok) {
+function setup(
+  respond: (init?: RequestInit) => Response | Promise<Response> = ok,
+  timeoutFor?: (host: string) => number | undefined,
+) {
   const calls: number[] = [];
   const fetch = vi.fn<FetchFn>(async (_url, init) => {
     calls.push(Date.now());
@@ -31,6 +34,7 @@ function setup(respond: (init?: RequestInit) => Response | Promise<Response> = o
       setTimeout: (fn, ms) => setTimeout(fn, ms),
       clearTimeout: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
     },
+    timeoutFor,
   });
   return { queue, fetch, calls };
 }
@@ -146,6 +150,20 @@ describe('requestQueue', () => {
     expect(error).toBeInstanceOf(RequestError);
     expect((error as RequestError).reason).toBe('network');
     expect(signal?.aborted).toBe(true);
+  });
+
+  it('uses a per-host timeout and keeps the default for other hosts', async () => {
+    const hang = () => new Promise<Response>(() => {});
+    const { queue } = setup(hang, (host) => (host === 'api.deepseek.com' ? 30_000 : undefined));
+    let aiDone = false;
+    let jikanDone = false;
+    void queue.fetch('https://api.deepseek.com/chat/completions').catch(() => (aiDone = true));
+    void queue.fetch(JIKAN).catch(() => (jikanDone = true));
+    await vi.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS);
+    expect(jikanDone).toBe(true);
+    expect(aiDone).toBe(false);
+    await vi.advanceTimersByTimeAsync(30_000 - REQUEST_TIMEOUT_MS);
+    expect(aiDone).toBe(true);
   });
 
   it('clears the timeout once the response arrives', async () => {
