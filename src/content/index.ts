@@ -1,5 +1,5 @@
 import { sendLookup } from '../shared/messages';
-import type { LookupResult } from '../shared/types';
+import { describeResult } from './describeResult';
 import { createHoverController } from './hoverController';
 import {
   findCard,
@@ -19,19 +19,6 @@ function isCurrent(id: number, card: Element): boolean {
 
 function staleSuffix(id: number, card: Element): string {
   return isCurrent(id, card) ? '' : ' (stale)';
-}
-
-function describe(result: LookupResult): string {
-  switch (result.status) {
-    case 'match': {
-      const { matchedName, confidence } = result.info.match;
-      return `${matchedName} ${Math.round(confidence * 100)}% ${result.info.id}`;
-    }
-    case 'no_match':
-      return 'no_match';
-    case 'error':
-      return `error ${result.reason}`;
-  }
 }
 
 let detached = false;
@@ -70,7 +57,7 @@ const controller = createHoverController({
     const id = ++requestId;
     sendLookup({ title, year, lang, netflixId }).then(
       (result) => {
-        console.log(`[lookup] ${title} -> ${describe(result)}${staleSuffix(id, card)}`);
+        console.log(`[lookup] ${title} -> ${describeResult(result)}${staleSuffix(id, card)}`);
       },
       (err: unknown) => {
         if (isInvalidated(err)) {
