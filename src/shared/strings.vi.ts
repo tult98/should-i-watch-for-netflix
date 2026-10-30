@@ -23,6 +23,9 @@ export const strings = {
     invalidAiBaseUrl: 'Base URL phải là một URL https hợp lệ',
     permissionDenied: (origin: string) => `Chưa được cấp quyền truy cập ${origin}, chưa lưu`,
     permissionDeniedTest: (origin: string) => `Chưa được cấp quyền truy cập ${origin}`,
+    themeHeading: 'Giao diện popover',
+    themeDescription: 'Trang Netflix luôn tối, nên bạn có thể chọn popover tối cho liền mạch hoặc sáng cho nổi bật.',
+    themeLabels: { dark: 'Tối', light: 'Sáng', system: 'Theo hệ thống' },
     sourcesHeading: 'Nguồn dữ liệu',
     sourcesDescription:
       'Anime lấy từ MyAnimeList (Jikan khi không có Client ID). Phim lẻ và series lấy từ TMDB. Đổi khóa sẽ xóa bộ nhớ đệm tra cứu.',

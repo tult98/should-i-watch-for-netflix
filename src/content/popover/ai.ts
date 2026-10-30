@@ -19,7 +19,7 @@ export function renderAiBlock(info: TitleInfo, result: AiOk): HTMLElement {
     h(
       'div',
       { class: 'ai-head' },
-      h('div', { class: 'ai-title' }, icon([...SPARKLE, SPARKLE_SMALL], { size: 16, stroke: '#ffffff' }), t.ai),
+      h('div', { class: 'ai-title' }, icon([...SPARKLE, SPARKLE_SMALL], { size: 16, stroke: 'currentColor' }), t.ai),
       h('span', { class: 'ai-provider' }, t.aiProvider(result.providerLabel, result.model)),
     ),
     h(

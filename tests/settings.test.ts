@@ -6,6 +6,8 @@ import {
   aiSettingsOf,
   enabledOf,
   saveEnabled,
+  saveTheme,
+  themeOf,
   parseAiBaseUrl,
   SETTINGS_KEY,
   loadSettings,
@@ -115,5 +117,27 @@ describe('settings enabled', () => {
     expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', enabled: false });
     await saveEnabled(true, store);
     expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', enabled: true });
+  });
+});
+
+describe('settings theme', () => {
+  it('defaults to system and keeps only the three known values', async () => {
+    const store = memoryStore();
+    expect(themeOf(await loadSettings(store))).toBe('system');
+    for (const theme of ['dark', 'light', 'system']) {
+      store.data.set(SETTINGS_KEY, { theme });
+      expect(themeOf(await loadSettings(store))).toBe(theme);
+    }
+    for (const bad of ['auto', 1, null, true]) {
+      store.data.set(SETTINGS_KEY, { theme: bad });
+      expect(await loadSettings(store)).toEqual({});
+    }
+  });
+
+  it('saves the theme over the stored settings', async () => {
+    const store = memoryStore();
+    store.data.set(SETTINGS_KEY, { tmdbKey: 'k', enabled: false });
+    await saveTheme('light', store);
+    expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', enabled: false, theme: 'light' });
   });
 });

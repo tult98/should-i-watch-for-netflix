@@ -1,4 +1,5 @@
 import { placePopover, type Rect } from './position';
+import type { Theme } from '../../shared/theme';
 import { POPOVER_CSS } from './styles';
 
 export type Anchor = () => Element | null;
@@ -9,6 +10,7 @@ export interface PopoverHost {
   hide(): void;
   contains(target: EventTarget | null): boolean;
   visible(): boolean;
+  setTheme(theme: Theme): void;
 }
 
 const HOST_STYLE = 'position: fixed; left: 0; top: 0; width: 0; height: 0; z-index: 2147483647; pointer-events: none;';
@@ -27,6 +29,7 @@ export function createPopoverHost(win: Window = window): PopoverHost {
   const panel = doc.createElement('div');
   panel.className = 'panel';
   panel.hidden = true;
+  panel.dataset.theme = 'dark';
   root.append(style, panel);
 
   let anchor: Anchor | null = null;
@@ -86,5 +89,8 @@ export function createPopoverHost(win: Window = window): PopoverHost {
     },
     contains: (target) => target instanceof Node && (target === hostEl || hostEl.contains(target)),
     visible: () => !panel.hidden,
+    setTheme(theme) {
+      panel.dataset.theme = theme;
+    },
   };
 }

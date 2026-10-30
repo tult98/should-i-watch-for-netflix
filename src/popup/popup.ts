@@ -1,6 +1,7 @@
 import './popup.css';
 import { chromeLocalStore, clearLookupCache } from '../background/cache';
 import { createTasteStore } from '../background/taste/tasteStore';
+import { watchTheme } from '../content/themeWatcher';
 import { appName } from '../shared/appName';
 import { loadSettings, saveEnabled } from '../shared/settings';
 import { popupModel } from './model';
@@ -27,4 +28,7 @@ async function main(): Promise<void> {
   );
 }
 
+watchTheme(chrome.storage.onChanged, window.matchMedia('(prefers-color-scheme: light)'), () => loadSettings(), (theme) => {
+  document.documentElement.dataset.theme = theme;
+});
 void main();

@@ -3,6 +3,7 @@ import { chromeLocalStore, clearLookupCache } from '../background/cache';
 import { buildProfile } from '../background/taste/tasteProfile';
 import { RATINGS_KEY, VERSIONS_KEY, createTasteStore, type RatedTitle, type TasteVersions } from '../background/taste/tasteStore';
 import { h } from '../content/popover/dom';
+import { watchTheme } from '../content/themeWatcher';
 import { appName } from '../shared/appName';
 import {
   DEFAULT_AI_BASE_URL,
@@ -11,6 +12,7 @@ import {
   chromeSettingsStore,
   loadSettings,
   parseAiBaseUrl,
+  saveTheme,
   thresholdsOf,
   type Settings,
   type SourceKey,
@@ -20,6 +22,7 @@ import type { Kind } from '../shared/types';
 import { testAiConnection, type ConnectionResult } from './ai';
 import { saveAndInvalidate, saveThresholdSet, saveWithPermission } from './save';
 import { renderTasteBody } from './tasteView';
+import { renderThemeSection } from './themeView';
 import { renderThresholdSection, type ThresholdView } from './thresholdView';
 import { SET_KEYS, parseThresholdForm, type SetKey } from './thresholds';
 import { actions, button, link, section, setStatus, statusLine, textField, type TextField } from './ui';
@@ -205,6 +208,12 @@ function thresholdSection(set: SetKey, fillers: ((s: Settings) => void)[]): HTML
   return view.element;
 }
 
+function themeSection(fillers: ((s: Settings) => void)[]): HTMLElement {
+  const view = renderThemeSection((pref) => saveTheme(pref, chromeSettingsStore()));
+  fillers.push(view.fill);
+  return view.element;
+}
+
 function tasteSection(): HTMLElement {
   const taste = createTasteStore(chromeLocalStore());
   let kind: Kind = 'anime';
@@ -301,12 +310,16 @@ function main(): void {
   app.replaceChildren(
     header(),
     aiSection(fillers),
+    themeSection(fillers),
     sourcesSection(fillers),
     ...SET_KEYS.map((set) => thresholdSection(set, fillers)),
     tasteSection(),
     cacheSection(),
     h('footer', { class: 'page-foot' }, t.tmdbAttribution),
   );
+  watchTheme(chrome.storage.onChanged, window.matchMedia('(prefers-color-scheme: light)'), () => loadSettings(), (theme) => {
+    document.documentElement.dataset.theme = theme;
+  });
   void loadSettings().then((settings) => fillers.forEach((fill) => fill(settings)));
 }
 

@@ -1,5 +1,9 @@
 import type { ThresholdSet, Thresholds } from './types';
 
+export type ThemePref = 'dark' | 'light' | 'system';
+
+export const THEME_PREFS: readonly ThemePref[] = ['dark', 'light', 'system'];
+
 export interface Settings {
   malClientId?: string;
   tmdbKey?: string;
@@ -9,6 +13,7 @@ export interface Settings {
   aiKey?: string;
   thresholds?: Thresholds;
   enabled?: boolean;
+  theme?: ThemePref;
 }
 
 const KEYS = ['malClientId', 'tmdbKey', 'omdbKey'] as const satisfies readonly (keyof Settings)[];
@@ -71,6 +76,10 @@ export function thresholdsOf(settings: Settings): Thresholds {
 
 export function enabledOf(settings: Settings): boolean {
   return settings.enabled !== false;
+}
+
+export function themeOf(settings: Settings): ThemePref {
+  return settings.theme ?? 'system';
 }
 
 export const SETTINGS_KEY = 'settings';
@@ -141,6 +150,7 @@ export function parseSettings(value: unknown): Settings {
   const thresholds = sanitizeThresholds(value.thresholds);
   if (thresholds) clean.thresholds = thresholds;
   if (typeof value.enabled === 'boolean') clean.enabled = value.enabled;
+  if (THEME_PREFS.includes(value.theme as ThemePref)) clean.theme = value.theme as ThemePref;
   return clean;
 }
 
@@ -165,4 +175,8 @@ export async function saveSettings(
 
 export async function saveEnabled(enabled: boolean, store: SettingsStore = chromeSettingsStore()): Promise<Settings> {
   return saveSettings({ ...(await loadSettings(store)), enabled }, store);
+}
+
+export async function saveTheme(theme: ThemePref, store: SettingsStore = chromeSettingsStore()): Promise<Settings> {
+  return saveSettings({ ...(await loadSettings(store)), theme }, store);
 }
