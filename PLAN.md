@@ -241,10 +241,11 @@ should-i-watch-for-netflix/
   manifest.json                  the only place the name lives
   package.json
   tsconfig.json
-  build.mjs                      esbuild, three entry points
+  build.mjs                      esbuild, four entry points
   vitest.config.ts
   public/
     options.html
+    popup.html
     icons/icon16.png icon32.png icon48.png icon128.png
   src/
     shared/
@@ -262,6 +263,7 @@ should-i-watch-for-netflix/
       netflixSelectors.ts        every Netflix selector and the title and year readers
       hoverController.ts         the state machine above
       describeResult.ts          the [lookup] console line
+      enabledSwitch.ts           follows Settings.enabled through chrome.storage.onChanged
       popover/
         host.ts                  Shadow DOM host and positioning
         render.ts                TitleInfo to DOM, one function per section
@@ -295,6 +297,11 @@ should-i-watch-for-netflix/
       options.css
       save.ts                    save, cache invalidation and the AI origin permission
       ai.ts                      AI origin permission and Thử kết nối
+    popup/
+      popup.ts                   reads storage and wires the chrome calls
+      popup.css
+      model.ts                   popupModel(settings, ratings), pure
+      view.ts                    renderPopup(model, handlers)
   tests/
     normalize.test.ts
     matching.test.ts
@@ -322,7 +329,7 @@ should-i-watch-for-netflix/
 | Reload during work | `--watch`, then reload the extension | HMR, but the content script still needs a page reload |
 | Tests | Vitest runs on its own | Vitest shares the config |
 
-Pick esbuild. The extension has three entry points and no framework, so HMR saves little, and the plugin is one more thing that can break on a Chrome update.
+Pick esbuild. The extension has four entry points and no framework, so HMR saves little, and the plugin is one more thing that can break on a Chrome update.
 
 ## Request queue
 
@@ -450,6 +457,19 @@ The panel shows, from top to bottom:
 5. Two buttons: "Mở cài đặt", which calls `chrome.runtime.openOptionsPage()`, and "Xóa cache", which reuses `clearLookupCache`.
 
 All strings live in `strings.vi.ts`. The popup needs no new permission.
+
+Decisions made while building it:
+
+- The popup uses the options page palette rather than the popover's `#181818`, since it is a small settings surface: `#141414` page, `#1f1f1f` cards with a `1px solid rgba(255,255,255,0.1)` border and 10 px radius, `#2b2b2b` tiles, a white primary button and an outlined secondary one. It is 340 px wide.
+- `manifest.json` gets `action.default_popup` and no `default_title`, so the toolbar tooltip falls back to the manifest name and the name still lives in one place.
+- `Settings.enabled` is kept only when it is a boolean, and `enabledOf` treats anything but `false` as on. The switch saves through `saveEnabled`, which loads the stored settings and merges. The options page saves already merge over the stored settings, so they keep `enabled`.
+- The switch is a `button` with `role="switch"` and `aria-checked`, labelled by the visible text. It flips at once and flips back with "Không lưu được" when the write fails.
+- The hover controller gains `setEnabled`. Off drops a pending hover and any lookup in flight and hides the popover at once, even one held open by an AI request. While off, hovers do nothing, so no `[hover]` or `[lookup]` line appears.
+- The content script starts with the controller off and turns it on once the stored switch is read, so a hover in the first moments cannot send a lookup while the switch is off. `watchEnabled` reads the new value straight from the `chrome.storage.onChanged` event. A change that arrives before the first read wins over that read. A failed read counts as on.
+- Each key row shows a chip with a green `#46d369` dot for "Đã cài" or a grey dot for "Chưa cài", and a note only when the key is missing. The AI row is labelled "AI (DeepSeek)" because the key also works with another base URL.
+- The ratings line always lists all three kinds, zeros included, so it reads the same every time. With no ratings at all it shows a hint to use 👍 and 👎.
+- "Mở cài đặt" closes the popup after `openOptionsPage` resolves. "Xóa cache" reuses `clearLookupCache` and the options page's status strings, and shows how many entries it removed.
+- The view model and the DOM are split into `model.ts` and `view.ts` so tests run them without `chrome`. `popup.ts` only reads storage and passes the chrome calls in.
 
 Check: click the icon with no keys saved and every key row reads "Chưa cài". Save a TMDB key on the options page and reopen the popup; the TMDB row reads "Đã cài". Turn the switch off and hover a card on Netflix; no popover and no `[lookup]` line. Turn it on and hover again; the popover returns without a refresh.
 
