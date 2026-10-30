@@ -17,12 +17,15 @@ Every data source runs on a free tier. No paid wrapper such as CollectAPI.
 
 | Source | Cost | Limit | Effect on the extension |
 |---|---|---|---|
-| Jikan (MAL) | Free, no key | about 3 per second, 60 per minute | `requestQueue.ts` enforces it |
+| MyAnimeList API v2 | Free Client ID | not published, the queue sends 3 per second | Used when the options page has a Client ID. `MalOfficialAdapter.ts` |
+| Jikan (MAL) | Free, no key | about 3 per second, 60 per minute | Fallback without a Client ID, and for titles under 3 characters. `JikanAdapter.ts` |
 | TMDB | Free key | about 50 per second | Required for movies and series |
 | OMDb | Free key | 1,000 per day | Optional. One call per new movie or series, then cached 7 days |
 | AI provider | DeepSeek, paid per request | Depends on your DeepSeek balance | Only called on click. Any OpenAI-compatible provider works by changing the base URL and model. |
 
-The OMDb and TMDB limits are from their published docs as I remember them, not checked this session. When OMDb returns `Request limit reached!`, the adapter returns no IMDb score and the badge falls back to TMDB for the rest of the day.
+The OMDb and TMDB limits are from their published docs as I remember them, not checked this session.
+
+The official MAL API exists because Jikan was unreachable from your network on 2026-10-30. A TCP connect to `api.jikan.moe` timed out on IPv4 and IPv6, while `api.myanimelist.net` answered in 0.3 s. Both adapters implement `AnimeAdapter` and return the same `AnimeInfo`, so nothing after the adapter knows which one ran. `lookup.ts` reads `settings` on every cache miss. The MAL API rejects a `q` under 3 characters, as far as I remember, so those titles go to Jikan. The MAL field names and the 3 character rule come from memory and still need one live call to confirm. When OMDb returns `Request limit reached!`, the adapter returns no IMDb score and the badge falls back to TMDB for the rest of the day.
 | Anime synopsis | "Synopsis (Vietnamese)" | English MAL synopsis labeled "Tóm tắt (MAL, tiếng Anh)", replaced by the Vietnamese `summary_vi` after "AI nhận xét" | Follow the design. MAL has no Vietnamese synopsis, and the brief forbids calling the AI automatically. |
 | Options page heading | Name lives only in `manifest.json` | Heading reads "Netflix Anime Info Popover" | The heading reads `chrome.runtime.getManifest().name`. |
 
@@ -96,7 +99,7 @@ type TitleInfo = AnimeInfo | MovieInfo | SeriesInfo;
 type LookupResult =
   | { status: 'match'; info: TitleInfo }
   | { status: 'no_match' }
-  | { status: 'error'; reason: 'missing_tmdb_key' | 'network' | 'rate_limited' };
+  | { status: 'error'; reason: 'missing_tmdb_key' | 'network' | 'rate_limited' | 'bad_mal_client_id' };
 ```
 
 An anime movie stays `kind: 'anime'` and gets an extra `imdb` entry in `scores` when an OMDb key exists.
@@ -112,7 +115,7 @@ The content script holds one state value instead of loose flags. A new hover whi
 | `loading` | debounce fires; sends `lookup` with a request id | response arrives (to `shown`, or `idle` on `no_match`) |
 | `shown` | response for the current request id | pointer leaves card and popover for 150 ms (to `idle`) |
 
-The content script drops any response whose request id isn't the current one.
+The content script renders only the response for the current request id. It still logs a late response, with ` (stale)` at the end.
 
 ### Quick badge rules
 
@@ -256,7 +259,9 @@ should-i-watch-for-netflix/
       cache.ts                   TTL wrapper over chrome.storage.local
       requestQueue.ts            per-host rate limit and 429 retry
       adapters/
-        MalAdapter.ts
+        AnimeAdapter.ts            interface both anime adapters implement
+        MalOfficialAdapter.ts      MyAnimeList API v2, needs a Client ID
+        JikanAdapter.ts            Jikan, no key, the fallback
         TmdbAdapter.ts
         OmdbAdapter.ts
       ai/
@@ -273,6 +278,11 @@ should-i-watch-for-netflix/
   tests/
     normalize.test.ts
     matching.test.ts
+    jikanAdapter.test.ts
+    malOfficialAdapter.test.ts
+    requestQueue.test.ts
+    lookup.test.ts
+    settings.test.ts
     routing.test.ts
     quickBadge.test.ts
     tasteProfile.test.ts
@@ -293,11 +303,11 @@ Pick esbuild. The extension has three entry points and no framework, so HMR save
 
 ## Request queue
 
-`requestQueue.ts` keeps one queue per host. Jikan gets 3 requests per second and 60 per minute, enforced with two sliding windows. TMDB gets 20 per second. OMDb gets 5 per second. A 429 reply waits for `Retry-After` when the header is present, otherwise 1 s, 2 s, then 4 s, and gives up after three retries with `rate_limited`. The queue lives in service worker memory. Chrome can stop the worker after 30 s idle, which loses only queued requests the user has already moved past.
+`requestQueue.ts` keeps one queue per host. Jikan gets 3 requests per second and 60 per minute, enforced with two sliding windows. The MAL API gets 3 per second. TMDB gets 20 per second. OMDb gets 5 per second. A 429 reply waits for `Retry-After` when the header is present, otherwise 1 s, 2 s, then 4 s, and gives up after three retries with `rate_limited`. Every request aborts after 10 s and fails with `network`, so an unreachable host can't hang a lookup. The queue lives in service worker memory. Chrome can stop the worker after 30 s idle, which loses only queued requests the user has already moved past.
 
 ## Permissions
 
-`manifest.json` asks for `storage` and these hosts: `https://www.netflix.com/*`, `https://api.jikan.moe/*`, `https://api.themoviedb.org/*`, `https://www.omdbapi.com/*`, `https://api.deepseek.com/*`. A custom AI base URL goes in `optional_host_permissions` as `https://*/*`. The options page calls `chrome.permissions.request` for that one origin when you save it.
+`manifest.json` asks for `storage` and these hosts: `https://www.netflix.com/*`, `https://api.jikan.moe/*`, `https://api.myanimelist.net/*`, `https://api.themoviedb.org/*`, `https://www.omdbapi.com/*`, `https://api.deepseek.com/*`. A custom AI base URL goes in `optional_host_permissions` as `https://*/*`. The options page calls `chrome.permissions.request` for that one origin when you save it.
 
 ## Build steps
 
@@ -315,7 +325,7 @@ Netflix's DOM is not in the design file, so the first selectors are guesses: `.t
 
 ### (b) MAL adapter and name matching
 
-Files: `shared/normalize.ts`, `background/adapters/MalAdapter.ts`, `background/requestQueue.ts`, `background/cache.ts`, `background/index.ts`, and the `normalize` and `matching` tests.
+Files: `shared/normalize.ts`, `background/adapters/JikanAdapter.ts`, `background/adapters/MalOfficialAdapter.ts`, `shared/settings.ts`, a minimal options page with the MAL Client ID field, `background/requestQueue.ts`, `background/cache.ts`, `background/index.ts`, and the `normalize` and `matching` tests.
 
 Hover logs the MAL match and its confidence, or `no_match`.
 
@@ -357,7 +367,7 @@ Vitest runs `npm test` with no browser. The tests cover `normalizeTitle`, `match
 
 ## README
 
-The README covers loading the unpacked `dist/` folder, getting a TMDB key, an OMDb key, and a DeepSeek key, every options page setting, and a section titled "When Netflix changes its UI". That section says which function in `netflixSelectors.ts` to edit, how to find the new selector in DevTools, and which console line confirms the fix.
+The README covers loading the unpacked `dist/` folder, getting a MyAnimeList Client ID, a TMDB key, an OMDb key, and a DeepSeek key, every options page setting, and a section titled "When Netflix changes its UI". That section says which function in `netflixSelectors.ts` to edit, how to find the new selector in DevTools, and which console line confirms the fix.
 
 ## Open decisions
 
