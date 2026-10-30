@@ -1,25 +1,19 @@
 import { sendLookup } from '../shared/messages';
+import { quickVerdict } from '../shared/quickBadge';
+import { loadSettings, thresholdsOf, type Settings } from '../shared/settings';
 import { describeResult } from './describeResult';
-import { createHoverController } from './hoverController';
+import { createHoverController, type HoverFire } from './hoverController';
 import {
   findCard,
+  findOpenPreview,
   findPreview,
   readNetflixId,
   readProfileLanguage,
   readTitle,
   readYear,
 } from './netflixSelectors';
-
-let requestId = 0;
-
-function isCurrent(id: number, card: Element): boolean {
-  const state = controller.state();
-  return id === requestId && state.name !== 'idle' && state.card === card;
-}
-
-function staleSuffix(id: number, card: Element): string {
-  return isCurrent(id, card) ? '' : ' (stale)';
-}
+import { createPopoverHost } from './popover/host';
+import { renderLoading, renderTitle } from './popover/render';
 
 let detached = false;
 
@@ -35,7 +29,49 @@ function handleInvalidated(): void {
   console.log('[hover] extension was reloaded, refresh this tab');
 }
 
-const controller = createHoverController({
+function staleSuffix(requestId: number): string {
+  return controller.isCurrent(requestId) ? '' : ' (stale)';
+}
+
+async function lookup({ title, year, lang, netflixId, requestId }: HoverFire): Promise<HTMLElement | null> {
+  console.log(`[hover] ${lang} ${title} ${year ?? '-'} ${netflixId ?? '-'}`);
+  if (!chrome.runtime?.id) {
+    handleInvalidated();
+    return null;
+  }
+  try {
+    const [result, settings] = await Promise.all([
+      sendLookup({ title, year, lang, netflixId }),
+      loadSettings().catch((): Settings => ({})),
+    ]);
+    console.log(`[lookup] ${title} -> ${describeResult(result)}${staleSuffix(requestId)}`);
+    if (result.status !== 'match' || !controller.isCurrent(requestId)) return null;
+    return renderTitle(result.info, quickVerdict(result.info, thresholdsOf(settings)), new Date());
+  } catch (err) {
+    if (isInvalidated(err)) {
+      handleInvalidated();
+      return null;
+    }
+    const message = err instanceof Error ? err.message : String(err);
+    console.log(`[lookup] ${title} -> error ${message}${staleSuffix(requestId)}`);
+    return null;
+  }
+}
+
+const host = createPopoverHost(window);
+let anchoredCard: Element | null = null;
+
+// The preview Netflix opens over the hovered card is the box the popover must not cover.
+function present(card: Element, content: HTMLElement): void {
+  if (host.visible() && anchoredCard === card) {
+    host.swap(content);
+    return;
+  }
+  anchoredCard = card;
+  host.show(() => findOpenPreview(document) ?? card, content);
+}
+
+const controller = createHoverController<HTMLElement>({
   timers: {
     setTimeout: (fn, ms) => window.setTimeout(fn, ms),
     clearTimeout: (handle) => window.clearTimeout(handle as number),
@@ -48,26 +84,15 @@ const controller = createHoverController({
     readYear,
     readProfileLanguage: () => readProfileLanguage(document),
   },
-  onFire: ({ card, title, year, netflixId, lang }) => {
-    console.log(`[hover] ${lang} ${title} ${year ?? '-'} ${netflixId ?? '-'}`);
-    if (!chrome.runtime?.id) {
-      handleInvalidated();
-      return;
-    }
-    const id = ++requestId;
-    sendLookup({ title, year, lang, netflixId }).then(
-      (result) => {
-        console.log(`[lookup] ${title} -> ${describeResult(result)}${staleSuffix(id, card)}`);
-      },
-      (err: unknown) => {
-        if (isInvalidated(err)) {
-          handleInvalidated();
-          return;
-        }
-        const message = err instanceof Error ? err.message : String(err);
-        console.log(`[lookup] ${title} -> error ${message}${staleSuffix(id, card)}`);
-      },
-    );
+  lookup,
+  view: {
+    showLoading: (card) => present(card, renderLoading()),
+    showContent: present,
+    hide: () => {
+      anchoredCard = null;
+      host.hide();
+    },
+    contains: (target) => host.contains(target),
   },
 });
 

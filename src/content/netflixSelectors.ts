@@ -11,7 +11,7 @@
  *   (readNetflixId)
  * - the hover preview is still a dialog with data-uia
  *   "modal-motion-container-MINI_MODAL" and a "videoMetadata--container"
- *   inside (findPreview, readYear)
+ *   inside (findPreview, findOpenPreview, readYear)
  * - whether <html lang> still carries the profile language (readProfileLanguage)
  */
 
@@ -31,6 +31,10 @@ export function findCard(target: Element): Element | null {
 
 export function findPreview(target: Element): Element | null {
   return target.closest(PREVIEW_SELECTOR);
+}
+
+export function findOpenPreview(doc: Document): Element | null {
+  return doc.querySelector(PREVIEW_SELECTOR);
 }
 
 function clean(text: string | null | undefined): string | null {
