@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+<meta charset="utf-8">
+<title>Popover phim và series</title>
+<script src="50417c8b-b567-4eaf-b7d9-76c47ac5e631"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- Inter @font-face rules removed -->
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="width: 380px; box-sizing: border-box; background: #181818; color: #ffffff; font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); box-shadow: 0 18px 48px rgba(0,0,0,0.75); overflow: hidden">
+
+  <!-- Thanh trên: nguồn, loại, nhãn nhanh -->
+  <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px 0 20px">
+    <div style="display: flex; align-items: center; gap: 8px">
+      <span style="display: inline-flex; align-items: center; justify-content: center; height: 20px; padding: 0 7px; border-radius: 4px; background: #0d7a9e; color: #ffffff; font-size: 11px; font-weight: 700; letter-spacing: 0.04em">TMDB</span>
+      <span style="font-size: 12px; color: #b3b3b3">{{d.typeLabel}}</span>
+    </div>
+    <span style="display: inline-flex; align-items: center; height: 26px; padding: 0 12px; border-radius: 13px; font-size: 12px; font-weight: 700; background: {{d.vBg}}; color: {{d.vFg}}; border: 1px solid {{d.vBd}}">{{d.verdict}}</span>
+  </div>
+
+  <div style="padding: 12px 20px 20px 20px; display: flex; flex-direction: column; gap: 16px">
+
+    <div style="display: flex; flex-direction: column; gap: 4px">
+      <h2 style="margin: 0; font-size: 22px; line-height: 1.2; font-weight: 800; letter-spacing: -0.01em">{{d.title}}</h2>
+      <div style="font-size: 12px; color: #b3b3b3">Khớp TMDB: {{d.matchName}} · độ tin cậy {{d.confidence}}</div>
+    </div>
+
+    <!-- Điểm TMDB -->
+    <div style="display: flex; align-items: flex-end; gap: 12px">
+      <div style="display: flex; align-items: center; gap: 8px">
+        <svg aria-hidden="true" width="26" height="26" sc-camel-view-box="0 0 24 24" fill="#f5c518"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"></path></svg>
+        <span style="font-size: 40px; line-height: 1; font-weight: 800; letter-spacing: -0.02em">{{d.score}}</span>
+      </div>
+      <div style="font-size: 12px; color: #b3b3b3; padding-bottom: 4px">bởi {{d.votes}} lượt chấm</div>
+    </div>
+
+    <!-- IMDb, Rotten Tomatoes (tùy chọn qua OMDb), độ tuổi -->
+    <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+      <sc-for list="{{d.stats}}" as="s" hint-placeholder-count="3">
+        <div style="background: #232323; border-radius: 6px; padding: 9px 12px; display: flex; flex-direction: column; gap: 2px">
+          <span style="font-size: 11px; color: #b3b3b3; letter-spacing: 0.04em; text-transform: uppercase">{{s.label}}</span>
+          <span style="font-size: 16px; font-weight: 700">{{s.value}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- Tóm tắt: TMDB có sẵn tiếng Việt -->
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 11px; color: #b3b3b3; letter-spacing: 0.04em; text-transform: uppercase">Tóm tắt</span>
+      <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #e5e5e5">{{d.summary}}</p>
+    </div>
+
+    <!-- AI nhận xét -->
+    <sc-if value="{{d.aiOpen}}" hint-placeholder-val="{{ false }}">
+      <div style="background: #262626; border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255,255,255,0.1)">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px">
+          <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700">
+            <svg aria-hidden="true" width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path><path d="M19 17l.7 1.8 1.8.7-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7z"></path></svg>
+            AI nhận xét
+          </div>
+          <span style="font-size: 11px; color: #b3b3b3">DeepSeek · deepseek-chat</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px">
+          <span style="font-size: 12px; color: #b3b3b3">Kết luận:</span>
+          <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 10px; border-radius: 11px; font-size: 12px; font-weight: 700; background: #46d369; color: #0b0b0b">Rất nên xem</span>
+        </div>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #e5e5e5">Điểm cao và ổn định, hợp với gu chính kịch ngắn tập mà bạn hay chọn. Mùa sau chậm hơn mùa đầu, nên coi mùa 1 trước rồi hãy quyết.</p>
+        <span style="font-size: 11px; color: #b3b3b3">Đã tính đến hồ sơ gu Series của bạn (9 đánh giá)</span>
+      </div>
+    </sc-if>
+
+    <!-- Thông tin chi tiết -->
+    <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 16px">
+      <sc-for list="{{d.meta}}" as="m" hint-placeholder-count="4">
+        <div style="display: flex; flex-direction: column; gap: 1px">
+          <span style="font-size: 11px; color: #b3b3b3; letter-spacing: 0.04em; text-transform: uppercase">{{m.label}}</span>
+          <span style="font-size: 14px; font-weight: 500">{{m.value}}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px">
+      <span style="font-size: 11px; color: #b3b3b3; letter-spacing: 0.04em; text-transform: uppercase">{{d.timeLabel}}</span>
+      <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px">
+        <span style="font-size: 14px; font-weight: 500">{{d.timeValue}}</span>
+        <span style="display: inline-flex; align-items: center; height: 22px; padding: 0 9px; border-radius: 4px; font-size: 12px; font-weight: 600; border: 1px solid #6d6d6d; color: #e5e5e5">{{d.age}}</span>
+      </div>
+    </div>
+
+    <!-- Đạo diễn, diễn viên -->
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <sc-for list="{{d.credits}}" as="c" hint-placeholder-count="2">
+        <div style="display: flex; flex-direction: column; gap: 1px">
+          <span style="font-size: 11px; color: #b3b3b3; letter-spacing: 0.04em; text-transform: uppercase">{{c.label}}</span>
+          <span style="font-size: 14px; font-weight: 500">{{c.value}}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <!-- Thể loại -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px">
+      <sc-for list="{{d.genres}}" as="g" hint-placeholder-count="3">
+        <span style="display: inline-flex; align-items: center; height: 24px; padding: 0 10px; border-radius: 12px; background: #333333; font-size: 12px; font-weight: 500">{{g.name}}</span>
+      </sc-for>
+    </div>
+
+    <!-- Hành động -->
+    <div style="display: flex; align-items: center; gap: 8px">
+      <button type="button" style="flex: 1; height: 44px; border: 0; border-radius: 6px; background: #e50914; color: #ffffff; font-family: inherit; font-size: 14px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer">
+        <svg aria-hidden="true" width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"></path></svg>
+        {{d.aiBtn}}
+      </button>
+      <button type="button" aria-label="Thích tiêu đề này" style="width: 44px; height: 44px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; background: {{d.upBg}}; color: {{d.upFg}}; border: 1px solid {{d.upBd}}">
+        <svg aria-hidden="true" width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v9H3v-9z"></path><path d="M7 11l4-8c1.7 0 3 1.3 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.2 7a2 2 0 0 1-2 1.7H7"></path></svg>
+      </button>
+      <button type="button" aria-label="Không thích tiêu đề này" style="width: 44px; height: 44px; border-radius: 6px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; background: transparent; color: #ffffff; border: 1px solid #6d6d6d">
+        <svg aria-hidden="true" width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13V4h4v9z"></path><path d="M17 13l-4 8c-1.7 0-3-1.3-3-3v-4H4.5a2 2 0 0 1-2-2.3l1.2-7a2 2 0 0 1 2-1.7H17"></path></svg>
+      </button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;variant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;movie&quot;,&quot;options&quot;:[&quot;movie&quot;,&quot;series&quot;,&quot;series-ai&quot;]},&quot;$preview&quot;:{&quot;width&quot;:380,&quot;height&quot;:700}}">
+class Component extends DCLogic {
+  renderVals() {
+    const v = this.props.variant ?? 'movie';
+    const movie = {
+      typeLabel: 'Phim lẻ', title: 'Căn Phòng Số Bảy (2022)', matchName: 'Căn Phòng Số Bảy', confidence: '97%',
+      score: '7.60', votes: '8.412',
+      stats: [{ label: 'IMDb', value: '7.8' }, { label: 'Rotten Tomatoes', value: '88%' }, { label: 'Độ tuổi', value: 'T16' }],
+      summary: 'Một người phiên dịch nhận việc ở khách sạn cũ cuối tuyến phà, rồi dần phát hiện căn phòng số bảy chưa từng có khách nào trả phòng.',
+      meta: [{ label: 'Loại', value: 'Phim lẻ' }, { label: 'Thời lượng', value: '1 giờ 52 phút' }],
+      timeLabel: 'Ra mắt', timeValue: 'Tháng 3, 2022', age: 'Vài năm trước',
+      credits: [{ label: 'Đạo diễn', value: 'Trần Minh Châu' }, { label: 'Diễn viên', value: 'Lê Hoài An, Phạm Gia Huy' }],
+      genres: [{ name: 'Tâm lý' }, { name: 'Kinh dị' }, { name: 'Bí ẩn' }],
+      vBg: 'transparent', vFg: '#46d369', vBd: '#46d369', verdict: 'Nên xem'
+    };
+    const series = {
+      typeLabel: 'Series', title: 'Những Ngọn Đèn Cuối Phố (2021)', matchName: 'Những Ngọn Đèn Cuối Phố', confidence: '100%',
+      score: '8.40', votes: '12.306',
+      stats: [{ label: 'IMDb', value: '8.5' }, { label: 'Rotten Tomatoes', value: '94%' }, { label: 'Độ tuổi', value: 'T16' }],
+      summary: 'Năm gia đình cùng sống trong một khu phố sắp bị giải tỏa, mỗi tập kể về một đêm khác nhau trước ngày dọn đi.',
+      meta: [{ label: 'Loại', value: 'Series' }, { label: 'Số mùa', value: '3' }, { label: 'Số tập', value: '28' }, { label: 'Trạng thái', value: 'Đã kết thúc' }],
+      timeLabel: 'Thời gian chiếu', timeValue: 'Tháng 1, 2021 – Tháng 6, 2024', age: 'Vài năm trước',
+      credits: [{ label: 'Sáng tạo', value: 'Đỗ Khánh Linh' }, { label: 'Diễn viên', value: 'Vũ Hải Đăng, Bùi Thu Hà' }],
+      genres: [{ name: 'Chính kịch' }, { name: 'Gia đình' }],
+      vBg: '#46d369', vFg: '#0b0b0b', vBd: '#46d369', verdict: 'Rất nên xem'
+    };
+    const ai = v === 'series-ai';
+    return {
+      d: {
+        ...(v === 'movie' ? movie : series),
+        aiOpen: ai,
+        aiBtn: ai ? 'Đánh giá lại theo gu' : 'AI nhận xét',
+        upBg: ai ? '#ffffff' : 'transparent',
+        upFg: ai ? '#141414' : '#ffffff',
+        upBd: ai ? '#ffffff' : '#6d6d6d'
+      }
+    };
+  }
+}
+</script>
+
+
+</body></html>
+

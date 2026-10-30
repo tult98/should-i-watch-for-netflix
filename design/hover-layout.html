@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+<meta charset="utf-8">
+<title>Hover trên Netflix</title>
+<script src="6ad2c636-ed36-41fa-8edf-09dd331042a7"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<!-- Inter @font-face rules removed -->
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 1280px; height: 820px; box-sizing: border-box; background: #141414; font-family: 'Inter', 'Helvetica Neue', Arial, sans-serif; color: #ffffff; overflow: hidden; padding: 56px 48px; display: flex; flex-direction: column; gap: 40px">
+
+  <!-- Hàng 1: thẻ phim, thẻ giữa đang hover -->
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <h3 style="margin: 0; font-size: 20px; font-weight: 700">Dành cho bạn</h3>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2a2a2a, #1d1d1d); flex: none"></div>
+      <div style="width: 240px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2c2c2c, #1e1e1e); flex: none"></div>
+      <!-- thẻ đang hover: nổi lên, viền sáng -->
+      <div style="position: relative; width: 300px; height: 169px; border-radius: 6px; flex: none; background: linear-gradient(135deg, #3b2f3a, #1c2433); box-shadow: 0 0 0 2px #ffffff, 0 14px 30px rgba(0,0,0,0.7); display: flex; align-items: flex-end; padding: 14px; box-sizing: border-box">
+        <span style="font-size: 16px; font-weight: 700">Sousou no Frieren</span>
+      </div>
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2a2a2a, #1d1d1d); flex: none"></div>
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2c2c2c, #1e1e1e); flex: none"></div>
+    </div>
+  </div>
+
+  <!-- Hàng 2 -->
+  <div style="display: flex; flex-direction: column; gap: 14px">
+    <h3 style="margin: 0; font-size: 20px; font-weight: 700">Đang thịnh hành</h3>
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2c2c2c, #1e1e1e); flex: none"></div>
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2a2a2a, #1d1d1d); flex: none"></div>
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2c2c2c, #1e1e1e); flex: none"></div>
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2a2a2a, #1d1d1d); flex: none"></div>
+      <div style="width: 260px; height: 146px; border-radius: 4px; background: linear-gradient(135deg, #2c2c2c, #1e1e1e); flex: none"></div>
+    </div>
+  </div>
+
+  <!-- Popover của extension: nằm cạnh thẻ, không che thẻ -->
+  <div style="position: absolute; left: 880px; top: 40px">
+    <dc-import name="Popover" variant="ai" hint-size="380px,680px"></dc-import>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:820}}">
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+
+
+</body></html>
+
