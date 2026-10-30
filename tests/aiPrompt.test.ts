@@ -62,6 +62,16 @@ describe('buildMessages', () => {
     expect(system?.content).not.toContain('spoiler-free Vietnamese summary');
   });
 
+  it('writes in English and copies an English overview in the English locale', () => {
+    const [write] = buildMessages(input(anime), 'en');
+    expect(write?.content).toContain('spoiler-free English summary');
+    expect(write?.content).toContain('All text values must be in English');
+    expect(write?.content).toContain('_vi suffix');
+    expect(write?.content).not.toContain('Vietnamese');
+    const [copy] = buildMessages({ ...input(anime), needSummary: false }, 'en');
+    expect(copy?.content).toContain('already an overview in English');
+  });
+
   it('sends title data, the quick badge and the taste profile, without match', () => {
     const [, user] = buildMessages(input(anime));
     const payload = JSON.parse(user!.content);

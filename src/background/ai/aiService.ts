@@ -1,3 +1,4 @@
+import { locale } from '../../shared/i18n';
 import type { AiCachedResponse, AiOk, AiOpinionResponse } from '../../shared/messages';
 import { needSummary } from '../../shared/needSummary';
 import type { QuickBadge } from '../../shared/quickBadge';
@@ -37,7 +38,7 @@ export function createAiService(deps: AiServiceDeps): AiService {
   async function context(info: TitleInfo) {
     const config = aiSettingsOf(await deps.loadSettings());
     const taste = await deps.getTasteProfile(info.kind);
-    return { config, taste, key: aiCacheKey(info.id, info.kind, taste.version, config.model) };
+    return { config, taste, key: aiCacheKey(info.id, info.kind, taste.version, config.model, locale) };
   }
 
   async function fetchOpinion(info: TitleInfo, badge: QuickBadge): Promise<AiOpinionResponse> {

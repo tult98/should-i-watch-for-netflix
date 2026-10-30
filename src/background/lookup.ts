@@ -1,3 +1,4 @@
+import { locale } from '../shared/i18n';
 import type { LookupRequest } from '../shared/messages';
 import { MATCH_THRESHOLD, normalizeTitle } from '../shared/normalize';
 import type { Settings } from '../shared/settings';
@@ -164,7 +165,7 @@ export function createLookup(deps: LookupDeps): Lookup {
   }
 
   return (request) => {
-    const key = lookupCacheKey(request.lang, request.title, request.year);
+    const key = lookupCacheKey(locale, request.lang, request.title, request.year);
     const pending = inFlight.get(key);
     if (pending) return pending;
     const promise = lookup(request, key).finally(() => inFlight.delete(key));

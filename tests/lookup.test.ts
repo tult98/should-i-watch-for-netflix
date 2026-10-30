@@ -108,7 +108,7 @@ describe('lookup without a TMDB key', () => {
     expect(logs).toEqual([
       '[sw] fetch jikan One Piece',
       '[sw] route anime One Piece',
-      '[sw] cache hit lookup:en|one piece|-',
+      '[sw] cache hit lookup:vi|en|one piece|-',
     ]);
   });
 

@@ -57,8 +57,9 @@ function setup(settings: Settings = { aiKey: 'sk' }, version = 0) {
 }
 
 describe('aiCacheKey', () => {
-  it('includes the title, kind, taste version and model', () => {
-    expect(aiCacheKey('mal:1', 'anime', 3, 'deepseek-chat')).toBe('ai:mal:1|anime|v3|deepseek-chat');
+  it('includes the title, kind, taste version, model and locale', () => {
+    expect(aiCacheKey('mal:1', 'anime', 3, 'deepseek-chat', 'vi')).toBe('ai:mal:1|anime|v3|deepseek-chat|vi');
+    expect(aiCacheKey('mal:1', 'anime', 3, 'deepseek-chat', 'en')).not.toBe(aiCacheKey('mal:1', 'anime', 3, 'deepseek-chat', 'vi'));
   });
 });
 
@@ -74,7 +75,7 @@ describe('aiService', () => {
       tasteCount: 0,
       fromCache: false,
     });
-    expect(store.data.has('ai:mal:1|anime|v0|deepseek-chat')).toBe(true);
+    expect(store.data.has('ai:mal:1|anime|v0|deepseek-chat|vi')).toBe(true);
     const second = await service.opinion(info, badge);
     expect(second).toMatchObject({ status: 'ok', fromCache: true });
     expect(opinionFn).toHaveBeenCalledTimes(1);
@@ -156,8 +157,8 @@ describe('aiService with the real taste store', () => {
     expect(await service.opinion(info, badge)).toMatchObject({ fromCache: false, tasteCount: 1 });
     expect(opinionFn).toHaveBeenCalledTimes(2);
     expect([...store.data.keys()].filter((k) => k.startsWith('ai:'))).toEqual([
-      'ai:mal:1|anime|v0|deepseek-chat',
-      'ai:mal:1|anime|v1|deepseek-chat',
+      'ai:mal:1|anime|v0|deepseek-chat|vi',
+      'ai:mal:1|anime|v1|deepseek-chat|vi',
     ]);
   });
 });
