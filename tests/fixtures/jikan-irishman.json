@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+      "mal_id": 9999901,
+      "title": "Ai no Wakakusa Yama Monogatari",
+      "title_english": null,
+      "title_japanese": "愛の若草山物語",
+      "title_synonyms": [],
+      "titles": [{ "type": "Default", "title": "Ai no Wakakusa Yama Monogatari" }],
+      "type": "OVA",
+      "episodes": 1,
+      "status": "Finished Airing",
+      "score": 5.4,
+      "scored_by": 900,
+      "rank": 15000,
+      "popularity": 17000,
+      "members": 2500,
+      "season": null,
+      "year": null,
+      "aired": { "from": "1990-01-01T00:00:00+00:00", "to": null },
+      "genres": [],
+      "themes": [],
+      "demographics": [],
+      "studios": [],
+      "synopsis": null
+    },
+    {
+      "mal_id": 9999902,
+      "title": "The Irregular at Magic High School",
+      "title_english": "The Irregular at Magic High School",
+      "title_japanese": "魔法科高校の劣等生",
+      "title_synonyms": ["Mahouka"],
+      "titles": [{ "type": "Default", "title": "Mahouka Koukou no Rettousei" }],
+      "type": "TV",
+      "episodes": 26,
+      "status": "Finished Airing",
+      "score": 7.4,
+      "scored_by": 400000,
+      "rank": 2300,
+      "popularity": 120,
+      "members": 1000000,
+      "season": "spring",
+      "year": 2014,
+      "aired": { "from": "2014-04-06T00:00:00+00:00", "to": "2014-09-28T00:00:00+00:00" },
+      "genres": [{ "name": "Action" }],
+      "themes": [{ "name": "School" }],
+      "demographics": [],
+      "studios": [{ "name": "Madhouse" }],
+      "synopsis": "Magic is real."
+    }
+  ]
+}

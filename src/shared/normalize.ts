@@ -65,7 +65,7 @@ export interface Confidence {
   matchedName: string;
 }
 
-export function matchConfidence(
+function rawConfidence(
   query: string,
   queryYear: number | undefined,
   candidate: Pick<MatchCandidate, 'names' | 'year'>,
@@ -76,8 +76,20 @@ export function matchConfidence(
     if (!best || similarity > best.confidence) best = { confidence: similarity, matchedName: name };
   }
   if (!best) return null;
-  const adjusted = best.confidence + yearAdjustment(queryYear, candidate.year);
-  return { ...best, confidence: Math.min(1, Math.max(0, adjusted)) };
+  return { ...best, confidence: best.confidence + yearAdjustment(queryYear, candidate.year) };
+}
+
+function clamp(n: number): number {
+  return Math.min(1, Math.max(0, n));
+}
+
+export function matchConfidence(
+  query: string,
+  queryYear: number | undefined,
+  candidate: Pick<MatchCandidate, 'names' | 'year'>,
+): Confidence | null {
+  const raw = rawConfidence(query, queryYear, candidate);
+  return raw && { ...raw, confidence: clamp(raw.confidence) };
 }
 
 export function bestMatch<C extends MatchCandidate>(
@@ -85,17 +97,18 @@ export function bestMatch<C extends MatchCandidate>(
   queryYear: number | undefined,
   candidates: readonly C[],
 ): (Confidence & { candidate: C }) | null {
-  let best: (Confidence & { candidate: C }) | null = null;
+  let best: { raw: Confidence; candidate: C } | null = null;
   for (const candidate of candidates) {
-    const score = matchConfidence(query, queryYear, candidate);
-    if (!score || score.confidence < MATCH_THRESHOLD) continue;
+    const raw = rawConfidence(query, queryYear, candidate);
+    if (!raw || clamp(raw.confidence) < MATCH_THRESHOLD) continue;
+    // Ranking uses the unclamped score so a year bonus still separates two exact name matches.
     if (
       !best ||
-      score.confidence > best.confidence ||
-      (score.confidence === best.confidence && candidate.tieBreak > best.candidate.tieBreak)
+      raw.confidence > best.raw.confidence ||
+      (raw.confidence === best.raw.confidence && candidate.tieBreak > best.candidate.tieBreak)
     ) {
-      best = { ...score, candidate };
+      best = { raw, candidate };
     }
   }
-  return best;
+  return best && { ...best.raw, confidence: clamp(best.raw.confidence), candidate: best.candidate };
 }

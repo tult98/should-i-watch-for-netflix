@@ -104,6 +104,14 @@ describe('bestMatch', () => {
     expect(bestMatch('One Piece', undefined, [tv, film, red])?.candidate.id).toBe('tv');
   });
 
+  it('lets an equal year beat a higher member count between exact matches', () => {
+    const film = candidate(['One Piece'], { id: 'film', tieBreak: 120_000, year: 2000 });
+    const tv = candidate(['One Piece'], { id: 'tv', tieBreak: 2_400_000, year: 1999 });
+    const result = bestMatch('One Piece', 2000, [tv, film]);
+    expect(result?.candidate.id).toBe('film');
+    expect(result?.confidence).toBe(1);
+  });
+
   it('matches a Japanese script query', () => {
     const result = bestMatch('葬送のフリーレン', undefined, [aot, frieren]);
     expect(result?.candidate).toBe(frieren);

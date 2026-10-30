@@ -1,0 +1,98 @@
+{
+  "pagination": { "last_visible_page": 6, "has_next_page": true, "current_page": 1, "items": { "count": 5, "total": 28, "per_page": 5 } },
+  "data": [
+    {
+      "mal_id": 16498,
+      "url": "https://myanimelist.net/anime/16498/Shingeki_no_Kyojin",
+      "title": "Shingeki no Kyojin",
+      "title_english": "Attack on Titan",
+      "title_japanese": "進撃の巨人",
+      "title_synonyms": ["AoT", "SnK"],
+      "titles": [
+        { "type": "Default", "title": "Shingeki no Kyojin" },
+        { "type": "Synonym", "title": "AoT" },
+        { "type": "Synonym", "title": "SnK" },
+        { "type": "Japanese", "title": "進撃の巨人" },
+        { "type": "English", "title": "Attack on Titan" },
+        { "type": "German", "title": "Attack on Titan" },
+        { "type": "Spanish", "title": "Ataque a los Titanes" },
+        { "type": "French", "title": "L'Attaque des Titans" }
+      ],
+      "type": "TV",
+      "episodes": 25,
+      "status": "Finished Airing",
+      "score": 8.55,
+      "scored_by": 2900000,
+      "rank": 117,
+      "popularity": 1,
+      "members": 4100000,
+      "season": "spring",
+      "year": 2013,
+      "aired": { "from": "2013-04-07T00:00:00+00:00", "to": "2013-09-29T00:00:00+00:00" },
+      "genres": [
+        { "mal_id": 1, "type": "anime", "name": "Action" },
+        { "mal_id": 8, "type": "anime", "name": "Drama" },
+        { "mal_id": 37, "type": "anime", "name": "Suspense" }
+      ],
+      "themes": [
+        { "mal_id": 58, "type": "anime", "name": "Gore" },
+        { "mal_id": 38, "type": "anime", "name": "Military" },
+        { "mal_id": 76, "type": "anime", "name": "Survival" }
+      ],
+      "demographics": [{ "mal_id": 27, "type": "anime", "name": "Shounen" }],
+      "studios": [{ "mal_id": 858, "type": "anime", "name": "Wit Studio" }],
+      "synopsis": "Centuries ago, mankind was slaughtered to near extinction by monstrous humanoid creatures called Titans."
+    },
+    {
+      "mal_id": 40028,
+      "title": "Shingeki no Kyojin: The Final Season",
+      "title_english": "Attack on Titan: Final Season",
+      "title_japanese": "進撃の巨人 The Final Season",
+      "title_synonyms": ["Shingeki no Kyojin Season 4", "Attack on Titan Season 4"],
+      "titles": [
+        { "type": "Default", "title": "Shingeki no Kyojin: The Final Season" },
+        { "type": "English", "title": "Attack on Titan: Final Season" }
+      ],
+      "type": "TV",
+      "episodes": 16,
+      "status": "Finished Airing",
+      "score": 8.78,
+      "scored_by": 1400000,
+      "rank": 48,
+      "popularity": 46,
+      "members": 2300000,
+      "season": "winter",
+      "year": 2021,
+      "aired": { "from": "2020-12-07T00:00:00+00:00", "to": "2021-03-29T00:00:00+00:00" },
+      "genres": [{ "name": "Action" }, { "name": "Drama" }, { "name": "Suspense" }],
+      "themes": [{ "name": "Gore" }, { "name": "Military" }, { "name": "Survival" }],
+      "demographics": [{ "name": "Shounen" }],
+      "studios": [{ "name": "MAPPA" }],
+      "synopsis": "Gabi Braun and Falco Grice have been training their entire lives to inherit one of the seven Titans."
+    },
+    {
+      "mal_id": 31374,
+      "title": "Shingeki! Kyojin Chuugakkou",
+      "title_english": "Attack on Titan: Junior High",
+      "title_japanese": "進撃!巨人中学校",
+      "title_synonyms": [],
+      "titles": [{ "type": "Default", "title": "Shingeki! Kyojin Chuugakkou" }],
+      "type": "TV",
+      "episodes": 12,
+      "status": "Finished Airing",
+      "score": 6.0,
+      "scored_by": 120000,
+      "rank": 9000,
+      "popularity": 1200,
+      "members": 260000,
+      "season": "fall",
+      "year": 2015,
+      "aired": { "from": "2015-10-04T00:00:00+00:00", "to": "2015-12-20T00:00:00+00:00" },
+      "genres": [{ "name": "Comedy" }],
+      "themes": [{ "name": "Parody" }, { "name": "School" }],
+      "demographics": [{ "name": "Shounen" }],
+      "studios": [{ "name": "Production I.G" }],
+      "synopsis": "Eren Yeager is a new student at Titan Junior High."
+    }
+  ]
+}
