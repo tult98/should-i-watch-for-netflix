@@ -8,8 +8,6 @@ export interface LookupRequest {
   netflixId?: string;
 }
 
-export type Request = LookupRequest;
-
 export type LookupResponse = LookupResult;
 
 export function isLookupRequest(message: unknown): message is LookupRequest {
