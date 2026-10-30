@@ -71,7 +71,7 @@ export function readNetflixId(card: Element): string | undefined {
 }
 
 export function readYear(card: Element): number | undefined {
-  const metadata = card.ownerDocument.querySelector(`${PREVIEW_SELECTOR} ${PREVIEW_METADATA_SELECTOR}`);
+  const metadata = findOpenPreview(card.ownerDocument, card)?.querySelector(PREVIEW_METADATA_SELECTOR);
   const match = metadata?.textContent?.match(/\b(19|20)\d{2}\b/);
   return match ? Number(match[0]) : undefined;
 }
