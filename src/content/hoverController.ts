@@ -56,6 +56,8 @@ export interface HoverControllerOptions<T> {
 export interface HoverController {
   state(): HoverState;
   isCurrent(requestId: number): boolean;
+  // Keeps the shown popover up while work started from it runs; returns the release function.
+  hold(): () => void;
   pointerOver(target: Element | null): void;
   pointerOut(target: Element | null, relatedTarget: Element | null): void;
   attach(doc: Document): () => void;
@@ -72,6 +74,8 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
   let hideTimer: unknown = null;
   let skeletonTimer: unknown = null;
   let nextRequestId = 0;
+  let holds = 0;
+  let hideDeferred = false;
 
   function currentCard(): Element | null {
     return state.name === 'idle' ? null : state.card;
@@ -87,6 +91,29 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
   function cancelHide(): void {
     if (hideTimer !== null) timers.clearTimeout(hideTimer);
     hideTimer = null;
+    hideDeferred = false;
+  }
+
+  function startHideTimer(): void {
+    hideTimer = timers.setTimeout(() => {
+      hideTimer = null;
+      if (holds > 0) hideDeferred = true;
+      else toIdle();
+    }, hideDelayMs);
+  }
+
+  function hold(): () => void {
+    holds++;
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      holds--;
+      if (holds === 0 && hideDeferred) {
+        hideDeferred = false;
+        startHideTimer();
+      }
+    };
   }
 
   function hidePopover(): void {
@@ -187,7 +214,7 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
       toIdle();
       return;
     }
-    if (hideTimer === null) hideTimer = timers.setTimeout(toIdle, hideDelayMs);
+    if (hideTimer === null && !hideDeferred) startHideTimer();
   }
 
   // Delegated on document because Netflix re-renders rows and would drop per-card listeners.
@@ -206,6 +233,7 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
   return {
     state: () => state,
     isCurrent: (requestId) => state.name === 'loading' && state.requestId === requestId,
+    hold,
     pointerOver,
     pointerOut,
     attach,

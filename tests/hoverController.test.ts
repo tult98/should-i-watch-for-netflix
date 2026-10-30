@@ -246,6 +246,34 @@ describe('hoverController popover', () => {
     expect(controller.state().name).toBe('idle');
   });
 
+  it('stays up while held, then hides 150 ms after release when the pointer is still away', async () => {
+    const { controller, calls } = await showA();
+    enter(controller, outside, popover);
+    const release = controller.hold();
+    controller.pointerOut(popover, outside);
+    vi.advanceTimersByTime(5_000);
+    expect(calls).toEqual(['show A info-A']);
+    expect(controller.state().name).toBe('shown');
+
+    release();
+    vi.advanceTimersByTime(149);
+    expect(calls).toEqual(['show A info-A']);
+    vi.advanceTimersByTime(1);
+    expect(calls).toEqual(['show A info-A', 'hide']);
+  });
+
+  it('does not hide on release when the pointer came back while held', async () => {
+    const { controller, calls } = await showA();
+    enter(controller, outside, popover);
+    const release = controller.hold();
+    controller.pointerOut(popover, outside);
+    vi.advanceTimersByTime(1_000);
+    enter(controller, outside, popover);
+    release();
+    vi.advanceTimersByTime(1_000);
+    expect(calls).toEqual(['show A info-A']);
+  });
+
   it('cancels the hide when the pointer comes back to the card', async () => {
     const { controller, calls, a } = await showA();
     enter(controller, a.child, outside);
