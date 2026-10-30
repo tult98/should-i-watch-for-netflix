@@ -11,11 +11,12 @@
  * - whether <html lang> still carries the profile language (readProfileLanguage)
  */
 
+// Outermost wrapper first, so nested markup resolves one title to one element.
 const CARD_SELECTORS = [
-  '.title-card',
   '.slider-item',
-  '.title-card-container',
   '[data-uia="title-card"]',
+  '.title-card-container',
+  '.title-card',
 ];
 
 const PREVIEW_MODAL_SELECTOR = '.previewModal--wrapper';
