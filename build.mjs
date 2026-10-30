@@ -30,6 +30,7 @@ const configs = [
   // MV3 content scripts cannot be ES modules, so the content script is an IIFE.
   { ...common, entryPoints: ['src/content/index.ts'], outfile: `${outdir}/content.js`, format: 'iife' },
   { ...common, entryPoints: ['src/options/options.ts'], outfile: `${outdir}/options.js`, format: 'iife' },
+  { ...common, entryPoints: ['src/popup/popup.ts'], outfile: `${outdir}/popup.js`, format: 'iife' },
   {
     ...common,
     entryPoints: ['src/background/index.ts'],
