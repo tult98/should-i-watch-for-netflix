@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DEFAULT_AI_BASE_URL,
+  DEFAULT_AI_MODEL,
   DEFAULT_THRESHOLDS,
+  aiSettingsOf,
+  parseAiBaseUrl,
   SETTINGS_KEY,
   loadSettings,
   saveSettings,
@@ -63,5 +67,31 @@ describe('settings thresholds', () => {
     const mal = { ...DEFAULT_THRESHOLDS.mal, maybe: { score: 6 } };
     store.data.set(SETTINGS_KEY, { thresholds: { mal, imdb: { highly: 'x' } } });
     expect((await loadSettings(store)).thresholds).toEqual({ mal, imdb: DEFAULT_THRESHOLDS.imdb, tmdb: DEFAULT_THRESHOLDS.tmdb });
+  });
+});
+
+describe('AI settings', () => {
+  it('defaults to DeepSeek', () => {
+    expect(aiSettingsOf({})).toEqual({ baseUrl: DEFAULT_AI_BASE_URL, model: DEFAULT_AI_MODEL, key: undefined });
+    expect(DEFAULT_AI_BASE_URL).toBe('https://api.deepseek.com/chat/completions');
+    expect(DEFAULT_AI_MODEL).toBe('deepseek-chat');
+  });
+
+  it('saves trimmed AI fields and drops a base URL that is not https', async () => {
+    const store = memoryStore();
+    await saveSettings({ aiBaseUrl: ' https://openrouter.ai/api/v1/chat/completions ', aiModel: 'm', aiKey: ' sk ' }, store);
+    expect(await loadSettings(store)).toEqual({
+      aiBaseUrl: 'https://openrouter.ai/api/v1/chat/completions',
+      aiModel: 'm',
+      aiKey: 'sk',
+    });
+    await saveSettings({ aiBaseUrl: 'http://localhost:1234/v1/chat/completions' }, store);
+    expect(await loadSettings(store)).toEqual({});
+  });
+
+  it('parses only https base URLs', () => {
+    expect(parseAiBaseUrl('https://api.deepseek.com/chat/completions')?.origin).toBe('https://api.deepseek.com');
+    expect(parseAiBaseUrl('ftp://x')).toBeNull();
+    expect(parseAiBaseUrl('not a url')).toBeNull();
   });
 });

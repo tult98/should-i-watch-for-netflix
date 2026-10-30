@@ -4,12 +4,44 @@ export interface Settings {
   malClientId?: string;
   tmdbKey?: string;
   omdbKey?: string;
+  aiBaseUrl?: string;
+  aiModel?: string;
+  aiKey?: string;
   thresholds?: Thresholds;
 }
 
 const KEYS = ['malClientId', 'tmdbKey', 'omdbKey'] as const satisfies readonly (keyof Settings)[];
+const AI_KEYS = ['aiBaseUrl', 'aiModel', 'aiKey'] as const satisfies readonly (keyof Settings)[];
 
 export type SourceKey = (typeof KEYS)[number];
+export type AiKey = (typeof AI_KEYS)[number];
+
+export const DEFAULT_AI_BASE_URL = 'https://api.deepseek.com/chat/completions';
+export const DEFAULT_AI_MODEL = 'deepseek-chat';
+
+export interface AiSettings {
+  baseUrl: string;
+  model: string;
+  key?: string;
+}
+
+// Only https, because the optional host permission the options page can request is https://*/*.
+export function parseAiBaseUrl(value: string): URL | null {
+  try {
+    const url = new URL(value.trim());
+    return url.protocol === 'https:' ? url : null;
+  } catch {
+    return null;
+  }
+}
+
+export function aiSettingsOf(settings: Settings): AiSettings {
+  return {
+    baseUrl: settings.aiBaseUrl ?? DEFAULT_AI_BASE_URL,
+    model: settings.aiModel ?? DEFAULT_AI_MODEL,
+    key: settings.aiKey,
+  };
+}
 
 export const DEFAULT_THRESHOLDS: Thresholds = {
   mal: {
@@ -96,10 +128,11 @@ function sanitizeThresholds(value: unknown): Thresholds | undefined {
 function sanitize(value: unknown): Settings {
   if (!isRecord(value)) return {};
   const clean: Settings = {};
-  for (const key of KEYS) {
+  for (const key of [...KEYS, ...AI_KEYS]) {
     const v = cleanString(value[key]);
     if (v) clean[key] = v;
   }
+  if (clean.aiBaseUrl && !parseAiBaseUrl(clean.aiBaseUrl)) delete clean.aiBaseUrl;
   const thresholds = sanitizeThresholds(value.thresholds);
   if (thresholds) clean.thresholds = thresholds;
   return clean;

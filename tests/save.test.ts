@@ -59,3 +59,13 @@ describe('saveAndInvalidate thresholds', () => {
     expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', thresholds: DEFAULT_THRESHOLDS });
   });
 });
+
+describe('saveAndInvalidate AI settings', () => {
+  it('keeps lookups when only AI settings change', async () => {
+    const store = memoryStore();
+    store.data.set('lookup:en|lupin|-', {});
+    const out = await saveAndInvalidate({ aiKey: 'sk', aiModel: 'deepseek-reasoner' }, store, store);
+    expect(out.cacheCleared).toBe(false);
+    expect(store.data.has('lookup:en|lupin|-')).toBe(true);
+  });
+});
