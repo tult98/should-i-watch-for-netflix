@@ -29,7 +29,7 @@ export const strings = {
   verdict: {
     highly_recommended: 'Rất nên xem',
     recommended: 'Nên xem',
-    maybe: 'Có thể xem',
+    maybe: 'Cân nhắc',
     skip: 'Bỏ qua',
   },
   kind: {

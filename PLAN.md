@@ -374,7 +374,7 @@ Decisions made while building it:
 
 - The big score is the score the badge used, labeled with its source. Anime always use MAL. Movies and series use IMDb when OMDb returned a score, and TMDB otherwise. The design's TMDB number is the fallback case.
 - The stats row never repeats the big score and drops any cell without a value instead of showing a placeholder. A movie lists IMDb, Rotten Tomatoes and Metacritic. A series lists IMDb, Rotten Tomatoes and TMDB. A row left with no cells is hidden. An anime lists Ranked, Popularity and Members, plus IMDb when an anime movie has one.
-- The design has no "Có thể xem" badge. It uses a yellow outline, `#f5c542`, the same yellow as the low votes warning, between the green "Nên xem" outline and the grey "Bỏ qua".
+- The design has no "Cân nhắc" badge. It uses a yellow outline, `#f5c542`, the same yellow as the low votes warning, between the green "Nên xem" outline and the grey "Bỏ qua".
 - Missing votes count as zero, so a score without votes never reaches "Rất nên xem" and always shows the low votes warning. An anime with no MAL rank cannot pass the `rankMax` rule.
 - The threshold sets live in `Settings.thresholds`. Until step (f) adds the editor, they are `DEFAULT_THRESHOLDS` in `settings.ts`. A malformed stored set falls back to its default.
 - `SeriesInfo` carries only years, so the series time row reads "2021 – 2024" or "2023 – nay", not the design's month and year.
