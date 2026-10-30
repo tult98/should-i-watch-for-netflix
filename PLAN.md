@@ -447,7 +447,7 @@ Decisions made while building it:
 
 Files: `public/popup.html`, `src/popup/popup.ts`, `src/popup/popup.css`, a new esbuild entry, and `action.default_popup` in `manifest.json`.
 
-Clicking the toolbar icon opens a small status panel. The design file has no board for it, so it uses the popover's dark theme: `#181818` background, the same font stack, chips and buttons. It is a status panel, not a launcher, because the main action already happens on hover.
+Clicking the toolbar icon opens a small status panel. The design file has no board for it, so it reuses the popover's font stack, chips and buttons and follows the theme setting (see step (h)). It is a status panel, not a launcher, because the main action already happens on hover.
 
 The panel shows, from top to bottom:
 
