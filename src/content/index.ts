@@ -1,5 +1,6 @@
-import { sendLookup } from '../shared/messages';
-import { quickVerdict } from '../shared/quickBadge';
+import { sendAiCached, sendAiOpinion, sendLookup, sendOpenOptions } from '../shared/messages';
+import { quickVerdict, type QuickBadge } from '../shared/quickBadge';
+import type { TitleInfo } from '../shared/types';
 import { loadSettings, thresholdsOf } from '../shared/settings';
 import { describeResult } from './describeResult';
 import { createHoverController, type HoverFire } from './hoverController';
@@ -13,6 +14,7 @@ import {
   readYear,
 } from './netflixSelectors';
 import { createPopoverHost } from './popover/host';
+import { applyAiError, applyAiResult, isAiLoading, setAiLoading } from './popover/ai';
 import { renderLoading, renderTitle } from './popover/render';
 
 let detached = false;
@@ -43,7 +45,13 @@ async function lookup({ title, year, lang, netflixId, requestId }: HoverFire): P
     const [result, settings] = await Promise.all([sendLookup({ title, year, lang, netflixId }), loadSettings()]);
     console.log(`[lookup] ${title} -> ${describeResult(result)}${staleSuffix(requestId)}`);
     if (result.status !== 'match' || !controller.isCurrent(requestId)) return null;
-    return renderTitle(result.info, quickVerdict(result.info, thresholdsOf(settings)), new Date());
+    const { info } = result;
+    const badge = quickVerdict(info, thresholdsOf(settings));
+    const root: HTMLElement = renderTitle(info, badge, new Date(), { onAi: () => askAi(root, info, badge) });
+    // Read before showing so a cached opinion opens with the popover instead of popping in after it.
+    const cached = await sendAiCached(info).catch(() => ({ status: 'none' }) as const);
+    if (cached.status === 'ok') applyAiResult(root, info, cached);
+    return root;
   } catch (err) {
     if (isInvalidated(err)) {
       handleInvalidated();
@@ -53,6 +61,43 @@ async function lookup({ title, year, lang, netflixId, requestId }: HoverFire): P
     console.log(`[lookup] ${title} -> error ${message}${staleSuffix(requestId)}`);
     return null;
   }
+}
+
+function openSettings(): void {
+  sendOpenOptions().catch((err: unknown) => {
+    if (isInvalidated(err)) handleInvalidated();
+  });
+}
+
+// A popover root leaves the document when the popover hides or swaps, so a detached root means a stale answer.
+function askAi(root: HTMLElement, info: TitleInfo, badge: QuickBadge): void {
+  if (isAiLoading(root)) return;
+  if (!chrome.runtime?.id) {
+    handleInvalidated();
+    return;
+  }
+  const release = controller.hold();
+  setAiLoading(root, true);
+  sendAiOpinion(info, badge)
+    .then((response) => {
+      const stale = root.isConnected ? '' : ' (stale)';
+      const outcome = response.status === 'ok' ? `${response.opinion.verdict}${response.fromCache ? ' (cache)' : ''}` : `error ${response.reason}`;
+      console.log(`[popover] ai ${info.id} -> ${outcome}${stale}`);
+      if (!root.isConnected) return;
+      if (response.status === 'ok') applyAiResult(root, info, response);
+      else applyAiError(root, response.reason, openSettings);
+    })
+    .catch((err: unknown) => {
+      if (isInvalidated(err)) {
+        handleInvalidated();
+        return;
+      }
+      if (root.isConnected) applyAiError(root, 'network', openSettings);
+    })
+    .finally(() => {
+      if (root.isConnected && isAiLoading(root)) setAiLoading(root, false);
+      release();
+    });
 }
 
 const host = createPopoverHost(window);

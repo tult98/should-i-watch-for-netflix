@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
+import { applyAiError, applyAiResult, isAiLoading, setAiLoading } from '../src/content/popover/ai';
 import { renderLoading, renderTitle } from '../src/content/popover/render';
+import type { AiOk } from '../src/shared/messages';
 import { quickVerdict } from '../src/shared/quickBadge';
 import { DEFAULT_THRESHOLDS } from '../src/shared/settings';
 import type { AnimeInfo, MovieInfo, SeriesInfo, TitleInfo } from '../src/shared/types';
@@ -228,5 +230,111 @@ describe('renderLoading', () => {
     expect(el.querySelectorAll('.sk').length).toBeGreaterThan(5);
     expect(el.querySelector('.badge')).toBeNull();
     expect(el.textContent).toContain('Đang tra cứu…');
+  });
+});
+
+function aiOk(over: Partial<AiOk> = {}): AiOk {
+  return {
+    status: 'ok',
+    opinion: { summary_vi: 'Tóm tắt tiếng Việt.', verdict: 'highly_recommended', reason_vi: 'Điểm rất cao.' },
+    providerLabel: 'DeepSeek',
+    model: 'deepseek-chat',
+    tasteCount: 12,
+    fromCache: false,
+    ...over,
+  };
+}
+
+function aiLabel(el: HTMLElement): string | null | undefined {
+  return el.querySelector('.btn-ai-label')?.textContent;
+}
+
+describe('AI block', () => {
+  it('starts with an empty slot and the AI nhận xét button', () => {
+    const el = render(frieren);
+    expect(el.querySelector('.ai-slot')?.childElementCount).toBe(0);
+    expect(aiLabel(el)).toBe('AI nhận xét');
+  });
+
+  it('calls the onAi hook on click', () => {
+    let clicks = 0;
+    const el = renderTitle(frieren, quickVerdict(frieren, DEFAULT_THRESHOLDS), now, { onAi: () => clicks++ });
+    el.querySelector<HTMLButtonElement>('.btn-ai')?.click();
+    expect(clicks).toBe(1);
+  });
+
+  it('shows the loading state on the button', () => {
+    const el = render(frieren);
+    setAiLoading(el, true);
+    expect(aiLabel(el)).toBe('Đang hỏi AI…');
+    expect(el.querySelector<HTMLButtonElement>('.btn-ai')?.disabled).toBe(true);
+    expect(isAiLoading(el)).toBe(true);
+    setAiLoading(el, false);
+    expect(aiLabel(el)).toBe('AI nhận xét');
+  });
+
+  it('renders the anime opinion per the design and replaces the English synopsis', () => {
+    const el = render(frieren);
+    setAiLoading(el, true);
+    applyAiResult(el, frieren, aiOk());
+    const box = el.querySelector('.ai-box')!;
+    expect(box.querySelector('.ai-title')?.textContent).toBe('AI nhận xét');
+    expect(box.querySelector('.ai-provider')?.textContent).toBe('DeepSeek · deepseek-chat');
+    expect(box.querySelector('.ai-verdict-label')?.textContent).toBe('Kết luận:');
+    const badge = box.querySelector('.badge')!;
+    expect(badge.textContent).toBe('Rất nên xem');
+    expect(badge.classList.contains('badge-highly_recommended')).toBe(true);
+    expect(box.querySelector('.ai-reason')?.textContent).toBe('Điểm rất cao.');
+    expect(box.querySelector('.ai-foot')?.textContent).toBe('Đã tính đến hồ sơ gu Anime của bạn (12 đánh giá)');
+    expect(el.querySelector('.synopsis-section .label')?.textContent).toBe('Tóm tắt');
+    expect(el.querySelector('.synopsis')?.textContent).toBe('Tóm tắt tiếng Việt.');
+    expect(el.querySelector('.synopsis-en')).toBeNull();
+    expect(aiLabel(el)).toBe('Đánh giá lại theo gu');
+    expect(el.querySelector<HTMLButtonElement>('.btn-ai')?.disabled).toBe(false);
+  });
+
+  it('keeps a Vietnamese TMDB overview and hints at rating when there is no taste profile', () => {
+    const el = render(irishman);
+    applyAiResult(el, irishman, aiOk({ tasteCount: 0, opinion: { ...aiOk().opinion, summary_vi: 'Khác.' } }));
+    expect(el.querySelector('.synopsis')?.textContent).toBe('Một sát thủ già nhìn lại cuộc đời.');
+    expect(el.querySelector('.ai-foot')?.textContent).toContain('👍');
+    expect(el.querySelector('.ai-foot')?.textContent).toContain('Phim lẻ');
+  });
+
+  it('adds a Tóm tắt section when the title had no synopsis', () => {
+    const bare = { ...lights, synopsis: undefined };
+    const el = render(bare);
+    expect(el.querySelector('.synopsis')).toBeNull();
+    applyAiResult(el, bare, aiOk());
+    expect(el.querySelector('.synopsis-section .label')?.textContent).toBe('Tóm tắt');
+    expect(el.querySelector('.synopsis-section + .ai-slot')).not.toBeNull();
+  });
+
+  it('renders model text as text', () => {
+    const el = render(frieren);
+    const hostile = '<img src=x onerror="alert(1)">';
+    applyAiResult(el, frieren, aiOk({ opinion: { summary_vi: hostile, verdict: 'skip', reason_vi: hostile } }));
+    expect(el.querySelector('img')).toBeNull();
+    expect(el.querySelector('.ai-reason')?.textContent).toBe(hostile);
+  });
+
+  it('shows a missing key error with a button that opens the settings', () => {
+    const el = render(frieren);
+    let opened = 0;
+    setAiLoading(el, true);
+    applyAiError(el, 'missing_ai_key', () => opened++);
+    const line = el.querySelector('.ai-error')!;
+    expect(line.textContent).toBe('Chưa cài API key cho AI, mở trang cài đặt');
+    line.querySelector<HTMLButtonElement>('button')?.click();
+    expect(opened).toBe(1);
+    expect(aiLabel(el)).toBe('AI nhận xét');
+    expect(el.querySelector<HTMLButtonElement>('.btn-ai')?.disabled).toBe(false);
+  });
+
+  it('shows other errors as one line without a button', () => {
+    const el = render(frieren);
+    applyAiError(el, 'ai_no_balance', () => {});
+    expect(el.querySelector('.ai-error')?.textContent).toBe('Tài khoản AI đã hết số dư');
+    expect(el.querySelector('.ai-error button')).toBeNull();
   });
 });

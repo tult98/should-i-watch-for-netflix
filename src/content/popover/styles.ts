@@ -75,6 +75,27 @@ export const POPOVER_CSS = `
 }
 .btn-ai { flex: 1; border: 0; background: #e50914; color: #ffffff; font-size: 14px; font-weight: 700; gap: 8px; }
 .btn-ai:hover { background: #f6121d; }
+.btn-ai:disabled { cursor: progress; opacity: 0.7; }
+.btn-ai:disabled:hover { background: #e50914; }
+.ai-slot:empty { display: none; }
+.ai-box {
+  background: #262626; border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.ai-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.ai-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; }
+.ai-provider { font-size: 11px; color: #b3b3b3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ai-verdict { display: flex; align-items: center; gap: 8px; }
+.ai-verdict-label { font-size: 12px; color: #b3b3b3; }
+.badge.badge-sm { height: 22px; padding: 0 10px; border-radius: 11px; }
+.ai-reason { margin: 0; font-size: 14px; line-height: 1.5; color: #e5e5e5; }
+.ai-foot { font-size: 11px; color: #b3b3b3; }
+.ai-error { margin: 0; font-size: 13px; color: #f5c542; }
+.link-btn {
+  margin: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; font-weight: 700;
+  text-decoration: underline; cursor: pointer;
+}
+.link-btn:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
 .btn-icon { width: 44px; background: transparent; color: #ffffff; border: 1px solid #6d6d6d; }
 .btn-icon:hover { border-color: #ffffff; }
 .btn:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }

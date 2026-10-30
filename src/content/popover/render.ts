@@ -20,7 +20,7 @@ const t = strings.popover;
 
 const STAR = ['M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z'];
 const WARN = ['M12 3l10 18H2z', 'M12 10v5', 'M12 18.5v.01'];
-const SPARKLE = ['M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z'];
+export const SPARKLE = ['M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z'];
 const THUMB_UP = ['M7 11v9H3v-9z', 'M7 11l4-8c1.7 0 3 1.3 3 3v4h5.5a2 2 0 0 1 2 2.3l-1.2 7a2 2 0 0 1-2 1.7H7'];
 const THUMB_DOWN = ['M17 13V4h4v9z', 'M17 13l-4 8c-1.7 0-3-1.3-3-3v-4H4.5a2 2 0 0 1-2-2.3l1.2-7a2 2 0 0 1 2-1.7H17'];
 
@@ -102,13 +102,17 @@ function statsRow(list: Cell[]): HTMLElement | null {
   return row;
 }
 
+export interface PopoverHooks {
+  onAi?: () => void;
+}
+
 function synopsisBlock(info: TitleInfo, enLabel: string): HTMLElement | null {
   const synopsis = info.synopsis;
   if (!synopsis?.text.trim()) return null;
   const en = synopsis.lang === 'en';
   return h(
     'div',
-    { class: 'section' },
+    { class: 'section synopsis-section' },
     h('span', { class: 'label' }, en ? enLabel : t.synopsis),
     h('p', { class: en ? 'synopsis synopsis-en' : 'synopsis' }, synopsis.text),
   );
@@ -142,16 +146,27 @@ function chips(genres: string[], outlined?: string): HTMLElement | null {
   );
 }
 
-function actions(info: TitleInfo): HTMLElement {
+function aiSlot(): HTMLElement {
+  return h('div', { class: 'ai-slot' });
+}
+
+function actions(info: TitleInfo, hooks: PopoverHooks): HTMLElement {
   const anime = info.kind === 'anime';
   return h(
     'div',
     { class: 'actions' },
     h(
       'button',
-      { type: 'button', class: 'btn btn-ai', onclick: () => console.log(`[popover] ai ${info.id}`) },
+      {
+        type: 'button',
+        class: 'btn btn-ai',
+        onclick: () => {
+          console.log(`[popover] ai ${info.id}`);
+          hooks.onAi?.();
+        },
+      },
       icon(SPARKLE, { size: 16, stroke: 'currentColor' }),
-      t.ai,
+      h('span', { class: 'btn-ai-label' }, t.ai),
     ),
     h(
       'button',
@@ -180,7 +195,7 @@ function shell(top: HTMLElement, sections: Child[]): HTMLElement {
   return h('div', { class: 'pop' }, top, h('div', { class: 'body' }, ...sections));
 }
 
-function renderAnime(info: AnimeInfo, badge: QuickBadge, now: Date): HTMLElement {
+function renderAnime(info: AnimeInfo, badge: QuickBadge, now: Date, hooks: PopoverHooks): HTMLElement {
   const imdb = findScore(info, 'imdb');
   const stats = cells([
     cell(t.ranked, info.rank !== undefined ? `#${formatCount(info.rank)}` : undefined),
@@ -201,10 +216,11 @@ function renderAnime(info: AnimeInfo, badge: QuickBadge, now: Date): HTMLElement
     lowVotesWarning(badge),
     statsRow(stats),
     synopsisBlock(info, t.synopsisMalEn),
+    aiSlot(),
     fieldGrid(meta, 'meta'),
     timeRow(t.aired, aired, ageLabel(info.year, now)),
     chips(info.genres, info.demographic),
-    actions(info),
+    actions(info, hooks),
   ]);
 }
 
@@ -255,7 +271,7 @@ function filmCredits(info: MovieInfo | SeriesInfo): Cell[] {
   ]);
 }
 
-function renderFilm(info: MovieInfo | SeriesInfo, badge: QuickBadge, now: Date): HTMLElement {
+function renderFilm(info: MovieInfo | SeriesInfo, badge: QuickBadge, now: Date, hooks: PopoverHooks): HTMLElement {
   const sourceName = badge.source && t.sourceName[badge.source];
   return shell(topBar({ text: t.tmdbPill, cls: 'pill-tmdb' }, kindLabel(info.kind), badge), [
     heading(info, t.tmdbPill),
@@ -263,16 +279,17 @@ function renderFilm(info: MovieInfo | SeriesInfo, badge: QuickBadge, now: Date):
     lowVotesWarning(badge),
     statsRow(filmStats(info, badge)),
     synopsisBlock(info, t.synopsisEn),
+    aiSlot(),
     fieldGrid(filmMeta(info), 'meta'),
     filmTime(info, now),
     fieldGrid(filmCredits(info), 'credits'),
     chips(info.genres),
-    actions(info),
+    actions(info, hooks),
   ]);
 }
 
-export function renderTitle(info: TitleInfo, badge: QuickBadge, now: Date): HTMLElement {
-  return info.kind === 'anime' ? renderAnime(info, badge, now) : renderFilm(info, badge, now);
+export function renderTitle(info: TitleInfo, badge: QuickBadge, now: Date, hooks: PopoverHooks = {}): HTMLElement {
+  return info.kind === 'anime' ? renderAnime(info, badge, now, hooks) : renderFilm(info, badge, now, hooks);
 }
 
 function sk(cls: string, width?: string): HTMLElement {
