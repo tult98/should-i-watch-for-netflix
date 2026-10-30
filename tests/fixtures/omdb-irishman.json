@@ -1,0 +1,14 @@
+{
+  "Title": "The Irishman",
+  "Year": "2019",
+  "Ratings": [
+    { "Source": "Internet Movie Database", "Value": "7.8/10" },
+    { "Source": "Rotten Tomatoes", "Value": "95%" },
+    { "Source": "Metacritic", "Value": "94/100" }
+  ],
+  "Metascore": "94",
+  "imdbRating": "7.8",
+  "imdbVotes": "1,234,567",
+  "imdbID": "tt1302006",
+  "Response": "True"
+}
