@@ -3,11 +3,13 @@ import { chromeLocalStore, clearLookupCache } from '../background/cache';
 import { createTasteStore } from '../background/taste/tasteStore';
 import { watchTheme } from '../content/themeWatcher';
 import { appName } from '../shared/appName';
+import { locale } from '../shared/i18n';
 import { loadSettings, saveEnabled } from '../shared/settings';
 import { popupModel } from './model';
 import { renderPopup } from './view';
 
 async function main(): Promise<void> {
+  document.documentElement.lang = locale;
   document.title = appName();
   const app = document.getElementById('app');
   if (!app) throw new Error('popup.html is missing #app');

@@ -17,7 +17,7 @@ import {
   type Settings,
   type SourceKey,
 } from '../shared/settings';
-import { strings } from '../shared/i18n';
+import { locale, strings } from '../shared/i18n';
 import type { Kind } from '../shared/types';
 import { testAiConnection, type ConnectionResult } from './ai';
 import { saveAndInvalidate, saveThresholdSet, saveWithPermission } from './save';
@@ -303,6 +303,7 @@ function cacheSection(): HTMLElement {
 }
 
 function main(): void {
+  document.documentElement.lang = locale;
   document.title = appName();
   const fillers: ((s: Settings) => void)[] = [];
   const app = document.getElementById('app');

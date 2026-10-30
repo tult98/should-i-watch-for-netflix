@@ -172,11 +172,12 @@ export const en: Strings = {
     ongoing: 'Ongoing',
     ended: 'Ended',
   },
+  number: { thousands: ',', decimal: '.' },
   time: {
     hours: (n: number) => `${n} h`,
     minutes: (n: number) => `${n} min`,
     month: (month: number, year: number) => `${MONTHS[month - 1]} ${year}`,
-    untilNow: 'now',
+    untilNow: 'present',
   },
   popover: {
     loading: 'Looking up…',

@@ -167,6 +167,7 @@ export const vi = {
     ongoing: 'Đang chiếu',
     ended: 'Đã kết thúc',
   },
+  number: { thousands: '.', decimal: ',' },
   time: {
     hours: (n: number) => `${n} giờ`,
     minutes: (n: number) => `${n} phút`,

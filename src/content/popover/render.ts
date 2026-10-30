@@ -10,7 +10,7 @@ import {
   formatCount,
   formatRuntime,
   formatScore,
-  formatViDate,
+  formatReleaseDate,
   formatYears,
   kindLabel,
   malStatusLabel,
@@ -263,7 +263,7 @@ function filmMeta(info: MovieInfo | SeriesInfo): Cell[] {
 function filmTime(info: MovieInfo | SeriesInfo, now: Date): HTMLElement | null {
   const age = ageLabel(info.year, now);
   if (info.kind === 'movie') {
-    const released = formatViDate(info.releaseDate) ?? (info.year !== undefined ? String(info.year) : undefined);
+    const released = formatReleaseDate(info.releaseDate) ?? (info.year !== undefined ? String(info.year) : undefined);
     return timeRow(t.released, released, age);
   }
   return timeRow(t.aired, formatYears(info.startYear ?? info.year, info.endYear, info.status === 'ongoing'), age);

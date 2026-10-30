@@ -4,11 +4,11 @@ import type { Kind, Score } from '../../shared/types';
 const MONTHS_EN = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 export function formatCount(n: number): string {
-  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, strings.number.thousands);
 }
 
 function oneDecimal(n: number): string {
-  return String(Number(n.toFixed(1))).replace('.', ',');
+  return String(Number(n.toFixed(1))).replace('.', strings.number.decimal);
 }
 
 export function formatCompact(n: number): string {
@@ -72,7 +72,7 @@ export function formatAired(aired: { from?: string; to?: string }, ongoing: bool
   return ongoing ? range(fromText, undefined) : fromText;
 }
 
-export function formatViDate(value: string | undefined): string | undefined {
+export function formatReleaseDate(value: string | undefined): string | undefined {
   const date = parseYearMonth(value);
   if (!date) return undefined;
   return date.month ? strings.time.month(date.month, date.year) : String(date.year);
