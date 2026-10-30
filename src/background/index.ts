@@ -3,9 +3,13 @@ import {
   isAiOpinionRequest,
   isLookupRequest,
   isOpenOptionsRequest,
+  isRateRequest,
+  isRatingGetRequest,
   type LookupResponse,
+  type RatingResponse,
 } from '../shared/messages';
 import { loadSettings } from '../shared/settings';
+import type { Kind } from '../shared/types';
 import { createJikanAdapter } from './adapters/JikanAdapter';
 import { createMalOfficialAdapter } from './adapters/MalOfficialAdapter';
 import { createOmdbAdapter } from './adapters/OmdbAdapter';
@@ -16,6 +20,7 @@ import { chromeLocalStore, createLookupCache } from './cache';
 import { createLookup } from './lookup';
 import { createRequestQueue } from './requestQueue';
 import { getTasteProfile } from './taste/tasteProfile';
+import { createTasteStore, ratingState } from './taste/tasteStore';
 
 const aiHosts = new Set([new URL(DEEPSEEK_ORIGIN).host]);
 
@@ -34,16 +39,25 @@ const lookup = createLookup({
   log: (message) => console.log(message),
 });
 
+const taste = createTasteStore(chromeLocalStore());
+
 const ai = createAiService({
   store: chromeLocalStore(),
   loadSettings: () => loadSettings(),
-  getTasteProfile,
+  getTasteProfile: (kind) => getTasteProfile(kind, taste),
   provider: (config) => {
     aiHosts.add(new URL(config.baseUrl).host);
     return createOpenAICompatibleProvider(queue.fetch, config);
   },
   log: (message) => console.log(message),
 });
+
+function currentRating(id: string, kind: Kind): Promise<RatingResponse> {
+  return taste.listRatings().then(
+    (ratings) => ratingState(ratings, id, kind),
+    (): RatingResponse => ({ rating: null, tasteCount: 0 }),
+  );
+}
 
 chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (r: unknown) => void) => {
   if (isLookupRequest(message)) {
@@ -61,6 +75,22 @@ chrome.runtime.onMessage.addListener((message: unknown, _sender, sendResponse: (
       .cached(message.info)
       .catch(() => ({ status: 'none' }))
       .then(sendResponse);
+    return true;
+  }
+  if (isRateRequest(message)) {
+    const { info, rating } = message;
+    void taste
+      .rate(info, rating)
+      .then((state) => {
+        console.log(`[sw] rate ${rating ?? 'clear'} ${info.id} (${info.kind} ${state.tasteCount})`);
+        return state;
+      })
+      .catch(() => currentRating(info.id, info.kind))
+      .then(sendResponse);
+    return true;
+  }
+  if (isRatingGetRequest(message)) {
+    void currentRating(message.id, message.kind).then(sendResponse);
     return true;
   }
   if (isOpenOptionsRequest(message)) {

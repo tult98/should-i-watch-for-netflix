@@ -1,7 +1,6 @@
-import type { Kind, TitleInfo } from '../../shared/types';
+import type { RatingResponse } from '../../shared/messages';
+import type { Kind, Rating, TitleInfo } from '../../shared/types';
 import type { KeyValueStore } from '../cache';
-
-export type Rating = 'up' | 'down';
 
 export interface RatedTitle {
   id: string;
@@ -16,10 +15,7 @@ export interface RatedTitle {
 
 export type TasteVersions = Record<Kind, number>;
 
-export interface RatingState {
-  rating: Rating | null;
-  tasteCount: number;
-}
+export type RatingState = RatingResponse;
 
 export const RATINGS_KEY = 'taste:ratings';
 export const VERSIONS_KEY = 'taste:versions';

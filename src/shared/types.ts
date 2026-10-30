@@ -69,6 +69,8 @@ export type LookupResult =
   | { status: 'no_match' }
   | { status: 'error'; reason: LookupErrorReason };
 
+export type Rating = 'up' | 'down';
+
 export type Verdict = 'highly_recommended' | 'recommended' | 'maybe' | 'skip';
 
 export interface ThresholdSet {

@@ -1,5 +1,5 @@
 import type { QuickBadge } from './quickBadge';
-import type { AIErrorReason, AIOpinion, LookupResult, TitleInfo } from './types';
+import type { AIErrorReason, AIOpinion, Kind, LookupResult, Rating, TitleInfo } from './types';
 
 export interface LookupRequest {
   type: 'lookup';
@@ -30,6 +30,23 @@ export interface AiOpinionRequest {
 export interface AiCachedRequest {
   type: 'ai-cached';
   info: TitleInfo;
+}
+
+export interface RateRequest {
+  type: 'rate';
+  info: TitleInfo;
+  rating: Rating | null;
+}
+
+export interface RatingGetRequest {
+  type: 'rating-get';
+  id: string;
+  kind: Kind;
+}
+
+export interface RatingResponse {
+  rating: Rating | null;
+  tasteCount: number;
 }
 
 export interface OpenOptionsRequest {
@@ -67,6 +84,18 @@ export function isAiCachedRequest(message: unknown): message is AiCachedRequest 
   return !!m && m.type === 'ai-cached' && hasInfo(m);
 }
 
+export function isRateRequest(message: unknown): message is RateRequest {
+  const m = asRecord(message);
+  return !!m && m.type === 'rate' && hasInfo(m) && (m.rating === 'up' || m.rating === 'down' || m.rating === null);
+}
+
+const KINDS: readonly unknown[] = ['anime', 'movie', 'series'];
+
+export function isRatingGetRequest(message: unknown): message is RatingGetRequest {
+  const m = asRecord(message);
+  return !!m && m.type === 'rating-get' && typeof m.id === 'string' && KINDS.includes(m.kind);
+}
+
 export function isOpenOptionsRequest(message: unknown): message is OpenOptionsRequest {
   return asRecord(message)?.type === 'open-options';
 }
@@ -90,4 +119,12 @@ export function sendAiCached(info: TitleInfo): Promise<AiCachedResponse> {
 
 export function sendOpenOptions(): Promise<void> {
   return send<OpenOptionsRequest, void>({ type: 'open-options' });
+}
+
+export function sendRate(info: TitleInfo, rating: Rating | null): Promise<RatingResponse> {
+  return send<RateRequest, RatingResponse>({ type: 'rate', info, rating });
+}
+
+export function sendRatingGet(id: string, kind: Kind): Promise<RatingResponse> {
+  return send<RatingGetRequest, RatingResponse>({ type: 'rating-get', id, kind });
 }

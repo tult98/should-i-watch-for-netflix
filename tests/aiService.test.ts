@@ -3,10 +3,11 @@ import { aiCacheKey } from '../src/background/ai/aiCache';
 import { AIError, type AIProvider } from '../src/background/ai/AIProvider';
 import { createAiService } from '../src/background/ai/aiService';
 import type { KeyValueStore } from '../src/background/cache';
-import type { TasteProfile } from '../src/background/taste/tasteProfile';
+import { getTasteProfile, type TasteProfile } from '../src/background/taste/tasteProfile';
+import { createTasteStore } from '../src/background/taste/tasteStore';
 import type { QuickBadge } from '../src/shared/quickBadge';
 import type { Settings } from '../src/shared/settings';
-import type { AIOpinion, AnimeInfo } from '../src/shared/types';
+import type { AIOpinion, AnimeInfo, MovieInfo } from '../src/shared/types';
 
 function memoryStore(): KeyValueStore & { data: Map<string, unknown> } {
   const data = new Map<string, unknown>();
@@ -123,5 +124,40 @@ describe('aiService', () => {
     const { service, opinionFn } = setup();
     await Promise.all([service.opinion(info, badge), service.opinion(info, badge)]);
     expect(opinionFn).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('aiService with the real taste store', () => {
+  const movie: MovieInfo = {
+    id: 'tmdb:movie:2',
+    kind: 'movie',
+    title: 'Y',
+    genres: ['Crime'],
+    scores: [],
+    match: { query: 'Y', matchedName: 'Y', confidence: 1, source: 'tmdb' },
+    directors: [],
+    cast: [],
+  };
+
+  it('asks again after a rating of the same kind, not of another kind', async () => {
+    const store = memoryStore();
+    const taste = createTasteStore(store);
+    const opinionFn = vi.fn<AIProvider['opinion']>(async () => opinion);
+    const service = createAiService({
+      store,
+      loadSettings: async () => ({ aiKey: 'sk' }),
+      getTasteProfile: (kind) => getTasteProfile(kind, taste),
+      provider: () => ({ id: 'test', opinion: opinionFn }),
+    });
+    await service.opinion(info, badge);
+    await taste.rate(movie, 'up');
+    expect(await service.opinion(info, badge)).toMatchObject({ fromCache: true, tasteCount: 0 });
+    await taste.rate({ ...info, id: 'mal:9' }, 'up');
+    expect(await service.opinion(info, badge)).toMatchObject({ fromCache: false, tasteCount: 1 });
+    expect(opinionFn).toHaveBeenCalledTimes(2);
+    expect([...store.data.keys()].filter((k) => k.startsWith('ai:'))).toEqual([
+      'ai:mal:1|anime|v0|deepseek-chat',
+      'ai:mal:1|anime|v1|deepseek-chat',
+    ]);
   });
 });
