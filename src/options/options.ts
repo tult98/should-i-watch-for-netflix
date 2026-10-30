@@ -1,6 +1,8 @@
 import './options.css';
 import { appName } from '../shared/appName';
-import { loadSettings, saveSettings, type Settings } from '../shared/settings';
+import { chromeLocalStore, clearLookupCache } from '../background/cache';
+import { chromeSettingsStore, loadSettings, type Settings } from '../shared/settings';
+import { saveAndInvalidate } from './save';
 import { strings } from '../shared/strings.vi';
 
 const t = strings.options;
@@ -54,6 +56,8 @@ function byId<T extends HTMLElement>(id: string): T {
 const form = byId<HTMLFormElement>('settings-form');
 const button = byId<HTMLButtonElement>('save');
 const status = byId<HTMLSpanElement>('status');
+const clearButton = byId<HTMLButtonElement>('clear-cache');
+const cacheStatus = byId<HTMLSpanElement>('cache-status');
 const inputs = FIELDS.map((field) => ({ field, input: byId<HTMLInputElement>(field.id) }));
 
 function renderStatic(): void {
@@ -61,6 +65,9 @@ function renderStatic(): void {
   document.title = name;
   byId('app-name').textContent = name;
   button.textContent = t.save;
+  byId('cache-heading').textContent = t.cacheHeading;
+  byId('cache-description').textContent = t.cacheDescription;
+  clearButton.textContent = t.clearCache;
   for (const field of FIELDS) {
     byId(`${field.id}-label`).textContent = field.label;
     const link = document.createElement('a');
@@ -87,14 +94,31 @@ form.addEventListener('submit', (event) => {
   setStatus(t.saving);
   const draft: Settings = {};
   for (const { field, input } of inputs) draft[field.key] = input.value;
-  saveSettings(draft)
-    .then((saved) => {
+  saveAndInvalidate(draft, chromeSettingsStore(), chromeLocalStore())
+    .then(({ saved, cacheCleared }) => {
       fill(saved);
-      setStatus(t.saved);
+      setStatus(cacheCleared ? t.savedCacheCleared : t.saved);
     })
     .catch(() => setStatus(t.saveFailed, true))
     .finally(() => {
       button.disabled = false;
+    });
+});
+
+clearButton.addEventListener('click', () => {
+  clearButton.disabled = true;
+  cacheStatus.classList.remove('error');
+  cacheStatus.textContent = t.clearingCache;
+  clearLookupCache(chromeLocalStore())
+    .then((count) => {
+      cacheStatus.textContent = t.cacheCleared(count);
+    })
+    .catch(() => {
+      cacheStatus.textContent = t.clearCacheFailed;
+      cacheStatus.classList.add('error');
+    })
+    .finally(() => {
+      clearButton.disabled = false;
     });
 });
 

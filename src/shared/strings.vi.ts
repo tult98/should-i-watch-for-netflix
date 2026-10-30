@@ -13,5 +13,12 @@ export const strings = {
     saving: 'Đang lưu…',
     saved: 'Đã lưu',
     saveFailed: 'Không lưu được',
+    savedCacheCleared: 'Đã lưu và xóa bộ nhớ đệm',
+    cacheHeading: 'Bộ nhớ đệm',
+    cacheDescription: 'Kết quả tra cứu được giữ 7 ngày, kết quả không khớp được giữ 1 ngày.',
+    clearCache: 'Xóa cache',
+    clearingCache: 'Đang xóa…',
+    cacheCleared: (count: number) => `Đã xóa ${count} mục`,
+    clearCacheFailed: 'Không xóa được',
   },
 } as const;

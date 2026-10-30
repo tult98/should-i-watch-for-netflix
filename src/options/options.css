@@ -95,3 +95,19 @@ button:disabled {
 .status.error {
   color: var(--accent);
 }
+
+.cache {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cache .hint {
+  margin-top: 0;
+}

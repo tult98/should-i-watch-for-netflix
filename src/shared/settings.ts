@@ -39,6 +39,12 @@ function sanitize(value: unknown): Settings {
   return clean;
 }
 
+export function sourceKeysChanged(before: Settings, after: Settings): boolean {
+  const a = sanitize(before);
+  const b = sanitize(after);
+  return KEYS.some((key) => a[key] !== b[key]);
+}
+
 export async function loadSettings(store: SettingsStore = chromeSettingsStore()): Promise<Settings> {
   return sanitize(await store.get(SETTINGS_KEY));
 }

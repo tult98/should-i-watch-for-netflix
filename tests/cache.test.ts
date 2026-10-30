@@ -3,6 +3,7 @@ import {
   DAY_MS,
   MATCH_TTL_MS,
   NO_MATCH_TTL_MS,
+  clearLookupCache,
   createLookupCache,
   lookupCacheKey,
   type KeyValueStore,
@@ -32,6 +33,7 @@ function memoryStore(): KeyValueStore & { data: Map<string, unknown> } {
     get: async (key) => data.get(key),
     set: async (key, value) => void data.set(key, value),
     remove: async (key) => void data.delete(key),
+    keys: async () => [...data.keys()],
   };
 }
 
@@ -89,5 +91,21 @@ describe('lookup cache', () => {
     const { cache, store } = setup();
     store.data.set('k', 'junk');
     expect(await cache.get('k')).toBeUndefined();
+  });
+});
+
+describe('clearLookupCache', () => {
+  it('removes only lookup keys and reports the count', async () => {
+    const { store, cache } = setup();
+    await cache.set(lookupCacheKey('en', 'Lupin'), match);
+    await cache.set(lookupCacheKey('en', 'Naruto', 2002), match);
+    store.data.set('settings', { tmdbKey: 'k' });
+    store.data.set('taste:ratings', []);
+    expect(await clearLookupCache(store)).toBe(2);
+    expect([...store.data.keys()].sort()).toEqual(['settings', 'taste:ratings']);
+  });
+
+  it('returns 0 when nothing is cached', async () => {
+    expect(await clearLookupCache(setup().store)).toBe(0);
   });
 });

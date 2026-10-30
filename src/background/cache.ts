@@ -1,6 +1,8 @@
 import { normalizeTitle } from '../shared/normalize';
 import type { LookupResult } from '../shared/types';
 
+const LOOKUP_PREFIX = 'lookup:';
+
 export const DAY_MS = 24 * 60 * 60 * 1_000;
 export const MATCH_TTL_MS = 7 * DAY_MS;
 export const NO_MATCH_TTL_MS = DAY_MS;
@@ -9,6 +11,7 @@ export interface KeyValueStore {
   get(key: string): Promise<unknown>;
   set(key: string, value: unknown): Promise<void>;
   remove(key: string): Promise<void>;
+  keys(): Promise<string[]>;
 }
 
 interface Entry {
@@ -22,7 +25,7 @@ export interface LookupCache {
 }
 
 export function lookupCacheKey(lang: string, title: string, year?: number): string {
-  return `lookup:${lang}|${normalizeTitle(title)}|${year ?? '-'}`;
+  return `${LOOKUP_PREFIX}${lang}|${normalizeTitle(title)}|${year ?? '-'}`;
 }
 
 function isEntry(value: unknown): value is Entry {
@@ -54,6 +57,12 @@ export function createLookupCache(store: KeyValueStore, now: () => number = Date
   };
 }
 
+export async function clearLookupCache(store: KeyValueStore): Promise<number> {
+  const stale = (await store.keys()).filter((key) => key.startsWith(LOOKUP_PREFIX));
+  for (const key of stale) await store.remove(key);
+  return stale.length;
+}
+
 export function chromeLocalStore(): KeyValueStore {
   return {
     async get(key) {
@@ -62,5 +71,6 @@ export function chromeLocalStore(): KeyValueStore {
     },
     set: (key, value) => chrome.storage.local.set({ [key]: value }),
     remove: (key) => chrome.storage.local.remove(key),
+    keys: async () => Object.keys(await chrome.storage.local.get(null)),
   };
 }

@@ -185,7 +185,7 @@ For an English profile like yours, the second pass almost never runs. For other 
 | `taste:ratings` | list of `RatedTitle` | none |
 | `settings` | `Settings` | none |
 
-Caching `no_match` is how an unmatched title stays silent on the second hover without another API call. Errors are never cached.
+Caching `no_match` is how an unmatched title stays silent on the second hover without another API call. Errors are never cached. Saving a changed MAL Client ID, TMDB key or OMDb key on the options page clears every `lookup:` entry, so a `no_match` computed before the key existed does not linger. The options page also has a button that clears them by hand.
 
 ### Taste profile
 
