@@ -1,34 +1,36 @@
 /*
- * Every Netflix selector lives in this file. None of them has been verified
- * against the live site; Netflix ships obfuscated, changing markup.
+ * Every Netflix selector lives in this file. They were verified against the
+ * live site on 2026-10-30. Class names are generated hashes that change
+ * between deploys, so only data-uia, aria-label and href are used.
  *
  * When hover logs stop appearing or show the wrong title, open DevTools on
  * netflix.com, inspect a card, and check:
- * - which ancestor of the hovered element wraps a single title (CARD_SELECTORS)
- * - where the title text lives: an aria-label on the link, a .fallback-text
- *   node, or an img alt (readTitle)
- * - where the expanded preview shows the release year (YEAR_SELECTORS)
+ * - the card is still an <a> whose data-uia is one of CARD_UIA_VALUES
+ * - the anchor's aria-label still holds the title (readTitle)
+ * - the href still carries the title id as /browse?jbv=<id> or /title/<id>
+ *   (readNetflixId)
+ * - the hover preview is still a dialog with data-uia
+ *   "modal-motion-container-MINI_MODAL" and a "videoMetadata--container"
+ *   inside (findPreview, readYear)
  * - whether <html lang> still carries the profile language (readProfileLanguage)
  */
 
-// Outermost wrapper first, so nested markup resolves one title to one element.
-const CARD_SELECTORS = [
-  '.slider-item',
-  '[data-uia="title-card"]',
-  '.title-card-container',
-  '.title-card',
-];
+const CARD_UIA_VALUES = ['progress-card', 'standard-card', 'ranked-card', 'episodic-card'];
 
-const PREVIEW_MODAL_SELECTOR = '.previewModal--wrapper';
+const CARD_SELECTOR = CARD_UIA_VALUES.map((uia) => `a[aria-label][data-uia="${uia}"]`).join(', ');
 
-const YEAR_SELECTORS = ['.year', '[data-uia="videoMetadata--year"]'];
+const FALLBACK_CARD_SELECTOR = 'a[aria-label][data-uia$="-card"]';
+
+const PREVIEW_SELECTOR = '[data-uia="modal-motion-container-MINI_MODAL"]';
+
+const PREVIEW_METADATA_SELECTOR = '[data-uia="videoMetadata--container"]';
 
 export function findCard(target: Element): Element | null {
-  for (const selector of CARD_SELECTORS) {
-    const card = target.closest(selector);
-    if (card) return card;
-  }
-  return null;
+  return target.closest(CARD_SELECTOR) ?? target.closest(FALLBACK_CARD_SELECTOR);
+}
+
+export function findPreview(target: Element): Element | null {
+  return target.closest(PREVIEW_SELECTOR);
 }
 
 function clean(text: string | null | undefined): string | null {
@@ -37,21 +39,22 @@ function clean(text: string | null | undefined): string | null {
 }
 
 export function readTitle(card: Element): string | null {
-  const link = card.matches('a[aria-label]') ? card : card.querySelector('a[aria-label]');
-  return (
-    clean(link?.getAttribute('aria-label')) ??
-    clean(card.querySelector('.fallback-text')?.textContent) ??
-    clean(card.querySelector('img[alt]')?.getAttribute('alt'))
-  );
+  return clean(card.getAttribute('aria-label'));
+}
+
+export function readNetflixId(card: Element): string | undefined {
+  const href = card.getAttribute('href');
+  if (!href) return undefined;
+  const url = new URL(href, 'https://www.netflix.com');
+  const jbv = url.searchParams.get('jbv');
+  if (jbv && /^\d+$/.test(jbv)) return jbv;
+  return url.pathname.match(/\/title\/(\d+)/)?.[1];
 }
 
 export function readYear(card: Element): number | undefined {
-  const scope = card.ownerDocument.querySelector(PREVIEW_MODAL_SELECTOR) ?? card;
-  for (const selector of YEAR_SELECTORS) {
-    const match = scope.querySelector(selector)?.textContent?.match(/\b(19|20)\d{2}\b/);
-    if (match) return Number(match[0]);
-  }
-  return undefined;
+  const metadata = card.ownerDocument.querySelector(`${PREVIEW_SELECTOR} ${PREVIEW_METADATA_SELECTOR}`);
+  const match = metadata?.textContent?.match(/\b(19|20)\d{2}\b/);
+  return match ? Number(match[0]) : undefined;
 }
 
 export function readProfileLanguage(doc: Document): string {

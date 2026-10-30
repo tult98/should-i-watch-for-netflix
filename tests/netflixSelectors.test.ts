@@ -1,27 +1,88 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest';
-import { findCard, readTitle } from '../src/content/netflixSelectors';
+import { beforeEach, describe, expect, it } from 'vitest';
+import {
+  findCard,
+  findPreview,
+  readNetflixId,
+  readTitle,
+  readYear,
+} from '../src/content/netflixSelectors';
 
-describe('findCard with nested markup', () => {
+function renderPage(metadata: string) {
   document.body.innerHTML = `
-    <div class="slider-item">
-      <div class="title-card-container">
-        <div class="title-card">
-          <a aria-label="Frieren"><img alt="poster" /></a>
+    <section data-uia="carousel-row-section-0">
+      <div data-uia="carousel-scroller">
+        <button data-uia="carousel-hawkins-left-button"><span>prev</span></button>
+        <div>
+          <div data-virtual-slot="5">
+            <div><div>
+              <a href="/browse?jbv=70204957" tabindex="0" aria-label="Bleach" data-uia="progress-card">
+                <div><div><img id="bleach-img" src="b.jpg" alt="" class="continue-watching-card tracked-card"></div></div>
+              </a>
+            </div></div>
+          </div>
+          <div data-virtual-slot="6">
+            <div><div>
+              <a href="/title/81091393" tabindex="0" aria-label="Frieren" data-uia="standard-card">
+                <div><div><img src="f.jpg" alt=""></div></div>
+              </a>
+            </div></div>
+          </div>
+        </div>
+        <div data-uia="episodic-card+still"><img alt=""></div>
+        <div data-uia="card-image-overlay"><div data-uia="card-image-logo"></div></div>
+        <div data-uia="carousel-hawkins-right-button-peek-scrim"></div>
+      </div>
+    </section>
+    <div data-uia="modal-motion-container-MINI_MODAL" role="dialog">
+      <div data-uia="previewModal--player_container"></div>
+      <div data-uia="previewModal--info-container">
+        <div data-uia="previewModal--metadatAndControls">
+          <div data-uia="mini-modal-controls"><button>Play</button></div>
+          <div data-uia="videoMetadata--container"><span>${metadata}</span></div>
         </div>
       </div>
     </div>`;
-  const sliderItem = document.querySelector('.slider-item')!;
+}
 
-  it.each([
-    ['img', 'img'],
-    ['link', 'a'],
-    ['.title-card', '.title-card'],
-  ])('resolves the outermost wrapper from the %s', (_name, selector) => {
-    expect(findCard(document.querySelector(selector)!)).toBe(sliderItem);
+const q = (selector: string) => document.querySelector(selector)!;
+
+describe('netflixSelectors', () => {
+  beforeEach(() => renderPage('Show T16 4 Seasons HD'));
+
+  it('resolves the card anchor from its image', () => {
+    expect(findCard(q('#bleach-img'))).toBe(q('[aria-label="Bleach"]'));
   });
 
-  it('reads the title from the card', () => {
-    expect(readTitle(sliderItem)).toBe('Frieren');
+  it.each([
+    ['left arrow button', '[data-uia="carousel-hawkins-left-button"] span'],
+    ['right arrow scrim', '[data-uia="carousel-hawkins-right-button-peek-scrim"]'],
+    ['episodic-card+still', '[data-uia="episodic-card+still"] img'],
+    ['card-image-overlay', '[data-uia="card-image-overlay"]'],
+    ['card-image-logo', '[data-uia="card-image-logo"]'],
+  ])('finds no card from the %s', (_name, selector) => {
+    expect(findCard(q(selector))).toBeNull();
+  });
+
+  it('reads title and Netflix id from both href shapes', () => {
+    const bleach = q('[data-uia="progress-card"]');
+    const frieren = q('[data-uia="standard-card"]');
+    expect([readTitle(bleach), readNetflixId(bleach)]).toEqual(['Bleach', '70204957']);
+    expect([readTitle(frieren), readNetflixId(frieren)]).toEqual(['Frieren', '81091393']);
+  });
+
+  it('finds the preview dialog from inside it and nothing from a card', () => {
+    const dialog = q('[data-uia="modal-motion-container-MINI_MODAL"]');
+    expect(findPreview(q('[data-uia="mini-modal-controls"] button'))).toBe(dialog);
+    expect(findPreview(q('#bleach-img'))).toBeNull();
+  });
+
+  it('reads no year from show metadata without one', () => {
+    expect(readYear(q('[data-uia="progress-card"]'))).toBeUndefined();
+  });
+
+  it('reads the year from the preview metadata', () => {
+    renderPage('2023 HD');
+    expect(readYear(q('[data-uia="progress-card"]'))).toBe(2023);
   });
 });
