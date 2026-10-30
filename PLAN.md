@@ -408,17 +408,32 @@ Decisions made while building it:
 - While the AI request runs the hover controller holds the popover: leaving it does not hide it, and the hide runs 150 ms after the answer if the pointer is still away. Hovering another card still swaps the popover, and the late answer is dropped because its popover root is no longer in the document.
 - When `needSummary` is true, `summary_vi` replaces the synopsis text and the label becomes "Tóm tắt". A title with no synopsis gains that section. A Vietnamese TMDB overview stays as it was.
 - Errors show one yellow line in the AI slot. A missing or rejected key adds "mở trang cài đặt", which asks the service worker to call `chrome.runtime.openOptionsPage()`, since content scripts cannot.
-- The 👍 button's filled state in the AI variant of the design belongs to step (f), so it is not drawn yet.
+- The 👍 button's filled state in the AI variant of the design belongs to step (f), so it was not drawn in this step.
 
 The DeepSeek request shape, the 402 status for an empty balance, and JSON mode needing the word "json" come from memory of DeepSeek's docs. One live call still needs to confirm them.
 
 ### (f) Taste profile and options page
 
-Files: `background/taste/*`, the full `options/*`, and the `tasteProfile` test.
+Files: `background/taste/*`, `content/popover/rating.ts`, the full `options/*`, and the `tasteStore`, `tasteProfile`, `thresholds`, `optionsView` and `rating` tests.
 
-The options page follows the design board: AI settings with "Thử kết nối", the data source keys, both threshold sets with "Về mặc định", the taste profile tabs per kind, "Xem dữ liệu đã lưu", "Xóa toàn bộ hồ sơ gu", and "Xóa cache".
+The options page follows the design board: AI settings with "Thử kết nối", the data source keys, all three threshold sets with "Về mặc định", the taste profile tabs per kind, "Xem dữ liệu đã lưu", "Xóa toàn bộ hồ sơ gu", and "Xóa cache".
 
 Check on Netflix: rate three anime 👍 that share a genre, then ask the AI about a fourth anime. The reason mentions that genre. A movie's AI verdict stays the same as before the anime ratings.
+
+Decisions made while building it:
+
+- `tasteStore.ts` keeps the ratings as one list under `taste:ratings` and the per-kind versions under `taste:versions` as `{ anime, movie, series }`. A rating that changes nothing (👍 on a title already 👍) writes nothing and keeps the version. Writes run one after another inside the service worker, so two fast clicks cannot drop each other.
+- A `RatedTitle` takes episodes as the length for anime and series and `runtimeMin` for movies. A zero runtime counts as missing. Makers are studios, directors, or creators.
+- "Xóa toàn bộ hồ sơ gu" removes the ratings, the versions and every `ai:` entry. Versions restart at 0 after it, so an old `ai:` entry under a reused version number must not survive.
+- `buildProfile(ratings, kind, version, nowMs)` nets each genre as up minus down, counting a genre once per title. Positive nets go to `likedGenres`, negative to `dislikedGenres`, a zero net to neither. Each list is sorted by magnitude then name and capped at 6. `preferredLength` is the median of liked lengths, rounded, once two liked titles have one. `era` needs three liked titles with a year: 70% or more within 10 calendar years is `new`, 30% or less is `old`, otherwise `mixed`.
+- The profile gains `topMakers`: up to 3 studios, directors or creators that appear on at least two liked titles. A maker liked once says little. It reaches the prompt without a prompt change, since the payload sends the whole profile minus `kind` and `version`.
+- Messages `rate { info, rating }` and `rating-get { id, kind }` both answer `{ rating, tasteCount }`, where `tasteCount` counts ratings of that kind. A failed write answers with the stored state.
+- The popover reads `rating-get` together with `ai-cached` before it shows, so a pressed 👍 never pops in. A click flips the button at once and only the answer to the newest click may correct it. A failed message puts the old state back. Both buttons carry `aria-pressed`, and the pressed style is the design's white fill, `#ffffff` with `#141414` icon, for 👍 and 👎 alike.
+- A rating does not re-run the AI. A new popover for a title of the same kind no longer shows the old cached opinion, because its cache key carries the old version. "Đánh giá lại theo gu" asks again with the new profile.
+- The options page is built in TypeScript with `h()`, and `options.html` is an empty `<main>`. Each section follows `design/options.html`, including its inline sizes and colours, with the font stack of the popover. The design's provider dropdown is left out, since the base URL field already picks the provider. AI settings and data source keys save with their own buttons, "Lưu cài đặt AI" and "Lưu nguồn dữ liệu". Only the second can clear the lookup cache.
+- Three threshold sections: MAL, IMDb, and TMDB. Scores accept `0` to `10` with a dot decimal. Votes and rank accept whole numbers only. Anything else, a negative, or an empty field marks the input with `aria-invalid` and lists the error under the rows. An empty rank turns the rank rule off. "Về mặc định" fills the defaults and saves them at once. The popover already reads `Settings.thresholds` on every lookup, so a saved change applies on the next hover.
+- The taste section recomputes from storage on `chrome.storage.onChanged`, so a 👍 on Netflix shows without a reload. "Xem dữ liệu đã lưu" toggles a `<pre>` with every stored rating as JSON.
+- The page ends with the TMDB attribution line in English, as TMDB's terms ask.
 
 ### (g) Toolbar popup
 
