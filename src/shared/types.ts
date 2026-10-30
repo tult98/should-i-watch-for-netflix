@@ -83,3 +83,17 @@ export interface Thresholds {
   imdb: ThresholdSet;
   tmdb: ThresholdSet;
 }
+
+export interface AIOpinion {
+  summary_vi: string;
+  verdict: Verdict;
+  reason_vi: string;
+}
+
+export type AIErrorReason =
+  | 'missing_ai_key'
+  | 'bad_ai_key'
+  | 'ai_no_balance'
+  | 'ai_bad_response'
+  | 'network'
+  | 'rate_limited';
