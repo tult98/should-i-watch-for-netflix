@@ -82,12 +82,19 @@ describe('buildMessages', () => {
 });
 
 describe('needSummary', () => {
-  it('is true for anime and for English or missing TMDB synopses', () => {
-    expect(needSummary(anime)).toBe(true);
-    expect(needSummary({ ...anime, synopsis: { text: 'x', lang: 'vi' } })).toBe(true);
-    expect(needSummary(movie)).toBe(false);
-    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'en' } })).toBe(true);
-    expect(needSummary({ ...movie, synopsis: undefined })).toBe(true);
-    expect(needSummary({ ...movie, synopsis: { text: '  ', lang: 'vi' } })).toBe(true);
+  it('is true for foreign-language or missing synopses in Vietnamese', () => {
+    expect(needSummary(anime, 'vi')).toBe(true);
+    expect(needSummary({ ...anime, synopsis: undefined }, 'vi')).toBe(true);
+    expect(needSummary(movie, 'vi')).toBe(false);
+    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'en' } }, 'vi')).toBe(true);
+    expect(needSummary({ ...movie, synopsis: undefined }, 'vi')).toBe(true);
+    expect(needSummary({ ...movie, synopsis: { text: '  ', lang: 'vi' } }, 'vi')).toBe(true);
+  });
+
+  it('is false for an English synopsis in English', () => {
+    expect(needSummary(anime, 'en')).toBe(false);
+    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'en' } }, 'en')).toBe(false);
+    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'vi' } }, 'en')).toBe(true);
+    expect(needSummary({ ...movie, synopsis: undefined }, 'en')).toBe(true);
   });
 });

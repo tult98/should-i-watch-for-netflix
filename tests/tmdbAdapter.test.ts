@@ -211,3 +211,13 @@ describe('TmdbAdapter details', () => {
     });
   });
 });
+
+describe('TmdbAdapter details in English', () => {
+  it('asks for en-US and tags the overview with the locale', async () => {
+    const fetch = respondWith({ ...irishman, overview: 'An aging hitman looks back.' });
+    const m = match({ tmdbId: 398978, query: 'The Irishman', matchedName: 'The Irishman', confidence: 1 });
+    const details = await createTmdbAdapter(fetch, V3_KEY, 'en').details(m);
+    expect(fetch.mock.calls[0]![0]).toContain('language=en-US');
+    expect(details.info.synopsis).toEqual({ text: 'An aging hitman looks back.', lang: 'en' });
+  });
+});

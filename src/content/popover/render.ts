@@ -1,6 +1,6 @@
 import { ageLabel } from '../../shared/ageLabel';
 import type { QuickBadge } from '../../shared/quickBadge';
-import { strings } from '../../shared/i18n';
+import { locale, strings } from '../../shared/i18n';
 import type { AnimeInfo, MovieInfo, Rating, Score, ScoreSource, SeriesInfo, TitleInfo } from '../../shared/types';
 import { h, icon, type Child } from './dom';
 import { scoreIcon } from './scoreIcons';
@@ -112,15 +112,15 @@ export interface PopoverHooks {
   onRate?: (clicked: Rating) => void;
 }
 
-function synopsisBlock(info: TitleInfo, enLabel: string): HTMLElement | null {
+function synopsisBlock(info: TitleInfo, foreignLabel: string): HTMLElement | null {
   const synopsis = info.synopsis;
   if (!synopsis?.text.trim()) return null;
-  const en = synopsis.lang === 'en';
+  const foreign = synopsis.lang !== locale;
   return h(
     'div',
     { class: 'section synopsis-section' },
-    h('span', { class: 'label' }, en ? enLabel : t.synopsis),
-    h('p', { class: en ? 'synopsis synopsis-en' : 'synopsis' }, synopsis.text),
+    h('span', { class: 'label' }, foreign ? foreignLabel : t.synopsis),
+    h('p', { class: foreign ? 'synopsis synopsis-en' : 'synopsis' }, synopsis.text),
   );
 }
 
