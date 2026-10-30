@@ -1,5 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { RequestError, createRequestQueue, parseRetryAfter, type FetchFn } from '../src/background/requestQueue';
+import {
+  REQUEST_TIMEOUT_MS,
+  RequestError,
+  createRequestQueue,
+  parseRetryAfter,
+  type FetchFn,
+} from '../src/background/requestQueue';
 
 const JIKAN = 'https://api.jikan.moe/v4/anime?q=x';
 
@@ -11,15 +17,20 @@ function tooMany(retryAfter?: string): Response {
   return new Response('', { status: 429, headers: retryAfter ? { 'Retry-After': retryAfter } : {} });
 }
 
-function setup(respond: () => Response | Promise<Response> = ok) {
+function setup(respond: (init?: RequestInit) => Response | Promise<Response> = ok) {
   const calls: number[] = [];
-  const fetch = vi.fn<FetchFn>(async () => {
+  const fetch = vi.fn<FetchFn>(async (_url, init) => {
     calls.push(Date.now());
-    return respond();
+    return respond(init);
   });
   const queue = createRequestQueue({
     fetch,
-    clock: { now: () => Date.now(), sleep: (ms) => new Promise((r) => setTimeout(r, ms)) },
+    clock: {
+      now: () => Date.now(),
+      sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
+      setTimeout: (fn, ms) => setTimeout(fn, ms),
+      clearTimeout: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
+    },
   });
   return { queue, fetch, calls };
 }
@@ -107,6 +118,28 @@ describe('requestQueue', () => {
       throw new TypeError('Failed to fetch');
     });
     await expect(queue.fetch(JIKAN)).rejects.toMatchObject({ reason: 'network' });
+  });
+
+  it('aborts a request that hangs past the timeout as a network error', async () => {
+    let signal: AbortSignal | undefined;
+    const { queue } = setup((init) => {
+      signal = init?.signal ?? undefined;
+      return new Promise<Response>(() => {});
+    });
+    const result = queue.fetch(JIKAN).catch((e: unknown) => e);
+    await vi.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS - 1);
+    expect(signal?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    const error = await result;
+    expect(error).toBeInstanceOf(RequestError);
+    expect((error as RequestError).reason).toBe('network');
+    expect(signal?.aborted).toBe(true);
+  });
+
+  it('clears the timeout once the response arrives', async () => {
+    const { queue } = setup();
+    await queue.fetch(JIKAN);
+    expect(vi.getTimerCount()).toBe(0);
   });
 
   it('returns other error statuses to the caller', async () => {

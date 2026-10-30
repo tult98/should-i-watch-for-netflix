@@ -1,6 +1,8 @@
 export interface Clock {
   now(): number;
   sleep(ms: number): Promise<void>;
+  setTimeout(fn: () => void, ms: number): unknown;
+  clearTimeout(handle: unknown): void;
 }
 
 export interface RateWindow {
@@ -27,10 +29,13 @@ export const DEFAULT_LIMITS: Record<string, RateWindow[]> = {
 };
 
 export const RETRY_DELAYS_MS = [1_000, 2_000, 4_000];
+export const REQUEST_TIMEOUT_MS = 10_000;
 
 export const systemClock: Clock = {
   now: () => Date.now(),
   sleep: (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
+  setTimeout: (fn, ms) => setTimeout(fn, ms),
+  clearTimeout: (handle) => clearTimeout(handle as ReturnType<typeof setTimeout>),
 };
 
 export interface RequestQueueOptions {
@@ -89,16 +94,31 @@ export function createRequestQueue(options: RequestQueueOptions): RequestQueue {
     return next;
   }
 
+  // The race matters as much as the abort: a fetch that ignores the signal must still fail on time.
+  async function fetchWithTimeout(url: string, init?: RequestInit): Promise<Response> {
+    const controller = new AbortController();
+    let timer: unknown;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = clock.setTimeout(() => {
+        controller.abort();
+        reject(new RequestError('network', `timed out after ${REQUEST_TIMEOUT_MS} ms`));
+      }, REQUEST_TIMEOUT_MS);
+    });
+    try {
+      return await Promise.race([options.fetch(url, { ...init, signal: controller.signal }), timeout]);
+    } catch (err) {
+      if (err instanceof RequestError) throw err;
+      throw new RequestError('network', err instanceof Error ? err.message : String(err));
+    } finally {
+      clock.clearTimeout(timer);
+    }
+  }
+
   async function send(url: string, init?: RequestInit): Promise<Response> {
     const host = new URL(url).host;
     for (let attempt = 0; ; attempt++) {
       await acquire(host);
-      let response: Response;
-      try {
-        response = await options.fetch(url, init);
-      } catch (err) {
-        throw new RequestError('network', err instanceof Error ? err.message : String(err));
-      }
+      const response = await fetchWithTimeout(url, init);
       if (response.status !== 429) return response;
       if (attempt >= RETRY_DELAYS_MS.length) throw new RequestError('rate_limited');
       const delay =
