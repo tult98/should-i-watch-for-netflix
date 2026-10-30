@@ -8,6 +8,7 @@ export interface Settings {
   aiModel?: string;
   aiKey?: string;
   thresholds?: Thresholds;
+  enabled?: boolean;
 }
 
 const KEYS = ['malClientId', 'tmdbKey', 'omdbKey'] as const satisfies readonly (keyof Settings)[];
@@ -68,6 +69,10 @@ export function thresholdsOf(settings: Settings): Thresholds {
   return settings.thresholds ?? DEFAULT_THRESHOLDS;
 }
 
+export function enabledOf(settings: Settings): boolean {
+  return settings.enabled !== false;
+}
+
 export const SETTINGS_KEY = 'settings';
 
 export interface SettingsStore {
@@ -125,7 +130,7 @@ function sanitizeThresholds(value: unknown): Thresholds | undefined {
   return { mal: pick('mal'), imdb: pick('imdb'), tmdb: pick('tmdb') };
 }
 
-function sanitize(value: unknown): Settings {
+export function parseSettings(value: unknown): Settings {
   if (!isRecord(value)) return {};
   const clean: Settings = {};
   for (const key of [...KEYS, ...AI_KEYS]) {
@@ -135,24 +140,29 @@ function sanitize(value: unknown): Settings {
   if (clean.aiBaseUrl && !parseAiBaseUrl(clean.aiBaseUrl)) delete clean.aiBaseUrl;
   const thresholds = sanitizeThresholds(value.thresholds);
   if (thresholds) clean.thresholds = thresholds;
+  if (typeof value.enabled === 'boolean') clean.enabled = value.enabled;
   return clean;
 }
 
 export function sourceKeysChanged(before: Settings, after: Settings): boolean {
-  const a = sanitize(before);
-  const b = sanitize(after);
+  const a = parseSettings(before);
+  const b = parseSettings(after);
   return KEYS.some((key) => a[key] !== b[key]);
 }
 
 export async function loadSettings(store: SettingsStore = chromeSettingsStore()): Promise<Settings> {
-  return sanitize(await store.get(SETTINGS_KEY));
+  return parseSettings(await store.get(SETTINGS_KEY));
 }
 
 export async function saveSettings(
   settings: Settings,
   store: SettingsStore = chromeSettingsStore(),
 ): Promise<Settings> {
-  const clean = sanitize(settings);
+  const clean = parseSettings(settings);
   await store.set(SETTINGS_KEY, clean);
   return clean;
+}
+
+export async function saveEnabled(enabled: boolean, store: SettingsStore = chromeSettingsStore()): Promise<Settings> {
+  return saveSettings({ ...(await loadSettings(store)), enabled }, store);
 }

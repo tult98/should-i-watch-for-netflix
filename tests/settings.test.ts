@@ -4,6 +4,8 @@ import {
   DEFAULT_AI_MODEL,
   DEFAULT_THRESHOLDS,
   aiSettingsOf,
+  enabledOf,
+  saveEnabled,
   parseAiBaseUrl,
   SETTINGS_KEY,
   loadSettings,
@@ -93,5 +95,25 @@ describe('AI settings', () => {
     expect(parseAiBaseUrl('https://api.deepseek.com/chat/completions')?.origin).toBe('https://api.deepseek.com');
     expect(parseAiBaseUrl('ftp://x')).toBeNull();
     expect(parseAiBaseUrl('not a url')).toBeNull();
+  });
+});
+
+describe('settings enabled', () => {
+  it('is on when unset and off only when stored as false', async () => {
+    const store = memoryStore();
+    expect(enabledOf(await loadSettings(store))).toBe(true);
+    store.data.set(SETTINGS_KEY, { enabled: 'no' });
+    expect(enabledOf(await loadSettings(store))).toBe(true);
+    store.data.set(SETTINGS_KEY, { enabled: false });
+    expect(enabledOf(await loadSettings(store))).toBe(false);
+  });
+
+  it('saves the switch without touching the keys', async () => {
+    const store = memoryStore();
+    store.data.set(SETTINGS_KEY, { tmdbKey: 'k' });
+    await saveEnabled(false, store);
+    expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', enabled: false });
+    await saveEnabled(true, store);
+    expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', enabled: true });
   });
 });

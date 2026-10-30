@@ -52,6 +52,7 @@ export interface HoverControllerOptions<T> {
   debounceMs?: number;
   hideDelayMs?: number;
   skeletonDelayMs?: number;
+  enabled?: boolean;
 }
 
 export interface HoverController {
@@ -59,6 +60,8 @@ export interface HoverController {
   isCurrent(requestId: number): boolean;
   // Keeps the shown popover up while work started from it runs; returns the release function.
   hold(): () => void;
+  // Off drops any pending hover or lookup and hides the popover at once, even one held by AI work.
+  setEnabled(enabled: boolean): void;
   pointerOver(target: Element | null): void;
   pointerOut(target: Element | null, relatedTarget: Element | null): void;
   attach(doc: Document): () => void;
@@ -77,6 +80,7 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
   let nextRequestId = 0;
   let holds = 0;
   let hideDeferred = false;
+  let enabled = options.enabled ?? true;
 
   function currentCard(): Element | null {
     return state.name === 'idle' ? null : state.card;
@@ -187,8 +191,13 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
     if (displayed && state !== displayed) go(displayed);
   }
 
+  function setEnabled(next: boolean): void {
+    enabled = next;
+    if (!enabled) toIdle();
+  }
+
   function pointerOver(target: Element | null): void {
-    if (!target) return;
+    if (!target || !enabled) return;
     if (displayed && view.contains(target)) {
       enterPopover();
       return;
@@ -245,6 +254,7 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
     state: () => state,
     isCurrent: (requestId) => state.name === 'loading' && state.requestId === requestId,
     hold,
+    setEnabled,
     pointerOver,
     pointerOut,
     attach,

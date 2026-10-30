@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { KeyValueStore } from '../src/background/cache';
-import { saveAndInvalidate, saveWithPermission } from '../src/options/save';
+import { saveAndInvalidate, saveThresholdSet, saveWithPermission } from '../src/options/save';
 import { DEFAULT_AI_BASE_URL, DEFAULT_THRESHOLDS, SETTINGS_KEY, sourceKeysChanged } from '../src/shared/settings';
 
 function memoryStore(): KeyValueStore & { data: Map<string, unknown> } {
@@ -57,6 +57,23 @@ describe('saveAndInvalidate thresholds', () => {
     store.data.set(SETTINGS_KEY, { thresholds: DEFAULT_THRESHOLDS });
     await saveAndInvalidate({ tmdbKey: 'k' }, store, store);
     expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', thresholds: DEFAULT_THRESHOLDS });
+  });
+});
+
+describe('saveAndInvalidate enabled', () => {
+  it('keeps the popup switch when the options page saves keys or AI settings', async () => {
+    const store = memoryStore();
+    store.data.set(SETTINGS_KEY, { enabled: false });
+    await saveAndInvalidate({ tmdbKey: 'k' }, store, store);
+    await saveAndInvalidate({ aiKey: 'sk' }, store, store);
+    expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', aiKey: 'sk', enabled: false });
+  });
+
+  it('keeps the switch through a threshold save', async () => {
+    const store = memoryStore();
+    store.data.set(SETTINGS_KEY, { enabled: false });
+    await saveThresholdSet('mal', DEFAULT_THRESHOLDS.mal, store);
+    expect(store.data.get(SETTINGS_KEY)).toMatchObject({ enabled: false });
   });
 });
 

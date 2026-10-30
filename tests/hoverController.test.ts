@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createHoverController, type HoverFire } from '../src/content/hoverController';
+import { watchEnabled } from '../src/content/enabledSwitch';
 
 interface FakeNode {
   card: FakeNode | null;
@@ -410,5 +411,76 @@ describe('hoverController popover', () => {
 
     expect(calls).toEqual(['show A info-A', 'hide']);
     expect(controller.state().name).toBe('idle');
+  });
+});
+
+describe('hoverController on/off switch', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  function storage() {
+    let listener: ((changes: Record<string, { newValue?: unknown }>, area: string) => void) | undefined;
+    return {
+      events: { addListener: (l: typeof listener) => void (listener = l) },
+      set: (value: unknown) => listener!({ settings: { newValue: value } }, 'local'),
+    };
+  }
+
+  it('sends no lookup for a hover while the stored switch is off', async () => {
+    const s = setup();
+    const store = storage();
+    watchEnabled(store.events, async () => ({ enabled: false }), s.controller.setEnabled);
+    await vi.advanceTimersByTimeAsync(0);
+    enter(s.controller, outside, makeCard('A').child);
+    vi.advanceTimersByTime(1_000);
+    expect(s.fires).toHaveLength(0);
+    expect(s.calls).toEqual([]);
+  });
+
+  it('hides an open popover as soon as the switch turns off, and hovers again once it turns back on', async () => {
+    const s = setup();
+    const store = storage();
+    watchEnabled(store.events, async () => ({}), s.controller.setEnabled);
+    await vi.advanceTimersByTimeAsync(0);
+    const a = makeCard('A');
+    enter(s.controller, outside, a.child);
+    vi.advanceTimersByTime(300);
+    await s.answer(0, 'info-A');
+    s.controller.hold();
+
+    store.set({ enabled: false });
+    expect(s.calls).toEqual(['show A info-A', 'hide']);
+    expect(s.controller.state().name).toBe('idle');
+
+    store.set({ tmdbKey: 'k' });
+    const b = makeCard('B');
+    enter(s.controller, outside, b.child);
+    vi.advanceTimersByTime(300);
+    expect(s.fires.map((f) => f.title)).toEqual(['A', 'B']);
+  });
+
+  it('drops a lookup still in flight when the switch turns off', async () => {
+    const s = setup();
+    const store = storage();
+    watchEnabled(store.events, async () => ({}), s.controller.setEnabled);
+    await vi.advanceTimersByTimeAsync(0);
+    enter(s.controller, outside, makeCard('A').child);
+    vi.advanceTimersByTime(300);
+    store.set({ enabled: false });
+    await s.answer(0, 'info-A');
+    expect(s.calls).toEqual([]);
+  });
+
+  it('keeps a change that lands before the first load answers', async () => {
+    const s = setup();
+    const store = storage();
+    let answer!: (v: object) => void;
+    watchEnabled(store.events, () => new Promise((r) => (answer = r)), s.controller.setEnabled);
+    store.set({ enabled: false });
+    answer({});
+    await vi.advanceTimersByTimeAsync(0);
+    enter(s.controller, outside, makeCard('A').child);
+    vi.advanceTimersByTime(1_000);
+    expect(s.fires).toHaveLength(0);
   });
 });

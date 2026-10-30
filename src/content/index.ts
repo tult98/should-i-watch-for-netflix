@@ -3,6 +3,7 @@ import { quickVerdict, type QuickBadge } from '../shared/quickBadge';
 import type { Rating, TitleInfo } from '../shared/types';
 import { loadSettings, thresholdsOf } from '../shared/settings';
 import { describeResult } from './describeResult';
+import { watchEnabled } from './enabledSwitch';
 import { createHoverController, type HoverFire } from './hoverController';
 import {
   findCard,
@@ -149,6 +150,8 @@ const controller = createHoverController<HTMLElement>({
     readProfileLanguage: () => readProfileLanguage(document),
   },
   lookup,
+  // Off until the stored switch is read, so a hover in the first moments cannot send a lookup while it is off.
+  enabled: false,
   view: {
     showLoading: (card) => present(card, renderLoading()),
     showContent: present,
@@ -161,3 +164,7 @@ const controller = createHoverController<HTMLElement>({
 });
 
 const detach = controller.attach(document);
+watchEnabled(chrome.storage.onChanged, () => loadSettings(), (enabled) => {
+  console.log(`[hover] ${enabled ? 'enabled' : 'disabled'}`);
+  controller.setEnabled(enabled);
+});
