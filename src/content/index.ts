@@ -30,6 +30,20 @@ function describe(result: LookupResult): string {
   }
 }
 
+let detached = false;
+
+function isInvalidated(err: unknown): boolean {
+  const message = err instanceof Error ? err.message : String(err);
+  return message.includes('Extension context invalidated');
+}
+
+function handleInvalidated(): void {
+  if (detached) return;
+  detached = true;
+  detach();
+  console.log('[hover] extension was reloaded, refresh this tab');
+}
+
 const controller = createHoverController({
   timers: {
     setTimeout: (fn, ms) => window.setTimeout(fn, ms),
@@ -45,6 +59,10 @@ const controller = createHoverController({
   },
   onFire: ({ card, title, year, netflixId, lang }) => {
     console.log(`[hover] ${lang} ${title} ${year ?? '-'} ${netflixId ?? '-'}`);
+    if (!chrome.runtime?.id) {
+      handleInvalidated();
+      return;
+    }
     const id = ++requestId;
     sendLookup({ title, year, lang, netflixId }).then(
       (result) => {
@@ -52,6 +70,10 @@ const controller = createHoverController({
         console.log(`[lookup] ${title} -> ${describe(result)}`);
       },
       (err: unknown) => {
+        if (isInvalidated(err)) {
+          handleInvalidated();
+          return;
+        }
         if (!isCurrent(id, card)) return;
         console.log(`[lookup] ${title} -> error ${err instanceof Error ? err.message : String(err)}`);
       },
@@ -59,4 +81,4 @@ const controller = createHoverController({
   },
 });
 
-controller.attach(document);
+const detach = controller.attach(document);

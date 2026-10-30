@@ -18,5 +18,10 @@ export function isLookupRequest(message: unknown): message is LookupRequest {
 
 export function sendLookup(request: Omit<LookupRequest, 'type'>): Promise<LookupResponse> {
   const message: LookupRequest = { type: 'lookup', ...request };
-  return chrome.runtime.sendMessage<LookupRequest, LookupResponse>(message);
+  try {
+    return Promise.resolve(chrome.runtime.sendMessage<LookupRequest, LookupResponse>(message));
+  } catch (err) {
+    // sendMessage throws synchronously once the extension context is invalidated.
+    return Promise.reject(err);
+  }
 }
