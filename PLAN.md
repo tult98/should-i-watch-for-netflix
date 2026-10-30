@@ -398,6 +398,24 @@ The options page follows the design board: AI settings with "Thử kết nối",
 
 Check on Netflix: rate three anime 👍 that share a genre, then ask the AI about a fourth anime. The reason mentions that genre. A movie's AI verdict stays the same as before the anime ratings.
 
+### (g) Toolbar popup
+
+Files: `public/popup.html`, `src/popup/popup.ts`, `src/popup/popup.css`, a new esbuild entry, and `action.default_popup` in `manifest.json`.
+
+Clicking the toolbar icon opens a small status panel. The design file has no board for it, so it uses the popover's dark theme: `#181818` background, the same font stack, chips and buttons. It is a status panel, not a launcher, because the main action already happens on hover.
+
+The panel shows, from top to bottom:
+
+1. The extension icon and name. The name comes from `appName()`.
+2. An on/off switch stored as `Settings.enabled`, on by default. When it is off, the content script stops showing the popover and sends no lookups. The switch takes effect on the next hover without a page refresh, through `chrome.storage.onChanged`.
+3. A status row for each key: MyAnimeList Client ID, TMDB, OMDb and DeepSeek. Each row says "Đã cài" or "Chưa cài" and what a missing key costs, for example "Phim và series cần TMDB key". It checks only whether a key is saved, not whether it works.
+4. The number of rated titles per kind, for example "Anime 8 · Phim lẻ 3 · Series 2". It reads `taste:ratings` from step (f).
+5. Two buttons: "Mở cài đặt", which calls `chrome.runtime.openOptionsPage()`, and "Xóa cache", which reuses `clearLookupCache`.
+
+All strings live in `strings.vi.ts`. The popup needs no new permission.
+
+Check: click the icon with no keys saved and every key row reads "Chưa cài". Save a TMDB key on the options page and reopen the popup; the TMDB row reads "Đã cài". Turn the switch off and hover a card on Netflix; no popover and no `[lookup]` line. Turn it on and hover again; the popover returns without a refresh.
+
 ## Tests
 
 Vitest runs `npm test` with no browser. The tests cover `normalizeTitle`, `matchConfidence` with real title pairs such as "Frieren: Beyond Journey's End" against "Sousou no Frieren", every row of the routing table, every threshold boundary in `quickVerdict`, `buildProfile` per kind, and AI reply validation for good JSON, bad JSON, and a wrong verdict value.
