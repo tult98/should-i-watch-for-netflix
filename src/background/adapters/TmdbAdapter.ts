@@ -81,9 +81,7 @@ export interface TmdbMatch {
   matchedName: string;
   confidence: number;
   year?: number;
-  /** genre_ids has 16 (Animation). */
   animated: boolean;
-  /** origin_country has JP, or original_language is ja. */
   japanese: boolean;
 }
 
