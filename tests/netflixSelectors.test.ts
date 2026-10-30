@@ -64,6 +64,13 @@ describe('netflixSelectors', () => {
     expect(findCard(q(selector))).toBeNull();
   });
 
+  it('finds no card from an episode card', () => {
+    document.body.innerHTML = `<div data-virtual-slot="6"><div><div><a href="/browse?jbv=70196252" tabindex="0" aria-label="Pilot" data-uia="episodic-card"><div data-uia="episodic-card+still"><div><div><img alt="" class="standard-episodic-card tracked-card"><div data-uia="card-image-overlay"><div data-uia="card-image-bottom-start"><img alt="" data-is-card-logo="true" data-uia="card-image-logo"></div><div data-uia="card-image-bottom-end"><div data-uia="card-image-duration"><span>58m</span></div></div></div></div></div></div><div><h3><span>Pilot</span></h3><p>Drama • T18</p></div></a></div></div></div>`;
+    expect(findCard(q('img.standard-episodic-card'))).toBeNull();
+    expect(findCard(q('h3 span'))).toBeNull();
+    expect(findCard(q('[data-uia="episodic-card"]'))).toBeNull();
+  });
+
   it('reads title and Netflix id from both href shapes', () => {
     const bleach = q('[data-uia="progress-card"]');
     const frieren = q('[data-uia="standard-card"]');

@@ -13,13 +13,17 @@
  *   "modal-motion-container-MINI_MODAL" and a "videoMetadata--container"
  *   inside (findPreview, findOpenPreview, readYear)
  * - whether <html lang> still carries the profile language (readProfileLanguage)
+ *
+ * Episode cards (data-uia "episodic-card") are never cards here: their
+ * aria-label is the episode name, their jbv is the episode id, and nothing in
+ * the card or preview names the show, so a lookup would match an unrelated title.
  */
 
-const CARD_UIA_VALUES = ['progress-card', 'standard-card', 'ranked-card', 'episodic-card'];
+const CARD_UIA_VALUES = ['progress-card', 'standard-card', 'ranked-card'];
 
 const CARD_SELECTOR = CARD_UIA_VALUES.map((uia) => `a[aria-label][data-uia="${uia}"]`).join(', ');
 
-const FALLBACK_CARD_SELECTOR = 'a[aria-label][data-uia$="-card"]';
+const FALLBACK_CARD_SELECTOR = 'a[aria-label][data-uia$="-card"]:not([data-uia="episodic-card"])';
 
 const PREVIEW_SELECTOR = '[data-uia="modal-motion-container-MINI_MODAL"]';
 
