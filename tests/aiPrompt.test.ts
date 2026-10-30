@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { OpinionInput } from '../src/background/ai/AIProvider';
-import { needSummary } from '../src/background/ai/AIProvider';
+import { needSummary } from '../src/shared/needSummary';
 import { buildMessages } from '../src/background/ai/prompt';
 import { quickVerdict } from '../src/shared/quickBadge';
 import { DEFAULT_THRESHOLDS } from '../src/shared/settings';
