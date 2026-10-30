@@ -1,6 +1,6 @@
-import { sendAiCached, sendAiOpinion, sendLookup, sendOpenOptions } from '../shared/messages';
+import { sendAiCached, sendAiOpinion, sendLookup, sendOpenOptions, sendRate, sendRatingGet } from '../shared/messages';
 import { quickVerdict, type QuickBadge } from '../shared/quickBadge';
-import type { TitleInfo } from '../shared/types';
+import type { Rating, TitleInfo } from '../shared/types';
 import { loadSettings, thresholdsOf } from '../shared/settings';
 import { describeResult } from './describeResult';
 import { createHoverController, type HoverFire } from './hoverController';
@@ -16,6 +16,7 @@ import {
 } from './netflixSelectors';
 import { createPopoverHost } from './popover/host';
 import { applyAiError, applyAiResult, isAiLoading, setAiLoading } from './popover/ai';
+import { applyRateClick, currentRating, setRating } from './popover/rating';
 import { renderLoading, renderTitle } from './popover/render';
 
 let detached = false;
@@ -48,10 +49,17 @@ async function lookup({ title, year, lang, netflixId, requestId }: HoverFire): P
     if (result.status !== 'match' || !controller.isCurrent(requestId)) return null;
     const { info } = result;
     const badge = quickVerdict(info, thresholdsOf(settings));
-    const root: HTMLElement = renderTitle(info, badge, new Date(), { onAi: () => askAi(root, info, badge) });
-    // Read before showing so a cached opinion opens with the popover instead of popping in after it.
-    const cached = await sendAiCached(info).catch(() => ({ status: 'none' }) as const);
+    const root: HTMLElement = renderTitle(info, badge, new Date(), {
+      onAi: () => askAi(root, info, badge),
+      onRate: (clicked) => rate(root, info, clicked),
+    });
+    // Read before showing so a cached opinion and the saved rating open with the popover instead of popping in after it.
+    const [cached, rating] = await Promise.all([
+      sendAiCached(info).catch(() => ({ status: 'none' }) as const),
+      sendRatingGet(info.id, info.kind).catch(() => null),
+    ]);
     if (cached.status === 'ok') applyAiResult(root, info, cached);
+    if (rating) setRating(root, rating.rating);
     return root;
   } catch (err) {
     if (isInvalidated(err)) {
@@ -68,6 +76,18 @@ function openSettings(): void {
   sendOpenOptions().catch((err: unknown) => {
     if (isInvalidated(err)) handleInvalidated();
   });
+}
+
+function rate(root: HTMLElement, info: TitleInfo, clicked: Rating): void {
+  if (!chrome.runtime?.id) {
+    handleInvalidated();
+    return;
+  }
+  applyRateClick(root, clicked, (next) => sendRate(info, next))
+    .then(() => console.log(`[popover] rated ${info.id} -> ${currentRating(root) ?? 'none'}`))
+    .catch((err: unknown) => {
+      if (isInvalidated(err)) handleInvalidated();
+    });
 }
 
 // A popover root leaves the document when the popover hides or swaps, so a detached root means a stale answer.

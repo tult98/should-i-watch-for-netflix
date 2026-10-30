@@ -1,7 +1,7 @@
 import { ageLabel } from '../../shared/ageLabel';
 import type { QuickBadge } from '../../shared/quickBadge';
 import { strings } from '../../shared/strings.vi';
-import type { AnimeInfo, MovieInfo, Score, ScoreSource, SeriesInfo, TitleInfo } from '../../shared/types';
+import type { AnimeInfo, MovieInfo, Rating, Score, ScoreSource, SeriesInfo, TitleInfo } from '../../shared/types';
 import { h, icon, type Child } from './dom';
 import {
   formatAired,
@@ -104,6 +104,7 @@ function statsRow(list: Cell[]): HTMLElement | null {
 
 export interface PopoverHooks {
   onAi?: () => void;
+  onRate?: (clicked: Rating) => void;
 }
 
 function synopsisBlock(info: TitleInfo, enLabel: string): HTMLElement | null {
@@ -150,6 +151,24 @@ function aiSlot(): HTMLElement {
   return h('div', { class: 'ai-slot' });
 }
 
+function rateButton(info: TitleInfo, rating: Rating, label: string, paths: string[], hooks: PopoverHooks): HTMLElement {
+  return h(
+    'button',
+    {
+      type: 'button',
+      class: 'btn btn-icon btn-rate',
+      'data-rating': rating,
+      'aria-label': label,
+      'aria-pressed': 'false',
+      onclick: () => {
+        console.log(`[popover] rate ${rating} ${info.id}`);
+        hooks.onRate?.(rating);
+      },
+    },
+    icon(paths, { size: 20, stroke: 'currentColor' }),
+  );
+}
+
 function actions(info: TitleInfo, hooks: PopoverHooks): HTMLElement {
   const anime = info.kind === 'anime';
   return h(
@@ -168,26 +187,8 @@ function actions(info: TitleInfo, hooks: PopoverHooks): HTMLElement {
       icon(SPARKLE, { size: 16, stroke: 'currentColor' }),
       h('span', { class: 'btn-ai-label' }, t.ai),
     ),
-    h(
-      'button',
-      {
-        type: 'button',
-        class: 'btn btn-icon',
-        'aria-label': anime ? t.likeAnime : t.likeTitle,
-        onclick: () => console.log(`[popover] rate up ${info.id}`),
-      },
-      icon(THUMB_UP, { size: 20, stroke: 'currentColor' }),
-    ),
-    h(
-      'button',
-      {
-        type: 'button',
-        class: 'btn btn-icon',
-        'aria-label': anime ? t.dislikeAnime : t.dislikeTitle,
-        onclick: () => console.log(`[popover] rate down ${info.id}`),
-      },
-      icon(THUMB_DOWN, { size: 20, stroke: 'currentColor' }),
-    ),
+    rateButton(info, 'up', anime ? t.likeAnime : t.likeTitle, THUMB_UP, hooks),
+    rateButton(info, 'down', anime ? t.dislikeAnime : t.dislikeTitle, THUMB_DOWN, hooks),
   );
 }
 

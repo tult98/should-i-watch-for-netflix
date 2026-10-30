@@ -98,6 +98,7 @@ export const POPOVER_CSS = `
 .link-btn:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
 .btn-icon { width: 44px; background: transparent; color: #ffffff; border: 1px solid #6d6d6d; }
 .btn-icon:hover { border-color: #ffffff; }
+.btn-icon[aria-pressed="true"] { background: #ffffff; color: #141414; border-color: #ffffff; }
 .btn:focus-visible { outline: 2px solid #ffffff; outline-offset: 2px; }
 @keyframes pulse { 0% { opacity: .35; } 50% { opacity: .7; } 100% { opacity: .35; } }
 .skeleton { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
