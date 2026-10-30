@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title></title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main>
+      <h1 id="app-name"></h1>
+      <form id="settings-form">
+        <label for="mal-client-id" id="mal-client-id-label"></label>
+        <input id="mal-client-id" type="password" autocomplete="off" spellcheck="false" />
+        <p class="hint" id="mal-client-id-hint"></p>
+        <div class="actions">
+          <button type="submit" id="save"></button>
+          <span class="status" id="status" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </main>
+    <script src="options.js"></script>
+  </body>
+</html>
