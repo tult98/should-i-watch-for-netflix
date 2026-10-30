@@ -1,6 +1,6 @@
 import { sendLookup } from '../shared/messages';
 import { quickVerdict } from '../shared/quickBadge';
-import { loadSettings, thresholdsOf, type Settings } from '../shared/settings';
+import { loadSettings, thresholdsOf } from '../shared/settings';
 import { describeResult } from './describeResult';
 import { createHoverController, type HoverFire } from './hoverController';
 import {
@@ -40,10 +40,7 @@ async function lookup({ title, year, lang, netflixId, requestId }: HoverFire): P
     return null;
   }
   try {
-    const [result, settings] = await Promise.all([
-      sendLookup({ title, year, lang, netflixId }),
-      loadSettings().catch((): Settings => ({})),
-    ]);
+    const [result, settings] = await Promise.all([sendLookup({ title, year, lang, netflixId }), loadSettings()]);
     console.log(`[lookup] ${title} -> ${describeResult(result)}${staleSuffix(requestId)}`);
     if (result.status !== 'match' || !controller.isCurrent(requestId)) return null;
     return renderTitle(result.info, quickVerdict(result.info, thresholdsOf(settings)), new Date());

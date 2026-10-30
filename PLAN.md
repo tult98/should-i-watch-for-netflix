@@ -114,10 +114,15 @@ The content script holds one state value instead of loose flags. A new hover whi
 |---|---|---|
 | `idle` | start, or hide timer fires | pointer enters a card |
 | `armed` | pointer enters a card | 300 ms passes (to `loading`) or pointer leaves (to `idle`) |
-| `loading` | debounce fires; sends `lookup` with a request id | response arrives (to `shown`, or `idle` on `no_match`) |
-| `shown` | response for the current request id | pointer leaves card and popover for 150 ms (to `idle`) |
+| `loading` | debounce fires; sends `lookup` with a request id | response arrives (to `shown`, or `empty` on `no_match` and `error`) |
+| `shown` | response for the current request id | pointer leaves card, preview and popover for 150 ms (to `idle`) |
+| `empty` | `no_match` or `error` for the current request id | pointer leaves the card (to `idle`) |
 
 The content script renders only the response for the current request id. It still logs a late response, with ` (stale)` at the end.
+
+`empty` keeps the card current with the popover hidden. Without it, every move between the card's children would arm the card again and send another lookup.
+
+The skeleton appears only when the response takes 150 ms or more, so a cached result opens straight into its content. While the popover is up, leaving the card, the Netflix preview, or the popover starts a 150 ms hide timer, and entering any of the three cancels it. With no popover up, leaving the card goes straight to `idle`, as in step (a). When the pointer crosses another card on its way to the popover, entering the popover returns to the card the popover shows and drops the other card's timer.
 
 ### Quick badge rules
 
@@ -359,11 +364,23 @@ The TMDB and OMDb field names come from memory and the test fixtures are hand-wr
 
 ### (d) Popover and quick badge
 
-Files: `content/popover/*`, `shared/strings.vi.ts`, `shared/quickBadge.ts`, `shared/ageLabel.ts`, and the `quickBadge` test.
+Files: `content/popover/*`, `shared/strings.vi.ts`, `shared/quickBadge.ts`, `shared/ageLabel.ts`, and the `quickBadge`, `ageLabel`, `format`, `position`, `render`, `popoverHost` and `hoverController` tests.
 
 The popover follows the design: 380 px wide, `#181818` background, the loading skeleton, the low-votes warning, and the source pill. It opens beside the card on the side with more room and never overlaps the card's box. It renders inside a closed Shadow DOM.
 
 Check on Netflix: the four anime states and the three movie and series states from the design appear for real titles. Sweeping fast across a row shows no flashing. Moving the pointer from the card onto the popover keeps it open.
+
+Decisions made while building it:
+
+- The big score is the score the badge used, labeled with its source. Anime always use MAL. Movies and series use IMDb when OMDb returned a score, and TMDB otherwise. The design's TMDB number is the fallback case.
+- The stats row never repeats the big score and drops any cell without a value instead of showing a placeholder. A movie lists IMDb, Rotten Tomatoes and Metacritic. A series lists IMDb, Rotten Tomatoes and TMDB. A row left with no cells is hidden. An anime lists Ranked, Popularity and Members, plus IMDb when an anime movie has one.
+- The design has no "Có thể xem" badge. It uses a yellow outline, `#f5c542`, the same yellow as the low votes warning, between the green "Nên xem" outline and the grey "Bỏ qua".
+- Missing votes count as zero, so a score without votes never reaches "Rất nên xem" and always shows the low votes warning. An anime with no MAL rank cannot pass the `rankMax` rule.
+- The threshold sets live in `Settings.thresholds`. Until step (f) adds the editor, they are `DEFAULT_THRESHOLDS` in `settings.ts`. A malformed stored set falls back to its default.
+- `SeriesInfo` carries only years, so the series time row reads "2021 – 2024" or "2023 – nay", not the design's month and year.
+- The skeleton has no source pill, because the source is unknown until the response arrives. Its note reads "Đang tra cứu…".
+- The popover sits beside the Netflix preview when the preview is open, otherwise beside the card. It goes right with a 12 px gap when it fits, then left, then on the side with more room. It is clamped 8 px inside the viewport vertically and never overlaps the anchor horizontally. The host re-reads the anchor every animation frame while the popover is up, because the preview grows after the popover opens.
+- "AI nhận xét", 👍 and 👎 render per the design and only log `[popover] ai <id>`, `[popover] rate up <id>` and `[popover] rate down <id>` until steps (e) and (f).
 
 ### (e) AI opinion
 

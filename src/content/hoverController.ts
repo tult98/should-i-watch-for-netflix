@@ -46,7 +46,6 @@ export type HoverState =
 export interface HoverControllerOptions<T> {
   timers: Timers;
   reader: CardReader;
-  /** Resolves to the popover content, or null when there is nothing to show. */
   lookup(fire: HoverFire): Promise<T | null>;
   view: PopoverView<T>;
   debounceMs?: number;
