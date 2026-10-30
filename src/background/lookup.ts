@@ -1,12 +1,12 @@
 import type { LookupRequest } from '../shared/messages';
 import type { LookupResult } from '../shared/types';
-import type { MalAdapter } from './adapters/MalAdapter';
+import type { AnimeAdapter } from './adapters/AnimeAdapter';
 import { lookupCacheKey, type LookupCache } from './cache';
 import { RequestError } from './requestQueue';
 
 export interface LookupDeps {
   cache: LookupCache;
-  mal: MalAdapter;
+  mal: AnimeAdapter;
   log?: (message: string) => void;
 }
 

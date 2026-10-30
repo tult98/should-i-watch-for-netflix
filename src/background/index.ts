@@ -1,5 +1,5 @@
 import { isLookupRequest, type LookupResponse } from '../shared/messages';
-import { createMalAdapter } from './adapters/MalAdapter';
+import { createJikanAdapter } from './adapters/JikanAdapter';
 import { chromeLocalStore, createLookupCache } from './cache';
 import { createLookup } from './lookup';
 import { createRequestQueue } from './requestQueue';
@@ -8,7 +8,7 @@ const queue = createRequestQueue({ fetch: (url, init) => fetch(url, init) });
 
 const lookup = createLookup({
   cache: createLookupCache(chromeLocalStore()),
-  mal: createMalAdapter(queue.fetch),
+  mal: createJikanAdapter(queue.fetch),
   log: (message) => console.log(message),
 });
 

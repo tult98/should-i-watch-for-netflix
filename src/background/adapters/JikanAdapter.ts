@@ -1,6 +1,7 @@
 import { bestMatch } from '../../shared/normalize';
 import type { AnimeInfo, Score } from '../../shared/types';
 import { RequestError, type FetchFn } from '../requestQueue';
+import { present, type AnimeAdapter } from './AnimeAdapter';
 
 export const JIKAN_BASE = 'https://api.jikan.moe/v4';
 
@@ -35,14 +36,6 @@ export interface JikanAnime {
 
 export interface JikanSearchResponse {
   data: JikanAnime[] | null;
-}
-
-export interface MalAdapter {
-  search(title: string, year?: number): Promise<AnimeInfo | null>;
-}
-
-function present<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined && value !== '';
 }
 
 function names(items: Named[] | null): string[] {
@@ -102,7 +95,7 @@ export function toAnimeInfo(
   };
 }
 
-export function createMalAdapter(fetch: FetchFn): MalAdapter {
+export function createJikanAdapter(fetch: FetchFn): AnimeAdapter {
   return {
     async search(title, year) {
       const url = `${JIKAN_BASE}/anime?q=${encodeURIComponent(title)}&limit=5`;

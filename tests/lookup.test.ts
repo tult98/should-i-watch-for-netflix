@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { MalAdapter } from '../src/background/adapters/MalAdapter';
+import type { AnimeAdapter } from '../src/background/adapters/AnimeAdapter';
 import type { LookupCache } from '../src/background/cache';
 import { createLookup } from '../src/background/lookup';
 import { RequestError } from '../src/background/requestQueue';
@@ -7,7 +7,7 @@ import type { AnimeInfo, LookupResult } from '../src/shared/types';
 
 const anime = { id: 'mal:21', kind: 'anime' } as AnimeInfo;
 
-function setup(search: MalAdapter['search']) {
+function setup(search: AnimeAdapter['search']) {
   const data = new Map<string, LookupResult>();
   const cache: LookupCache = {
     get: async (key) => data.get(key),
