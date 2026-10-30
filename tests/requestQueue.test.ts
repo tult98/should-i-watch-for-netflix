@@ -69,6 +69,18 @@ describe('requestQueue', () => {
     expect(calls[60]).toBe(60_000);
   });
 
+  it('sends at most 3 MAL API requests per second', async () => {
+    const { queue, calls } = setup();
+    const all = Promise.all(
+      Array.from({ length: 4 }, () => queue.fetch('https://api.myanimelist.net/v2/anime?q=abc')),
+    );
+    await vi.advanceTimersByTimeAsync(999);
+    expect(calls).toEqual([0, 0, 0]);
+    await vi.advanceTimersByTimeAsync(1);
+    await all;
+    expect(calls).toEqual([0, 0, 0, 1000]);
+  });
+
   it('does not limit hosts without a configured window', async () => {
     const { queue, calls } = setup();
     await Promise.all(Array.from({ length: 10 }, () => queue.fetch('https://example.com/')));

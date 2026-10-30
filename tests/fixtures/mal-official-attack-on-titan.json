@@ -1,0 +1,70 @@
+{
+  "data": [
+    {
+      "node": {
+        "id": 16498,
+        "title": "Shingeki no Kyojin",
+        "main_picture": { "medium": "https://cdn.myanimelist.net/images/anime/10/47347.jpg", "large": "https://cdn.myanimelist.net/images/anime/10/47347l.jpg" },
+        "alternative_titles": { "synonyms": ["AoT", "SnK"], "en": "Attack on Titan", "ja": "進撃の巨人" },
+        "start_date": "2013-04-07",
+        "end_date": "2013-09-29",
+        "synopsis": "Centuries ago, mankind was slaughtered to near extinction by monstrous humanoid creatures called Titans.",
+        "mean": 8.55,
+        "rank": 117,
+        "popularity": 1,
+        "num_list_users": 4100000,
+        "num_scoring_users": 2900000,
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [
+          { "id": 1, "name": "Action" },
+          { "id": 46, "name": "Award Winning" },
+          { "id": 8, "name": "Drama" },
+          { "id": 58, "name": "Gore" },
+          { "id": 38, "name": "Military" },
+          { "id": 27, "name": "Shounen" },
+          { "id": 37, "name": "Suspense" }
+        ],
+        "num_episodes": 25,
+        "start_season": { "year": 2013, "season": "spring" },
+        "studios": [{ "id": 858, "name": "Wit Studio" }]
+      }
+    },
+    {
+      "node": {
+        "id": 40028,
+        "title": "Shingeki no Kyojin: The Final Season",
+        "alternative_titles": {
+          "synonyms": ["Shingeki no Kyojin Season 4", "Attack on Titan Season 4"],
+          "en": "Attack on Titan: Final Season",
+          "ja": "進撃の巨人 The Final Season"
+        },
+        "start_date": "2020-12-07",
+        "end_date": "2021-03-29",
+        "mean": 8.78,
+        "rank": 42,
+        "popularity": 70,
+        "num_list_users": 1800000,
+        "num_scoring_users": 1300000,
+        "media_type": "tv",
+        "status": "finished_airing",
+        "genres": [{ "id": 1, "name": "Action" }, { "id": 27, "name": "Shounen" }],
+        "num_episodes": 16,
+        "start_season": { "year": 2021, "season": "winter" },
+        "studios": [{ "id": 569, "name": "MAPPA" }]
+      }
+    },
+    {
+      "node": {
+        "id": 18397,
+        "title": "Shingeki no Kyojin OVA",
+        "alternative_titles": { "synonyms": [], "en": "Attack on Titan OVA", "ja": "進撃の巨人 OVA" },
+        "start_date": "2013-12-09",
+        "media_type": "ova",
+        "status": "finished_airing",
+        "num_episodes": 3,
+        "num_list_users": 600000
+      }
+    }
+  ]
+}

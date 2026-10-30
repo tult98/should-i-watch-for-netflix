@@ -12,8 +12,10 @@ export interface RateWindow {
 
 export type FetchFn = (url: string, init?: RequestInit) => Promise<Response>;
 
+export type RequestErrorReason = 'network' | 'rate_limited' | 'bad_mal_client_id';
+
 export class RequestError extends Error {
-  constructor(readonly reason: 'network' | 'rate_limited', message?: string) {
+  constructor(readonly reason: RequestErrorReason, message?: string) {
     super(message ?? reason);
     this.name = 'RequestError';
   }
@@ -24,6 +26,7 @@ export const DEFAULT_LIMITS: Record<string, RateWindow[]> = {
     { limit: 3, ms: 1_000 },
     { limit: 60, ms: 60_000 },
   ],
+  'api.myanimelist.net': [{ limit: 3, ms: 1_000 }],
   'api.themoviedb.org': [{ limit: 20, ms: 1_000 }],
   'www.omdbapi.com': [{ limit: 5, ms: 1_000 }],
 };

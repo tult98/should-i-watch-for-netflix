@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "node": {
+        "id": 1,
+        "title": "Sparse Show"
+      }
+    },
+    {
+      "node": {
+        "id": 2,
+        "title": "Upcoming Film",
+        "alternative_titles": null,
+        "start_date": "2027",
+        "media_type": "movie",
+        "status": "not_yet_aired",
+        "num_episodes": 0,
+        "genres": [{ "id": 15, "name": "Kids" }, { "id": 4, "name": "Comedy" }]
+      }
+    }
+  ]
+}
