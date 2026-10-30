@@ -10,6 +10,8 @@ The design file has seven boards: the hover layout, the anime popover, the anime
 |---|---|---|---|
 | Movie and series badge | IMDb score, votes 100k / 20k, warning under 5k | TMDB score as the big number, thresholds 8.0 / 5000, 7.2 / 2000, 6.5, warning under 500 | Keep three threshold sets: MAL, IMDb, TMDB. The badge uses IMDb when OMDb returns a score and TMDB otherwise, labeled with its source. The big number shows the score the badge used. Every data source is free (see "Free sources"). |
 | Metacritic | Shown for movies | Not on the board. The stats row is IMDb, Rotten Tomatoes, age rating. | Movie stats row becomes IMDb, Rotten Tomatoes, Metacritic. Age rating moves to the detail grid. Confirmed. |
+| Anime synopsis | "Synopsis (Vietnamese)" | English MAL synopsis labeled "Tóm tắt (MAL, tiếng Anh)", replaced by the Vietnamese `summary_vi` after "AI nhận xét" | Follow the design. MAL has no Vietnamese synopsis, and the brief forbids calling the AI automatically. |
+| Options page heading | Name lives only in `manifest.json` | Heading reads "Netflix Anime Info Popover" | The heading reads `chrome.runtime.getManifest().name`. |
 
 ## Free sources
 
@@ -26,8 +28,6 @@ Every data source runs on a free tier. No paid wrapper such as CollectAPI.
 The OMDb and TMDB limits are from their published docs as I remember them, not checked this session. When OMDb returns `Request limit reached!`, the adapter returns no IMDb score and the badge falls back to TMDB for the rest of the day.
 
 The official MAL API exists because Jikan was unreachable from your network on 2026-10-30. A TCP connect to `api.jikan.moe` timed out on IPv4 and IPv6, while `api.myanimelist.net` answered in 0.3 s. Both adapters implement `AnimeAdapter` and return the same `AnimeInfo`, so nothing after the adapter knows which one ran. `lookup.ts` reads `settings` on every cache miss. The MAL API rejects a `q` under 3 characters, as far as I remember, so those titles go to Jikan. The MAL field names and the 3 character rule come from memory and still need one live call to confirm.
-| Anime synopsis | "Synopsis (Vietnamese)" | English MAL synopsis labeled "Tóm tắt (MAL, tiếng Anh)", replaced by the Vietnamese `summary_vi` after "AI nhận xét" | Follow the design. MAL has no Vietnamese synopsis, and the brief forbids calling the AI automatically. |
-| Options page heading | Name lives only in `manifest.json` | Heading reads "Netflix Anime Info Popover" | The heading reads `chrome.runtime.getManifest().name`. |
 
 ## Data shapes
 
