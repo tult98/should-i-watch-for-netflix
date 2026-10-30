@@ -129,6 +129,21 @@ describe('MalOfficialAdapter', () => {
     }
   });
 
+  it('reports a 400 invalid client id body as a bad client id', async () => {
+    const search = adapter(
+      respondWith({ message: 'Invalid client id', error: 'bad_request' }, 400),
+    ).search('One Piece');
+    await expect(search).rejects.toBeInstanceOf(RequestError);
+    await expect(search).rejects.toMatchObject({ reason: 'bad_mal_client_id' });
+  });
+
+  it('keeps a 400 with another message, or a non-JSON body, as a network error', async () => {
+    const other = respondWith({ message: 'invalid q', error: 'bad_request' }, 400);
+    await expect(adapter(other).search('One Piece')).rejects.toMatchObject({ reason: 'network' });
+    const html = vi.fn<FetchFn>(async () => new Response('<html>Bad Request</html>', { status: 400 }));
+    await expect(adapter(html).search('One Piece')).rejects.toMatchObject({ reason: 'network' });
+  });
+
   it('reports other non-OK responses as network errors', async () => {
     await expect(adapter(respondWith({}, 500)).search('One Piece')).rejects.toMatchObject({ reason: 'network' });
   });

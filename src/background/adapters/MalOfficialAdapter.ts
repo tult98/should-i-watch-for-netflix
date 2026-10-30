@@ -139,12 +139,22 @@ export function toAnimeInfo(
   };
 }
 
+// MAL answers an unknown client id with HTTP 400 and {"message":"Invalid client id"}.
+async function isClientIdError(response: Response): Promise<boolean> {
+  try {
+    const body = (await response.json()) as { message?: unknown };
+    return typeof body?.message === 'string' && /client id/i.test(body.message);
+  } catch {
+    return false;
+  }
+}
+
 export function createMalOfficialAdapter(fetch: FetchFn, clientId: string): AnimeAdapter {
   return {
     async search(title, year) {
       const url = `${MAL_API_BASE}/anime?q=${encodeURIComponent(title)}&limit=5&fields=${MAL_FIELDS}`;
       const response = await fetch(url, { headers: { 'X-MAL-CLIENT-ID': clientId } });
-      if (response.status === 401 || response.status === 403) {
+      if (response.status === 401 || response.status === 403 || (response.status === 400 && (await isClientIdError(response)))) {
         throw new RequestError('bad_mal_client_id', `MAL HTTP ${response.status}`);
       }
       if (!response.ok) throw new RequestError('network', `MAL HTTP ${response.status}`);
