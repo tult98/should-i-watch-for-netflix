@@ -4,6 +4,7 @@ export interface HoverFire {
   card: Element;
   title: string;
   year?: number;
+  netflixId?: string;
   lang: string;
 }
 
@@ -14,7 +15,9 @@ export interface Timers {
 
 export interface CardReader {
   findCard(target: Element): Element | null;
+  findPreview(target: Element): Element | null;
   readTitle(card: Element): string | null;
+  readNetflixId(card: Element): string | undefined;
   readYear(card: Element): number | undefined;
   readProfileLanguage(): string;
 }
@@ -63,7 +66,13 @@ export function createHoverController(options: HoverControllerOptions): HoverCon
     state = { name: 'loading', card };
     const title = reader.readTitle(card);
     if (!title) return;
-    onFire({ card, title, year: reader.readYear(card), lang: reader.readProfileLanguage() });
+    onFire({
+      card,
+      title,
+      year: reader.readYear(card),
+      netflixId: reader.readNetflixId(card),
+      lang: reader.readProfileLanguage(),
+    });
   }
 
   function pointerOver(target: Element | null): void {
@@ -72,11 +81,16 @@ export function createHoverController(options: HoverControllerOptions): HoverCon
     arm(card);
   }
 
+  // The preview opens in a separate layer, so it counts as part of whichever card is current.
+  function belongsToCurrent(el: Element, card: Element): boolean {
+    return reader.findCard(el) === card || reader.findPreview(el) !== null;
+  }
+
   function pointerOut(target: Element | null, relatedTarget: Element | null): void {
     const card = currentCard();
-    if (!card || !target || reader.findCard(target) !== card) return;
-    // pointerout also fires when moving between children of the same card.
-    if (relatedTarget && reader.findCard(relatedTarget) === card) return;
+    if (!card || !target || !belongsToCurrent(target, card)) return;
+    // pointerout also fires when moving between children of the same card or preview.
+    if (relatedTarget && belongsToCurrent(relatedTarget, card)) return;
     toIdle();
   }
 

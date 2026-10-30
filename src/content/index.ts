@@ -1,5 +1,12 @@
 import { createHoverController } from './hoverController';
-import { findCard, readProfileLanguage, readTitle, readYear } from './netflixSelectors';
+import {
+  findCard,
+  findPreview,
+  readNetflixId,
+  readProfileLanguage,
+  readTitle,
+  readYear,
+} from './netflixSelectors';
 
 const controller = createHoverController({
   timers: {
@@ -8,12 +15,14 @@ const controller = createHoverController({
   },
   reader: {
     findCard,
+    findPreview,
     readTitle,
+    readNetflixId,
     readYear,
     readProfileLanguage: () => readProfileLanguage(document),
   },
-  onFire: ({ title, year, lang }) => {
-    console.log(`[hover] ${lang} ${title} ${year ?? '-'}`);
+  onFire: ({ title, year, netflixId, lang }) => {
+    console.log(`[hover] ${lang} ${title} ${year ?? '-'} ${netflixId ?? '-'}`);
   },
 });
 
