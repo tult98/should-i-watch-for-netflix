@@ -38,4 +38,26 @@ describe('popover host', () => {
     host.hide();
     expect(host.visible()).toBe(false);
   });
+
+  it('sets the theme on the panel, also while a popover is open', () => {
+    const attach = Element.prototype.attachShadow;
+    let shadow!: ShadowRoot;
+    Element.prototype.attachShadow = function (init) {
+      shadow = attach.call(this, { ...init, mode: 'open' });
+      return shadow;
+    };
+    const host = createPopoverHost(window);
+    Element.prototype.attachShadow = attach;
+    const panel = shadow.querySelector('.panel') as HTMLElement;
+    const card = document.createElement('a');
+    document.body.appendChild(card);
+
+    expect(panel.getAttribute('data-theme')).toBe('dark');
+    host.show(() => card, content('A'));
+    host.setTheme('light');
+    expect(panel.getAttribute('data-theme')).toBe('light');
+    host.hide();
+    host.setTheme('dark');
+    expect(panel.getAttribute('data-theme')).toBe('dark');
+  });
 });

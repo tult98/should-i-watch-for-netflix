@@ -264,6 +264,7 @@ should-i-watch-for-netflix/
       hoverController.ts         the state machine above
       describeResult.ts          the [lookup] console line
       enabledSwitch.ts           follows Settings.enabled through chrome.storage.onChanged
+      themeWatcher.ts            follows Settings.theme and prefers-color-scheme
       popover/
         host.ts                  Shadow DOM host and positioning
         render.ts                TitleInfo to DOM, one function per section
@@ -472,6 +473,23 @@ Decisions made while building it:
 - The view model and the DOM are split into `model.ts` and `view.ts` so tests run them without `chrome`. `popup.ts` only reads storage and passes the chrome calls in.
 
 Check: click the icon with no keys saved and every key row reads "Chưa cài". Save a TMDB key on the options page and reopen the popup; the TMDB row reads "Đã cài". Turn the switch off and hover a card on Netflix; no popover and no `[lookup]` line. Turn it on and hover again; the popover returns without a refresh.
+
+### (h) Light theme
+
+Files: `src/shared/theme.ts`, `src/content/themeWatcher.ts`, `src/options/themeView.ts`, plus `settings.ts`, `popover/styles.ts`, `popover/host.ts`, `options.css` and `options.ts`. The design boards are the light popover for anime, film and series, the states board, and the light options page with its "Giao diện popover" section.
+
+Decisions made while building it:
+
+- `Settings.theme` is `'dark' | 'light' | 'system'`. `parseSettings` keeps it only when it is one of the three, and `themeOf` returns `'system'` when unset. `saveTheme` loads the stored settings and merges, like `saveEnabled`. `resolveTheme(pref, systemPrefersLight)` in `shared/theme.ts` turns a pref into `'dark'` or `'light'`.
+- The popover CSS reads custom properties declared on `.panel`. The dark values are the default and keep the old look. `.panel[data-theme="light"]` overrides every one of them, and a test fails when a used property is missing from either block. The pills, the red AI button and the green "Rất nên xem" badge keep their colours in both themes.
+- `PopoverHost.setTheme` sets `data-theme` on the panel, so it also restyles a popover that is already open.
+- `watchTheme` follows the shape of `watchEnabled`. It resolves the pref with `matchMedia('(prefers-color-scheme: light)')`, applies on load, on `chrome.storage.onChanged` for `settings`, and on the media query `change` event. A storage change that lands before the first load wins over the load, and a failed load resolves as `system`.
+- The options page uses the same `watchTheme` and sets `data-theme` on `<html>`. Its CSS has the same custom property split with `color-scheme` set per theme. The theme section sits right after the AI section as in the design. It has the `.tab` pills with `aria-selected`, saves on click with no save button, and shows the "Đã lưu" status line.
+- The toolbar popup has no light design and stays dark and unchanged.
+- Values the design does not show were chosen to match its palette. Light scrollbar thumb `#bdbdbd`. Light "Cân nhắc" outline badge and the AI error line use `#8a5a00`, the colour the options page badge uses. Options status ok `#12803a`, error `#c40d17`, and the taste data block `#f2f2f2` on `#2b2b2b` text.
+- The AI sparkle icon now strokes with `currentColor`, so it follows the text colour in both themes.
+
+Check: set "Sáng" on the options page and the page turns light at once. Hover a card on Netflix and the popover is light. Set "Theo hệ thống" and switch the OS appearance; the popover and the options page follow without a reload.
 
 ## Tests
 

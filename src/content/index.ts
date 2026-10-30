@@ -4,6 +4,7 @@ import type { Rating, TitleInfo } from '../shared/types';
 import { loadSettings, thresholdsOf } from '../shared/settings';
 import { describeResult } from './describeResult';
 import { watchEnabled } from './enabledSwitch';
+import { watchTheme } from './themeWatcher';
 import { createHoverController, type HoverFire } from './hoverController';
 import {
   findCard,
@@ -168,3 +169,6 @@ watchEnabled(chrome.storage.onChanged, () => loadSettings(), (enabled) => {
   console.log(`[hover] ${enabled ? 'enabled' : 'disabled'}`);
   controller.setEnabled(enabled);
 });
+watchTheme(chrome.storage.onChanged, window.matchMedia('(prefers-color-scheme: light)'), () => loadSettings(), (theme) =>
+  host.setTheme(theme),
+);
