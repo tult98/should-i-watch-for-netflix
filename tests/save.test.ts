@@ -1,7 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { KeyValueStore } from '../src/background/cache';
-import { saveAndInvalidate } from '../src/options/save';
-import { DEFAULT_THRESHOLDS, SETTINGS_KEY, sourceKeysChanged } from '../src/shared/settings';
+import { saveAndInvalidate, saveWithPermission } from '../src/options/save';
+import { DEFAULT_AI_BASE_URL, DEFAULT_THRESHOLDS, SETTINGS_KEY, sourceKeysChanged } from '../src/shared/settings';
 
 function memoryStore(): KeyValueStore & { data: Map<string, unknown> } {
   const data = new Map<string, unknown>();
@@ -67,5 +67,56 @@ describe('saveAndInvalidate AI settings', () => {
     const out = await saveAndInvalidate({ aiKey: 'sk', aiModel: 'deepseek-reasoner' }, store, store);
     expect(out.cacheCleared).toBe(false);
     expect(store.data.has('lookup:en|lupin|-')).toBe(true);
+  });
+});
+
+describe('saveWithPermission', () => {
+  const CUSTOM = 'https://openrouter.ai/api/v1/chat/completions';
+
+  it('saves the DeepSeek URL without asking for a permission', async () => {
+    const store = memoryStore();
+    const request = vi.fn(async () => true);
+    const out = await saveWithPermission({ aiBaseUrl: DEFAULT_AI_BASE_URL, aiKey: 'sk' }, { request }, store, store);
+    expect(out.status).toBe('saved');
+    expect(request).not.toHaveBeenCalled();
+  });
+
+  it('asks for the custom origin before touching storage, and saves when granted', async () => {
+    const store = memoryStore();
+    const getSpy = vi.spyOn(store, 'get');
+    const request = vi.fn(async () => {
+      expect(getSpy).not.toHaveBeenCalled();
+      return true;
+    });
+    const pending = saveWithPermission({ aiBaseUrl: CUSTOM }, { request }, store, store);
+    expect(request).toHaveBeenCalledWith({ origins: ['https://openrouter.ai/*'] });
+    expect((await pending).status).toBe('saved');
+    expect(store.data.get(SETTINGS_KEY)).toEqual({ aiBaseUrl: CUSTOM });
+  });
+
+  it('refuses to save when the permission is denied', async () => {
+    const store = memoryStore();
+    store.data.set(SETTINGS_KEY, { aiKey: 'sk' });
+    const out = await saveWithPermission({ aiBaseUrl: CUSTOM, aiKey: 'other' }, { request: async () => false }, store, store);
+    expect(out).toEqual({ status: 'refused', reason: 'denied' });
+    expect(store.data.get(SETTINGS_KEY)).toEqual({ aiKey: 'sk' });
+  });
+
+  it('refuses an invalid base URL without asking', async () => {
+    const store = memoryStore();
+    const request = vi.fn(async () => true);
+    const out = await saveWithPermission({ aiBaseUrl: 'http://example.com' }, { request }, store, store);
+    expect(out).toEqual({ status: 'refused', reason: 'invalid_url' });
+    expect(request).not.toHaveBeenCalled();
+  });
+
+  it('goes through a stubbed chrome.permissions', async () => {
+    const request = vi.fn(async () => true);
+    vi.stubGlobal('chrome', { permissions: { request } });
+    const store = memoryStore();
+    const out = await saveWithPermission({ aiBaseUrl: CUSTOM }, chrome.permissions, store, store);
+    expect(out.status).toBe('saved');
+    expect(request).toHaveBeenCalledOnce();
+    vi.unstubAllGlobals();
   });
 });

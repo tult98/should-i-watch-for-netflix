@@ -111,3 +111,19 @@ h2 {
 .cache .hint {
   margin-top: 0;
 }
+
+.ai {
+  margin: 12px 0 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+.ai .hint:first-of-type {
+  margin-top: 0;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}

@@ -1,4 +1,5 @@
 import { clearLookupCache, type KeyValueStore } from '../background/cache';
+import { ensureAiPermission, type PermissionsApi } from './ai';
 import {
   loadSettings,
   saveSettings,
@@ -22,4 +23,17 @@ export async function saveAndInvalidate(
   const cacheCleared = sourceKeysChanged(before, saved);
   if (cacheCleared) await clearLookupCache(cacheStore);
   return { saved, cacheCleared };
+}
+
+export type SaveResult = ({ status: 'saved' } & SaveOutcome) | { status: 'refused'; reason: 'invalid_url' | 'denied' };
+
+export async function saveWithPermission(
+  draft: Settings,
+  permissions: PermissionsApi,
+  settingsStore: SettingsStore,
+  cacheStore: KeyValueStore,
+): Promise<SaveResult> {
+  const permission = await ensureAiPermission(draft.aiBaseUrl, permissions);
+  if (permission !== 'granted') return { status: 'refused', reason: permission };
+  return { status: 'saved', ...(await saveAndInvalidate(draft, settingsStore, cacheStore)) };
 }
