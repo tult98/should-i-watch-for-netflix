@@ -186,11 +186,11 @@ For an English profile like yours, the second pass almost never runs. For other 
 | Key | Value | TTL |
 |---|---|---|
 | `lookup:<profile language>\|<normalized title>\|<year or ->` | `LookupResult` | 7 days for `match`, 1 day for `no_match` |
-| `ai:<title id>\|<taste version>` | validated AI response | none, the key changes when taste changes |
+| `ai:<title id>\|<kind>\|v<taste version>\|<model>` | validated AI response with provider label, model and rating count | none, the key changes when taste or model changes |
 | `taste:ratings` | list of `RatedTitle` | none |
 | `settings` | `Settings` | none |
 
-Caching `no_match` is how an unmatched title stays silent on the second hover without another API call. Errors are never cached. Saving a changed MAL Client ID, TMDB key or OMDb key on the options page clears every `lookup:` entry, so a `no_match` computed before the key existed does not linger. The options page also has a button that clears them by hand.
+Caching `no_match` is how an unmatched title stays silent on the second hover without another API call. Errors are never cached. Saving a changed MAL Client ID, TMDB key or OMDb key on the options page clears every `lookup:` entry. AI settings never clear it, so a `no_match` computed before the key existed does not linger. The options page also has a button that clears them by hand.
 
 ### Taste profile
 
@@ -255,6 +255,7 @@ should-i-watch-for-netflix/
       settings.ts                Settings type, defaults, load and save
       normalize.ts               normalizeTitle, matchConfidence
       quickBadge.ts              quickVerdict
+      needSummary.ts             whether the AI writes the Vietnamese summary
       ageLabel.ts                New, A few years ago, Old/classic
     content/
       index.ts
@@ -266,6 +267,7 @@ should-i-watch-for-netflix/
         render.ts                TitleInfo to DOM, one function per section
         styles.ts                CSS from the design
         dom.ts                   small h() element helper
+        ai.ts                    AI block, error line and button states
     background/
       index.ts                   message router
       lookup.ts                  parallel search, route, cache
@@ -283,12 +285,16 @@ should-i-watch-for-netflix/
         OpenAICompatibleProvider.ts
         prompt.ts
         validate.ts
+        aiCache.ts                 ai: cache key and reader
+        aiService.ts               cache first, then the provider; answers ai-opinion and ai-cached
       taste/
         tasteStore.ts
         tasteProfile.ts
     options/
       options.ts
       options.css
+      save.ts                    save, cache invalidation and the AI origin permission
+      ai.ts                      AI origin permission and Thử kết nối
   tests/
     normalize.test.ts
     matching.test.ts
@@ -320,7 +326,7 @@ Pick esbuild. The extension has three entry points and no framework, so HMR save
 
 ## Request queue
 
-`requestQueue.ts` keeps one queue per host. Jikan gets 3 requests per second and 60 per minute, enforced with two sliding windows. The MAL API gets 3 per second. TMDB gets 20 per second. OMDb gets 5 per second. A 429 reply waits for `Retry-After` when the header is present, otherwise 1 s, 2 s, then 4 s, and gives up after three retries with `rate_limited`. Every request aborts after 10 s and fails with `network`, so an unreachable host can't hang a lookup. The queue lives in service worker memory. Chrome can stop the worker after 30 s idle, which loses only queued requests the user has already moved past.
+`requestQueue.ts` keeps one queue per host. Jikan gets 3 requests per second and 60 per minute, enforced with two sliding windows. The MAL API gets 3 per second. TMDB gets 20 per second. OMDb gets 5 per second. A 429 reply waits for `Retry-After` when the header is present, otherwise 1 s, 2 s, then 4 s, and gives up after three retries with `rate_limited`. Every request aborts after 10 s and fails with `network`, so an unreachable host can't hang a lookup. The AI host gets 30 s, through a per-host `timeoutFor` option, because a chat completion takes several seconds. The queue lives in service worker memory. Chrome can stop the worker after 30 s idle, which loses only queued requests the user has already moved past.
 
 ## Permissions
 
@@ -384,11 +390,27 @@ Decisions made while building it:
 
 ### (e) AI opinion
 
-Files: `background/ai/*` and the `aiValidate` test.
+Files: `background/ai/*`, `background/taste/tasteProfile.ts` as a placeholder, `shared/needSummary.ts`, `content/popover/ai.ts`, the AI fields on the options page, and the `aiValidate`, `aiPrompt`, `aiProvider`, `aiService` and `optionsAi` tests.
 
 Clicking "AI nhận xét" shows the AI block from the design, and the button then reads "Đánh giá lại theo gu". A second click with an unchanged taste version reads the cache.
 
 Check on Netflix: the output is Vietnamese, the verdict is one of the four values, and an anime's English synopsis becomes Vietnamese.
+
+Decisions made while building it:
+
+- Settings gain `aiBaseUrl`, `aiModel` and `aiKey`. The base URL is the full chat completions URL, default `https://api.deepseek.com/chat/completions`, and the model defaults to `deepseek-chat`. Only `https` URLs are kept, because the optional host permission is `https://*/*`. Saving them never clears the lookup cache.
+- When the base URL's origin is not `https://api.deepseek.com`, the save click calls `chrome.permissions.request` for `<origin>/*` before its first `await`, since Chrome grants the request only inside the user gesture. A denied request refuses the save. "Thử kết nối" asks the same way, then sends a 16 token request built from the form values, saved or not.
+- The system prompt is in English and demands Vietnamese output. It contains the word "json", lists the three fields with an example, and switches the `summary_vi` rule on `needSummary`. The user message is compact JSON with the title minus `id` and `match`, the quick badge, and the taste profile minus `kind` and `version`. With no ratings the prompt tells the model not to claim it knows the user's taste.
+- The validator strips code fences and parses the outermost `{...}`. A failed check sends the bad reply back as an assistant turn plus one correction message. A second failure is `ai_bad_response`.
+- HTTP 401 is `bad_ai_key`, 402 is `ai_no_balance`, 429 is `rate_limited` after the queue's own retries, and any other status or a timeout is `network`. The service worker log line carries the HTTP status and body start for those.
+- `getTasteProfile(kind)` returns an empty profile with `version: 0` until step (f). The AI cache key includes the kind, the taste version and the model, so changing the model asks again. Cache entries keep the provider label and the rating count from when they were made.
+- When a popover opens, the content script reads `ai-cached` before showing it, so a cached opinion appears with the popover and never pops in later. `ai-cached` only reads storage.
+- While the AI request runs the hover controller holds the popover: leaving it does not hide it, and the hide runs 150 ms after the answer if the pointer is still away. Hovering another card still swaps the popover, and the late answer is dropped because its popover root is no longer in the document.
+- When `needSummary` is true, `summary_vi` replaces the synopsis text and the label becomes "Tóm tắt". A title with no synopsis gains that section. A Vietnamese TMDB overview stays as it was.
+- Errors show one yellow line in the AI slot. A missing or rejected key adds "mở trang cài đặt", which asks the service worker to call `chrome.runtime.openOptionsPage()`, since content scripts cannot.
+- The 👍 button's filled state in the AI variant of the design belongs to step (f), so it is not drawn yet.
+
+The DeepSeek request shape, the 402 status for an empty balance, and JSON mode needing the word "json" come from memory of DeepSeek's docs. One live call still needs to confirm them.
 
 ### (f) Taste profile and options page
 
