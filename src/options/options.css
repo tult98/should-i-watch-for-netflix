@@ -145,41 +145,7 @@ input {
   padding: 0 12px;
 }
 
-select {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 100%;
-  height: 44px;
-  border-radius: 6px;
-  border: 1px solid var(--input-border);
-  background: var(--input-bg);
-  color: var(--fg);
-  font-family: inherit;
-  font-size: 14px;
-  padding: 0 40px 0 10px;
-}
-
-.select-wrap {
-  position: relative;
-  display: block;
-}
-
-.select-wrap::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  width: 18px;
-  height: 18px;
-  margin-top: -9px;
-  background: var(--muted);
-  -webkit-mask: var(--chevron) center / 18px no-repeat;
-  mask: var(--chevron) center / 18px no-repeat;
-  pointer-events: none;
-}
-
-input:focus,
-select:focus {
+input:focus {
   outline: 2px solid var(--focus);
   outline-offset: 1px;
 }
@@ -232,6 +198,15 @@ input[list]::-webkit-calendar-picker-indicator {
 .p-button:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 1px;
+}
+
+.p-compact .p-button {
+  min-height: 44px;
+  padding: 0 12px;
+}
+
+.p-label {
+  font-size: 14px;
 }
 
 .p-list:focus-visible {

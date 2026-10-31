@@ -23,11 +23,14 @@ function setup(settings: Settings = SAVED, deps: Partial<Parameters<typeof rende
   const button = q<HTMLButtonElement>('#ai-provider');
   const list = q<HTMLElement>('[role="listbox"]');
   const option = (id: string) => q<HTMLElement>(`[data-provider="${id}"]`);
+  const formatOption = (value: string) => q<HTMLElement>(`[data-format="${value}"]`);
+  const formatList = () => view.element.querySelectorAll<HTMLElement>('[role="listbox"]')[1]!;
+  const formatValue = () => q('[data-format][aria-selected="true"]').getAttribute('data-format');
   const keydown = (el: Element, key: string) => el.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true, cancelable: true }));
   return {
-    view, save, test, input, button, list, option, keydown,
+    view, save, test, input, button, list, option, keydown, formatOption, formatList, formatValue,
     model: input('ai-model'), key: input('ai-key'), baseUrl: input('ai-base-url'),
-    format: q<HTMLSelectElement>('#ai-format'), advanced: q<HTMLDetailsElement>('details'),
+    format: q<HTMLButtonElement>('#ai-format'), advanced: q<HTMLDetailsElement>('details'),
     permission: q('.info'), status: q('.status'), shownName: () => q('.p-current .p-name').textContent,
     buttons: [...view.element.querySelectorAll<HTMLButtonElement>('.actions .btn')],
   };
@@ -54,9 +57,29 @@ describe('AI section fields', () => {
     expect(s.model.value).toBe('deepseek-chat');
   });
 
-  it('shows the three formats in a native select', () => {
+  it('shows the three formats in the same kind of dropdown as the provider', () => {
     const s = setup();
-    expect([...s.format.options].map((o) => o.value)).toEqual(['openai', 'anthropic', 'gemini']);
+    const values = [...s.formatList().querySelectorAll('[role="option"]')].map((o) => o.getAttribute('data-format'));
+    expect(values).toEqual(['openai', 'anthropic', 'gemini']);
+    expect(s.format.getAttribute('aria-haspopup')).toBe('listbox');
+    expect(s.formatList().hidden).toBe(true);
+    expect(s.formatValue()).toBe('openai');
+  });
+
+  it('changes the format from the dropdown with the mouse and the keyboard', () => {
+    const s = setup();
+    s.format.click();
+    expect(s.formatList().hidden).toBe(false);
+    s.formatOption('gemini').click();
+    expect(s.formatList().hidden).toBe(true);
+    expect(s.formatValue()).toBe('gemini');
+    expect(s.format.textContent).toContain('Google Gemini (generateContent)');
+    s.keydown(s.format, 'ArrowDown');
+    s.keydown(s.formatList(), 'ArrowUp');
+    s.keydown(s.formatList(), 'Enter');
+    expect(s.formatValue()).toBe('anthropic');
+    s.buttons[0]!.click();
+    expect(s.save).toHaveBeenCalledWith(expect.objectContaining({ format: 'anthropic' }));
   });
 });
 
@@ -70,7 +93,7 @@ describe('switching provider', () => {
     s.button.click();
     s.option('anthropic').click();
     expect(s.key.value).toBe('');
-    expect([s.model.value, s.baseUrl.value, s.format.value]).toEqual(['claude-haiku-4-5', 'https://api.anthropic.com/v1/messages', 'anthropic']);
+    expect([s.model.value, s.baseUrl.value, s.formatValue()]).toEqual(['claude-haiku-4-5', 'https://api.anthropic.com/v1/messages', 'anthropic']);
   });
 
   it('saves nothing and drops unsaved edits of the previous provider', () => {
@@ -257,7 +280,8 @@ describe('save and test', () => {
     }
     s.buttons[1]!.click();
     await flush();
-    s.format.dispatchEvent(new Event('change'));
+    s.format.click();
+    s.formatOption('anthropic').click();
     expect(s.status.textContent).toBe('');
   });
 });
