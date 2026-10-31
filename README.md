@@ -2,7 +2,7 @@
 
 ## What it does
 
-The extension is a Chrome extension for netflix.com. When you hover a title, it opens a dark popover with scores and a quick verdict. Anime come from MyAnimeList. Movies and series come from TMDB, with optional scores from OMDb. If you click the AI button, an AI provider gives its opinion based on a taste profile built from your thumbs up and thumbs down. The interface follows your browser language: Vietnamese when the browser is set to Vietnamese, English otherwise.
+The extension is a Chrome extension for netflix.com. When you hover a title, it opens a dark popover with scores and a quick verdict. Anime come from MyAnimeList. Movies and series come from TMDB, with optional scores from OMDb. If you click the AI button, an AI provider gives its opinion based on a taste profile built from your thumbs up and thumbs down. The interface follows your browser language by default: Vietnamese when the browser is set to Vietnamese, English otherwise. The Language section on the options page lets you pick Tiếng Việt or English instead, and the choice applies to the options page, the toolbar popup, the Netflix popover and AI opinions.
 
 ## Install
 
