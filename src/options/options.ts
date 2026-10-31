@@ -12,16 +12,18 @@ import {
   chromeSettingsStore,
   loadSettings,
   parseAiBaseUrl,
+  saveLanguage,
   saveTheme,
   thresholdsOf,
   type Settings,
   type SourceKey,
 } from '../shared/settings';
-import { strings } from '../shared/strings.vi';
+import { initLocale, locale, strings } from '../shared/i18n';
 import type { Kind } from '../shared/types';
 import { testAiConnection, type ConnectionResult } from './ai';
 import { saveAndInvalidate, saveThresholdSet, saveWithPermission } from './save';
 import { renderTasteBody } from './tasteView';
+import { renderLanguageSection } from './languageView';
 import { renderThemeSection } from './themeView';
 import { renderThresholdSection, type ThresholdView } from './thresholdView';
 import { SET_KEYS, parseThresholdForm, type SetKey } from './thresholds';
@@ -208,6 +210,17 @@ function thresholdSection(set: SetKey, fillers: ((s: Settings) => void)[]): HTML
   return view.element;
 }
 
+// Every string was captured when the page was built, so a reload is the simplest way to show the new language.
+function languageSection(fillers: ((s: Settings) => void)[]): HTMLElement {
+  const view = renderLanguageSection(async (pref) => {
+    const saved = await saveLanguage(pref, chromeSettingsStore());
+    location.reload();
+    return saved;
+  });
+  fillers.push(view.fill);
+  return view.element;
+}
+
 function themeSection(fillers: ((s: Settings) => void)[]): HTMLElement {
   const view = renderThemeSection((pref) => saveTheme(pref, chromeSettingsStore()));
   fillers.push(view.fill);
@@ -302,13 +315,17 @@ function cacheSection(): HTMLElement {
   return section('cache', t.cacheHeading, t.cacheDescription, actions(clear, status));
 }
 
-function main(): void {
+async function main(): Promise<void> {
+  const settings = await loadSettings();
+  initLocale(settings);
+  document.documentElement.lang = locale;
   document.title = appName();
   const fillers: ((s: Settings) => void)[] = [];
   const app = document.getElementById('app');
   if (!app) throw new Error('options.html is missing #app');
   app.replaceChildren(
     header(),
+    languageSection(fillers),
     aiSection(fillers),
     themeSection(fillers),
     sourcesSection(fillers),
@@ -320,7 +337,7 @@ function main(): void {
   watchTheme(chrome.storage.onChanged, window.matchMedia('(prefers-color-scheme: light)'), () => loadSettings(), (theme) => {
     document.documentElement.dataset.theme = theme;
   });
-  void loadSettings().then((settings) => fillers.forEach((fill) => fill(settings)));
+  fillers.forEach((fill) => fill(settings));
 }
 
-main();
+void main();

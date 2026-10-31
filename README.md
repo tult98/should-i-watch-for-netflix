@@ -2,7 +2,7 @@
 
 ## What it does
 
-The extension is a Chrome extension for netflix.com. When you hover a title, it opens a dark popover with scores and a quick verdict. Anime come from MyAnimeList. Movies and series come from TMDB, with optional scores from OMDb. If you click the AI button, an AI provider gives its opinion based on a taste profile built from your thumbs up and thumbs down. The popover text is in Vietnamese.
+The extension is a Chrome extension for netflix.com. When you hover a title, it opens a dark popover with scores and a quick verdict. Anime come from MyAnimeList. Movies and series come from TMDB, with optional scores from OMDb. If you click the AI button, an AI provider gives its opinion based on a taste profile built from your thumbs up and thumbs down. The interface follows your browser language by default: Vietnamese when the browser is set to Vietnamese, English otherwise. The Language section on the options page lets you pick Tiếng Việt or English instead, and the choice applies to the options page, the toolbar popup, the Netflix popover and AI opinions.
 
 ## Install
 
@@ -81,7 +81,7 @@ The badge shows one of four verdicts. The scores and thresholds behind it follow
 - The verdicts are "Rất nên xem", "Nên xem", "Cân nhắc", and "Bỏ qua", checked in that order. The first verdict whose limits pass wins.
 - A title with too few votes shows the warning "Ít người chấm, điểm chưa đáng tin". Missing votes count as zero.
 
-The AI opinion runs only when you click the button. It adds a conclusion and a reason in Vietnamese. For anime, and for any title whose synopsis is missing or in English, it also writes the Vietnamese synopsis.
+The AI opinion runs only when you click the button. It adds a conclusion and a reason in the interface language. For any title whose synopsis is missing or not in that language (all anime in Vietnamese, none in English), it also writes the synopsis.
 
 To turn the extension off without removing it, click the toolbar icon. The popup has these parts.
 
@@ -216,7 +216,7 @@ public/                  options.html, popup.html, icons
 assets/icon.svg
 design/                  HTML boards the UI follows
 src/
-  shared/                types, messages, settings, normalize, quickBadge, strings.vi
+  shared/                types, messages, settings, normalize, quickBadge, strings.vi, strings.en, i18n
   content/               hover controller, netflixSelectors, popover/
   background/            service worker, lookup, routing, cache, requestQueue
     adapters/            MalOfficialAdapter, JikanAdapter, TmdbAdapter, OmdbAdapter

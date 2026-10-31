@@ -46,8 +46,9 @@ function setup() {
 
 describe('lookupCacheKey', () => {
   it('uses language, normalized title, and year or a dash', () => {
-    expect(lookupCacheKey('en', 'Attack on Titan!', 2013)).toBe('lookup:en|attack on titan|2013');
-    expect(lookupCacheKey('vi', 'Đảo Hải Tặc')).toBe('lookup:vi|dao hai tac|-');
+    expect(lookupCacheKey('vi', 'en', 'Attack on Titan!', 2013)).toBe('lookup:vi|en|attack on titan|2013');
+    expect(lookupCacheKey('en', 'vi', 'Attack on Titan')).not.toBe(lookupCacheKey('vi', 'vi', 'Attack on Titan'));
+    expect(lookupCacheKey('vi', 'vi', 'Đảo Hải Tặc')).toBe('lookup:vi|vi|dao hai tac|-');
   });
 });
 
@@ -97,8 +98,8 @@ describe('lookup cache', () => {
 describe('clearLookupCache', () => {
   it('removes only lookup keys and reports the count', async () => {
     const { store, cache } = setup();
-    await cache.set(lookupCacheKey('en', 'Lupin'), match);
-    await cache.set(lookupCacheKey('en', 'Naruto', 2002), match);
+    await cache.set(lookupCacheKey('vi', 'en', 'Lupin'), match);
+    await cache.set(lookupCacheKey('vi', 'en', 'Naruto', 2002), match);
     store.data.set('settings', { tmdbKey: 'k' });
     store.data.set('taste:ratings', []);
     expect(await clearLookupCache(store)).toBe(2);

@@ -1,11 +1,11 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   formatAired,
   formatCompact,
   formatCount,
   formatRuntime,
   formatScore,
-  formatViDate,
+  formatReleaseDate,
   formatYears,
   kindLabel,
   malStatusLabel,
@@ -60,9 +60,9 @@ describe('format time', () => {
   });
 
   it('formats film dates in Vietnamese', () => {
-    expect(formatViDate('2022-03-11')).toBe('Tháng 3, 2022');
-    expect(formatViDate('2019')).toBe('2019');
-    expect(formatViDate(undefined)).toBeUndefined();
+    expect(formatReleaseDate('2022-03-11')).toBe('Tháng 3, 2022');
+    expect(formatReleaseDate('2019')).toBe('2019');
+    expect(formatReleaseDate(undefined)).toBeUndefined();
   });
 
   it('formats series years', () => {
@@ -88,5 +88,19 @@ describe('format labels', () => {
   it('translates series statuses', () => {
     expect(seriesStatusLabel('ongoing')).toBe('Đang chiếu');
     expect(seriesStatusLabel('ended')).toBe('Đã kết thúc');
+  });
+});
+
+describe('English locale', () => {
+  it('uses English separators and month names', async () => {
+    vi.resetModules();
+    vi.stubGlobal('chrome', { i18n: { getUILanguage: () => 'en-US' } });
+    const en = await import('../src/content/popover/format');
+    vi.unstubAllGlobals();
+    expect(en.formatCount(1234567)).toBe('1,234,567');
+    expect(en.formatCompact(1_300_000)).toBe('1.3M');
+    expect(en.formatReleaseDate('2022-03-11')).toBe('Mar 2022');
+    expect(en.formatRuntime(135)).toBe('2 h 15 min');
+    expect(en.formatYears(2023, undefined, true)).toBe('2023 – present');
   });
 });

@@ -1,6 +1,6 @@
 import { ageLabel } from '../../shared/ageLabel';
 import type { QuickBadge } from '../../shared/quickBadge';
-import { strings } from '../../shared/strings.vi';
+import { locale, strings } from '../../shared/i18n';
 import type { AnimeInfo, MovieInfo, Rating, Score, ScoreSource, SeriesInfo, TitleInfo } from '../../shared/types';
 import { h, icon, type Child } from './dom';
 import { scoreIcon } from './scoreIcons';
@@ -10,7 +10,7 @@ import {
   formatCount,
   formatRuntime,
   formatScore,
-  formatViDate,
+  formatReleaseDate,
   formatYears,
   kindLabel,
   malStatusLabel,
@@ -112,15 +112,15 @@ export interface PopoverHooks {
   onRate?: (clicked: Rating) => void;
 }
 
-function synopsisBlock(info: TitleInfo, enLabel: string): HTMLElement | null {
+function synopsisBlock(info: TitleInfo, foreignLabel: string): HTMLElement | null {
   const synopsis = info.synopsis;
   if (!synopsis?.text.trim()) return null;
-  const en = synopsis.lang === 'en';
+  const foreign = synopsis.lang !== locale;
   return h(
     'div',
     { class: 'section synopsis-section' },
-    h('span', { class: 'label' }, en ? enLabel : t.synopsis),
-    h('p', { class: en ? 'synopsis synopsis-en' : 'synopsis' }, synopsis.text),
+    h('span', { class: 'label' }, foreign ? foreignLabel : t.synopsis),
+    h('p', { class: foreign ? 'synopsis synopsis-en' : 'synopsis' }, synopsis.text),
   );
 }
 
@@ -263,7 +263,7 @@ function filmMeta(info: MovieInfo | SeriesInfo): Cell[] {
 function filmTime(info: MovieInfo | SeriesInfo, now: Date): HTMLElement | null {
   const age = ageLabel(info.year, now);
   if (info.kind === 'movie') {
-    const released = formatViDate(info.releaseDate) ?? (info.year !== undefined ? String(info.year) : undefined);
+    const released = formatReleaseDate(info.releaseDate) ?? (info.year !== undefined ? String(info.year) : undefined);
     return timeRow(t.released, released, age);
   }
   return timeRow(t.aired, formatYears(info.startYear ?? info.year, info.endYear, info.status === 'ongoing'), age);

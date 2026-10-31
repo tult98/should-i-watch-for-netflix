@@ -1,3 +1,4 @@
+import type { Locale } from '../../shared/i18n';
 import type { AIOpinion, Kind } from '../../shared/types';
 import type { KeyValueStore } from '../cache';
 import { validateOpinion } from './validate';
@@ -9,8 +10,8 @@ export interface CachedOpinion {
   tasteCount: number;
 }
 
-export function aiCacheKey(id: string, kind: Kind, tasteVersion: number, model: string): string {
-  return `ai:${id}|${kind}|v${tasteVersion}|${model}`;
+export function aiCacheKey(id: string, kind: Kind, tasteVersion: number, model: string, locale: Locale): string {
+  return `ai:${id}|${kind}|v${tasteVersion}|${model}|${locale}`;
 }
 
 function isCached(value: unknown): value is CachedOpinion {

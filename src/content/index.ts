@@ -4,6 +4,8 @@ import type { Rating, TitleInfo } from '../shared/types';
 import { loadSettings, thresholdsOf } from '../shared/settings';
 import { describeResult } from './describeResult';
 import { watchEnabled } from './enabledSwitch';
+import { watchLocale } from './localeWatcher';
+import { initLocale } from '../shared/i18n';
 import { watchTheme } from './themeWatcher';
 import { createHoverController, type HoverFire } from './hoverController';
 import {
@@ -47,6 +49,7 @@ async function lookup({ title, year, lang, netflixId, requestId }: HoverFire): P
   }
   try {
     const [result, settings] = await Promise.all([sendLookup({ title, year, lang, netflixId }), loadSettings()]);
+    initLocale(settings);
     console.log(`[lookup] ${title} -> ${describeResult(result)}${staleSuffix(requestId)}`);
     if (result.status !== 'match' || !controller.isCurrent(requestId)) return null;
     const { info } = result;
@@ -165,6 +168,8 @@ const controller = createHoverController<HTMLElement>({
 });
 
 const detach = controller.attach(document);
+watchLocale(chrome.storage.onChanged);
+void loadSettings().then(initLocale, () => undefined);
 watchEnabled(chrome.storage.onChanged, () => loadSettings(), (enabled) => {
   console.log(`[hover] ${enabled ? 'enabled' : 'disabled'}`);
   controller.setEnabled(enabled);

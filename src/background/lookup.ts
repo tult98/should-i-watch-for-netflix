@@ -1,3 +1,4 @@
+import { initLocale, locale } from '../shared/i18n';
 import type { LookupRequest } from '../shared/messages';
 import { MATCH_THRESHOLD, normalizeTitle } from '../shared/normalize';
 import type { Settings } from '../shared/settings';
@@ -163,8 +164,10 @@ export function createLookup(deps: LookupDeps): Lookup {
     return result;
   }
 
-  return (request) => {
-    const key = lookupCacheKey(request.lang, request.title, request.year);
+  return async (request) => {
+    // The service worker restarts, so the saved language is applied per lookup before the key and TMDB language depend on it.
+    await deps.loadSettings().then(initLocale, () => undefined);
+    const key = lookupCacheKey(locale, request.lang, request.title, request.year);
     const pending = inFlight.get(key);
     if (pending) return pending;
     const promise = lookup(request, key).finally(() => inFlight.delete(key));

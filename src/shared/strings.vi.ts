@@ -1,4 +1,4 @@
-export const strings = {
+export const vi = {
   options: {
     eyebrow: 'Cài đặt extension',
     privacy: 'Mọi cài đặt và dữ liệu gu chỉ lưu trong trình duyệt của bạn.',
@@ -23,6 +23,9 @@ export const strings = {
     invalidAiBaseUrl: 'Base URL phải là một URL https hợp lệ',
     permissionDenied: (origin: string) => `Chưa được cấp quyền truy cập ${origin}, chưa lưu`,
     permissionDeniedTest: (origin: string) => `Chưa được cấp quyền truy cập ${origin}`,
+    languageHeading: 'Ngôn ngữ',
+    languageDescription: 'Ngôn ngữ của trang cài đặt, popup, nhận xét AI và mô tả phim. Tự động là theo ngôn ngữ trình duyệt.',
+    languageLabels: { auto: 'Tự động', vi: 'Tiếng Việt', en: 'English' },
     themeHeading: 'Giao diện popover',
     themeDescription: 'Trang Netflix luôn tối, nên bạn có thể chọn popover tối cho liền mạch hoặc sáng cho nổi bật.',
     themeLabels: { dark: 'Tối', light: 'Sáng', system: 'Theo hệ thống' },
@@ -167,6 +170,7 @@ export const strings = {
     ongoing: 'Đang chiếu',
     ended: 'Đã kết thúc',
   },
+  number: { thousands: '.', decimal: ',' },
   time: {
     hours: (n: number) => `${n} giờ`,
     minutes: (n: number) => `${n} phút`,
@@ -218,4 +222,6 @@ export const strings = {
     likeTitle: 'Thích tiêu đề này',
     dislikeTitle: 'Không thích tiêu đề này',
   },
-} as const;
+};
+
+export type Strings = typeof vi;

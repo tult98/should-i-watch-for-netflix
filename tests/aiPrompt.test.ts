@@ -62,6 +62,16 @@ describe('buildMessages', () => {
     expect(system?.content).not.toContain('spoiler-free Vietnamese summary');
   });
 
+  it('writes in English and copies an English overview in the English locale', () => {
+    const [write] = buildMessages(input(anime), 'en');
+    expect(write?.content).toContain('spoiler-free English summary');
+    expect(write?.content).toContain('All text values must be in English');
+    expect(write?.content).toContain('_vi suffix');
+    expect(write?.content).not.toContain('Vietnamese');
+    const [copy] = buildMessages({ ...input(anime), needSummary: false }, 'en');
+    expect(copy?.content).toContain('already an overview in English');
+  });
+
   it('sends title data, the quick badge and the taste profile, without match', () => {
     const [, user] = buildMessages(input(anime));
     const payload = JSON.parse(user!.content);
@@ -82,12 +92,19 @@ describe('buildMessages', () => {
 });
 
 describe('needSummary', () => {
-  it('is true for anime and for English or missing TMDB synopses', () => {
-    expect(needSummary(anime)).toBe(true);
-    expect(needSummary({ ...anime, synopsis: { text: 'x', lang: 'vi' } })).toBe(true);
-    expect(needSummary(movie)).toBe(false);
-    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'en' } })).toBe(true);
-    expect(needSummary({ ...movie, synopsis: undefined })).toBe(true);
-    expect(needSummary({ ...movie, synopsis: { text: '  ', lang: 'vi' } })).toBe(true);
+  it('is true for foreign-language or missing synopses in Vietnamese', () => {
+    expect(needSummary(anime, 'vi')).toBe(true);
+    expect(needSummary({ ...anime, synopsis: undefined }, 'vi')).toBe(true);
+    expect(needSummary(movie, 'vi')).toBe(false);
+    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'en' } }, 'vi')).toBe(true);
+    expect(needSummary({ ...movie, synopsis: undefined }, 'vi')).toBe(true);
+    expect(needSummary({ ...movie, synopsis: { text: '  ', lang: 'vi' } }, 'vi')).toBe(true);
+  });
+
+  it('is false for an English synopsis in English', () => {
+    expect(needSummary(anime, 'en')).toBe(false);
+    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'en' } }, 'en')).toBe(false);
+    expect(needSummary({ ...movie, synopsis: { text: 'x', lang: 'vi' } }, 'en')).toBe(true);
+    expect(needSummary({ ...movie, synopsis: undefined }, 'en')).toBe(true);
   });
 });

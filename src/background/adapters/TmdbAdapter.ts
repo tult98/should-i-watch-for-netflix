@@ -1,3 +1,4 @@
+import { locale, type Locale } from '../../shared/i18n';
 import { bestMatch } from '../../shared/normalize';
 import type { MatchInfo, MovieInfo, SeriesInfo } from '../../shared/types';
 import { RequestError, type FetchFn } from '../requestQueue';
@@ -5,7 +6,7 @@ import { present } from './AnimeAdapter';
 
 export const TMDB_API_BASE = 'https://api.themoviedb.org/3';
 export const TMDB_ANIMATION_GENRE = 16;
-export const DETAILS_LANGUAGE = 'vi-VN';
+const DETAILS_LANGUAGE: Record<Locale, string> = { vi: 'vi-VN', en: 'en-US' };
 const FALLBACK_LANGUAGE = 'en-US';
 const CAST_LIMIT = 4;
 
@@ -131,9 +132,9 @@ function englishTranslation(details: TmdbDetailsResponse): Translation['data'] |
   return (english.find((t) => t.iso_3166_1 === 'US') ?? english[0])?.data ?? undefined;
 }
 
-function synopsisOf(details: TmdbDetailsResponse): MovieInfo['synopsis'] {
-  const vi = details.overview?.trim();
-  if (vi) return { text: vi, lang: 'vi' };
+function synopsisOf(details: TmdbDetailsResponse, loc: Locale): MovieInfo['synopsis'] {
+  const own = details.overview?.trim();
+  if (own) return { text: own, lang: loc };
   const en = englishTranslation(details)?.overview?.trim();
   return en ? { text: en, lang: 'en' } : undefined;
 }
@@ -167,13 +168,13 @@ function tvCertification(details: TmdbDetailsResponse): string | undefined {
   return pickByCountry(details.content_ratings?.results, (r) => r.rating?.trim() || undefined);
 }
 
-function toMovieInfo(details: TmdbDetailsResponse, match: MatchInfo): MovieInfo {
+function toMovieInfo(details: TmdbDetailsResponse, match: MatchInfo, loc: Locale): MovieInfo {
   return {
     id: `tmdb:movie:${details.id}`,
     kind: 'movie',
     title: details.title || details.original_title || match.matchedName,
     year: yearOf(details.release_date),
-    synopsis: synopsisOf(details),
+    synopsis: synopsisOf(details, loc),
     genres: names(details.genres),
     scores: scoresOf(details),
     match,
@@ -187,7 +188,7 @@ function toMovieInfo(details: TmdbDetailsResponse, match: MatchInfo): MovieInfo 
 
 const ENDED_STATUSES = new Set(['Ended', 'Canceled']);
 
-function toSeriesInfo(details: TmdbDetailsResponse, match: MatchInfo): SeriesInfo {
+function toSeriesInfo(details: TmdbDetailsResponse, match: MatchInfo, loc: Locale): SeriesInfo {
   const status = ENDED_STATUSES.has(details.status ?? '') ? 'ended' : 'ongoing';
   const startYear = yearOf(details.first_air_date);
   return {
@@ -195,7 +196,7 @@ function toSeriesInfo(details: TmdbDetailsResponse, match: MatchInfo): SeriesInf
     kind: 'series',
     title: details.name || details.original_name || match.matchedName,
     year: startYear,
-    synopsis: synopsisOf(details),
+    synopsis: synopsisOf(details, loc),
     genres: names(details.genres),
     scores: scoresOf(details),
     match,
@@ -211,14 +212,14 @@ function toSeriesInfo(details: TmdbDetailsResponse, match: MatchInfo): SeriesInf
   };
 }
 
-export function toTmdbDetails(details: TmdbDetailsResponse, match: TmdbMatch): TmdbDetails {
+export function toTmdbDetails(details: TmdbDetailsResponse, match: TmdbMatch, loc: Locale = locale): TmdbDetails {
   const matchInfo: MatchInfo = {
     query: match.query,
     matchedName: match.matchedName,
     confidence: match.confidence,
     source: 'tmdb',
   };
-  const info = match.mediaType === 'movie' ? toMovieInfo(details, matchInfo) : toSeriesInfo(details, matchInfo);
+  const info = match.mediaType === 'movie' ? toMovieInfo(details, matchInfo, loc) : toSeriesInfo(details, matchInfo, loc);
   const en = englishTranslation(details);
   const englishName =
     en?.title?.trim() || en?.name?.trim() || details.original_title || details.original_name || undefined;
@@ -230,7 +231,7 @@ export function isReadAccessToken(key: string): boolean {
   return key.startsWith('eyJ');
 }
 
-export function createTmdbAdapter(fetch: FetchFn, key: string): TmdbAdapter {
+export function createTmdbAdapter(fetch: FetchFn, key: string, loc: Locale = locale): TmdbAdapter {
   const bearer = isReadAccessToken(key);
 
   async function get<T>(path: string, params: Record<string, string>): Promise<T> {
@@ -289,10 +290,10 @@ export function createTmdbAdapter(fetch: FetchFn, key: string): TmdbAdapter {
           ? 'credits,release_dates,external_ids,translations'
           : 'aggregate_credits,content_ratings,external_ids,translations';
       const body = await get<TmdbDetailsResponse>(`/${match.mediaType}/${match.tmdbId}`, {
-        language: DETAILS_LANGUAGE,
+        language: DETAILS_LANGUAGE[loc],
         append_to_response: append,
       });
-      return toTmdbDetails(body, match);
+      return toTmdbDetails(body, match, loc);
     },
   };
 }

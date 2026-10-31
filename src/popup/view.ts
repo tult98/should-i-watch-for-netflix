@@ -1,5 +1,5 @@
 import { h } from '../content/popover/dom';
-import { strings } from '../shared/strings.vi';
+import { strings } from '../shared/i18n';
 import type { KeyRow, PopupModel } from './model';
 
 const t = strings.popup;

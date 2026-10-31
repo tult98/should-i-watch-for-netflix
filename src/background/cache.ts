@@ -1,3 +1,4 @@
+import type { Locale } from '../shared/i18n';
 import { normalizeTitle } from '../shared/normalize';
 import type { LookupResult } from '../shared/types';
 
@@ -24,8 +25,8 @@ export interface LookupCache {
   set(key: string, result: LookupResult): Promise<void>;
 }
 
-export function lookupCacheKey(lang: string, title: string, year?: number): string {
-  return `${LOOKUP_PREFIX}${lang}|${normalizeTitle(title)}|${year ?? '-'}`;
+export function lookupCacheKey(locale: Locale, lang: string, title: string, year?: number): string {
+  return `${LOOKUP_PREFIX}${locale}|${lang}|${normalizeTitle(title)}|${year ?? '-'}`;
 }
 
 function isEntry(value: unknown): value is Entry {
