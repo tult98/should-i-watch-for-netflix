@@ -7,6 +7,7 @@ import {
   isAiProviderId,
   isApiFormat,
 } from '../src/shared/aiProviders';
+import { PROVIDER_LOGOS } from '../src/shared/providerLogos';
 import { parseAiBaseUrl } from '../src/shared/settings';
 
 describe('AI provider registry', () => {
@@ -47,5 +48,14 @@ describe('AI provider registry', () => {
     expect(isApiFormat('xml')).toBe(false);
     expect(API_FORMATS.map((f) => f.id)).toEqual(['openai', 'anthropic', 'gemini']);
     expect(apiFormatLabel('anthropic')).toBe('Anthropic (messages)');
+  });
+});
+
+describe('provider logos', () => {
+  it('has a logo for every preset except Custom', () => {
+    for (const id of AI_PROVIDER_IDS) {
+      if (id === 'custom') expect(PROVIDER_LOGOS[id]).toBeUndefined();
+      else expect(PROVIDER_LOGOS[id]).toMatch(/^M[\d.\-]/);
+    }
   });
 });

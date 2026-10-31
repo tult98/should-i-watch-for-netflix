@@ -38,9 +38,17 @@ function dice(a: string, b: string): number {
   return (2 * overlap) / (sizeA + sizeB);
 }
 
+const EDITION_LABEL = /\s(?:director s|extended|final|theatrical) cut$/;
+
+function stripEdition(title: string): string {
+  const stripped = title.replace(EDITION_LABEL, '');
+  return stripped || title;
+}
+
 export function nameSimilarity(query: string, name: string): number {
-  const a = normalizeTitle(query);
-  const b = normalizeTitle(name);
+  // An edition label names a release of the work, so catalogs rarely carry it.
+  const a = stripEdition(normalizeTitle(query));
+  const b = stripEdition(normalizeTitle(name));
   if (!a || !b) return 0;
   if (a === b) return 1;
   return dice(a.replace(/ /g, ''), b.replace(/ /g, ''));

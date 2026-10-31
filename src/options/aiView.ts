@@ -3,6 +3,7 @@ import { AI_PROVIDERS, API_FORMATS, DEFAULT_AI_PROVIDER, type AiProviderId, type
 import { aiProfileOf, aiProviderOf, parseAiBaseUrl, type Settings } from '../shared/settings';
 import { strings } from '../shared/i18n';
 import { permissionHostFor, type AiDraft, type ConnectionResult } from './ai';
+import { renderListbox } from './listbox';
 import { renderProviderSelect } from './providerSelect';
 import type { SaveResult } from './save';
 import { actions, button, link, section, setStatus, statusLine, textField } from './ui';
@@ -42,11 +43,16 @@ export function renderAiSection(deps: AiViewDeps): AiView {
   model.wrap.appendChild(models);
   const key = textField('ai-key', t.aiKeyLabel, { type: 'password', hint: [] });
   const keyHint = key.wrap.querySelector('.hint')!;
-  const format = h(
-    'select',
-    { id: 'ai-format' },
-    ...API_FORMATS.map((f) => h('option', { value: f.id }, f.label)),
-  );
+  const formatLabel = h('label', { id: 'ai-format-label', for: 'ai-format' }, t.apiFormatLabel);
+  const format = renderListbox<ApiFormat>({
+    id: 'ai-format',
+    labelledBy: 'ai-format-label',
+    items: API_FORMATS.map((f) => ({ value: f.id, content: () => [h('span', { class: 'p-label' }, f.label)] })),
+    initial: 'openai',
+    optionAttr: 'data-format',
+    compact: true,
+    onChange: () => setStatus(status, ''),
+  });
   const baseUrl = textField('ai-base-url', t.aiBaseUrlLabel, { hint: [t.aiBaseUrlHint], inputmode: 'url' });
   const advanced = h(
     'details',
@@ -55,7 +61,7 @@ export function renderAiSection(deps: AiViewDeps): AiView {
     h(
       'div',
       { class: 'advanced-body' },
-      h('div', { class: 'field' }, h('label', { for: 'ai-format' }, t.apiFormatLabel), format),
+      h('div', { class: 'field' }, formatLabel, format.element),
       baseUrl.wrap,
     ),
   );
@@ -66,7 +72,7 @@ export function renderAiSection(deps: AiViewDeps): AiView {
     const preset = AI_PROVIDERS[provider];
     return {
       provider,
-      format: format.value as ApiFormat,
+      format: format.value(),
       baseUrl: baseUrl.input.value.trim() || preset.baseUrl,
       model: model.input.value.trim() || preset.model,
       key: key.input.value.trim() || undefined,
@@ -93,7 +99,7 @@ export function renderAiSection(deps: AiViewDeps): AiView {
     const preset = AI_PROVIDERS[id];
     const profile = aiProfileOf(saved, id);
     select.set(id);
-    format.value = profile.format;
+    format.set(profile.format);
     baseUrl.input.value = profile.baseUrl;
     baseUrl.input.placeholder = preset.baseUrl;
     model.input.value = profile.model;
@@ -144,7 +150,6 @@ export function renderAiSection(deps: AiViewDeps): AiView {
   }
 
   for (const input of [model.input, key.input, baseUrl.input]) input.addEventListener('input', () => setStatus(status, ''));
-  format.addEventListener('change', () => setStatus(status, ''));
   baseUrl.input.addEventListener('input', showPermission);
 
   const providerField = h(
