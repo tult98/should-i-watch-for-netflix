@@ -195,10 +195,14 @@ input[aria-invalid='true'] {
   cursor: pointer;
 }
 
-.p-button:focus-visible,
-.p-list:focus-visible {
+.p-button:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 1px;
+}
+
+.p-list:focus-visible {
+  outline: none;
+  border-color: var(--focus);
 }
 
 .p-button svg {
@@ -257,7 +261,7 @@ input[aria-invalid='true'] {
   top: calc(100% + 4px);
   left: 0;
   right: 0;
-  max-height: 340px;
+  max-height: 420px;
   overflow-y: auto;
   margin: 0;
   padding: 4px;

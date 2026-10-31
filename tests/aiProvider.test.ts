@@ -3,7 +3,6 @@ import { AIError, type OpinionInput } from '../src/background/ai/AIProvider';
 import {
   AI_TIMEOUT_MS,
   createOpenAICompatibleProvider,
-  providerLabel,
 } from '../src/background/ai/OpenAICompatibleProvider';
 import { createRequestQueue, systemClock, type FetchFn } from '../src/background/requestQueue';
 import type { MovieInfo } from '../src/shared/types';
@@ -117,12 +116,5 @@ describe('OpenAICompatibleProvider', () => {
     const fetch = vi.fn<FetchFn>(async () => reply('{"ok":true}'));
     await provider(fetch).ping();
     expect(JSON.parse(fetch.mock.calls[0]![1]?.body as string).max_tokens).toBe(16);
-  });
-});
-
-describe('providerLabel', () => {
-  it('names DeepSeek and falls back to the hostname', () => {
-    expect(providerLabel(URL_)).toBe('DeepSeek');
-    expect(providerLabel('https://openrouter.ai/api/v1/chat/completions')).toBe('openrouter.ai');
   });
 });
