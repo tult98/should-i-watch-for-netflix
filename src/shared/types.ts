@@ -11,7 +11,7 @@ export interface MatchInfo {
   query: string;
   matchedName: string;
   confidence: number;
-  source: 'mal' | 'tmdb';
+  source: 'mal' | 'anilist' | 'tmdb' | 'cinemeta';
 }
 
 export interface BaseInfo {
