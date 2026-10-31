@@ -23,7 +23,6 @@ export let locale: Locale = detectLocale(browserUiLanguage());
 
 export function setLocale(next: Locale): void {
   locale = next;
-  if (typeof document !== 'undefined') document.documentElement.lang = next;
 }
 
 export function initLocale(settings: Settings = {}): Locale {

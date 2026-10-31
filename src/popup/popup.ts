@@ -1,20 +1,22 @@
 import './popup.css';
 import { chromeLocalStore, clearLookupCache } from '../background/cache';
 import { createTasteStore } from '../background/taste/tasteStore';
+import { watchLocale } from '../content/localeWatcher';
 import { watchTheme } from '../content/themeWatcher';
 import { appName } from '../shared/appName';
-import { locale } from '../shared/i18n';
+import { initLocale, locale } from '../shared/i18n';
 import { loadSettings, saveEnabled } from '../shared/settings';
 import { popupModel } from './model';
 import { renderPopup } from './view';
 
 async function main(): Promise<void> {
-  document.documentElement.lang = locale;
   document.title = appName();
   const app = document.getElementById('app');
   if (!app) throw new Error('popup.html is missing #app');
   const store = chromeLocalStore();
   const [settings, ratings] = await Promise.all([loadSettings(), createTasteStore(store).listRatings()]);
+  initLocale(settings);
+  document.documentElement.lang = locale;
   app.replaceChildren(
     renderPopup(
       popupModel(settings, ratings),
@@ -30,6 +32,9 @@ async function main(): Promise<void> {
   );
 }
 
+watchLocale(chrome.storage.onChanged, (next) => {
+  document.documentElement.lang = next;
+});
 watchTheme(chrome.storage.onChanged, window.matchMedia('(prefers-color-scheme: light)'), () => loadSettings(), (theme) => {
   document.documentElement.dataset.theme = theme;
 });
