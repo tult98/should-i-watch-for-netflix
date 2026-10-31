@@ -3,14 +3,13 @@ import { bestMatch } from '../../shared/normalize';
 import type { MatchInfo, MovieInfo, SeriesInfo } from '../../shared/types';
 import { RequestError, type FetchFn } from '../requestQueue';
 import { present } from './AnimeAdapter';
+import type { FilmAdapter, FilmDetails, FilmMatch, FilmMediaType } from './FilmAdapter';
 
 export const TMDB_API_BASE = 'https://api.themoviedb.org/3';
 export const TMDB_ANIMATION_GENRE = 16;
 const DETAILS_LANGUAGE: Record<Locale, string> = { vi: 'vi-VN', en: 'en-US' };
 const FALLBACK_LANGUAGE = 'en-US';
 const CAST_LIMIT = 4;
-
-export type TmdbMediaType = 'movie' | 'tv';
 
 export interface TmdbSearchItem {
   id: number;
@@ -75,29 +74,6 @@ export interface TmdbDetailsResponse {
   translations?: { translations?: Translation[] | null } | null;
 }
 
-export interface TmdbMatch {
-  tmdbId: number;
-  mediaType: TmdbMediaType;
-  query: string;
-  matchedName: string;
-  confidence: number;
-  year?: number;
-  animated: boolean;
-  japanese: boolean;
-}
-
-export interface TmdbDetails {
-  info: MovieInfo | SeriesInfo;
-  imdbId?: string;
-  /** English title from translations, else the original title. Feeds the second anime search. */
-  englishName?: string;
-}
-
-export interface TmdbAdapter {
-  search(title: string, year: number | undefined, lang: string): Promise<TmdbMatch | null>;
-  details(match: TmdbMatch): Promise<TmdbDetails>;
-}
-
 function yearOf(date: string | null | undefined): number | undefined {
   const parsed = date ? Number(date.slice(0, 4)) : NaN;
   return Number.isFinite(parsed) && parsed > 0 ? parsed : undefined;
@@ -107,7 +83,7 @@ function unique(list: (string | null | undefined)[]): string[] {
   return [...new Set(list.filter(present))];
 }
 
-function mediaTypeOf(item: TmdbSearchItem): TmdbMediaType | null {
+function mediaTypeOf(item: TmdbSearchItem): FilmMediaType | null {
   return item.media_type === 'movie' || item.media_type === 'tv' ? item.media_type : null;
 }
 
@@ -212,7 +188,7 @@ function toSeriesInfo(details: TmdbDetailsResponse, match: MatchInfo, loc: Local
   };
 }
 
-export function toTmdbDetails(details: TmdbDetailsResponse, match: TmdbMatch, loc: Locale = locale): TmdbDetails {
+export function toTmdbDetails(details: TmdbDetailsResponse, match: FilmMatch, loc: Locale = locale): FilmDetails {
   const matchInfo: MatchInfo = {
     query: match.query,
     matchedName: match.matchedName,
@@ -231,7 +207,7 @@ export function isReadAccessToken(key: string): boolean {
   return key.startsWith('eyJ');
 }
 
-export function createTmdbAdapter(fetch: FetchFn, key: string, loc: Locale = locale): TmdbAdapter {
+export function createTmdbAdapter(fetch: FetchFn, key: string, loc: Locale = locale): FilmAdapter {
   const bearer = isReadAccessToken(key);
 
   async function get<T>(path: string, params: Record<string, string>): Promise<T> {
@@ -244,7 +220,7 @@ export function createTmdbAdapter(fetch: FetchFn, key: string, loc: Locale = loc
     return (await response.json()) as T;
   }
 
-  async function searchOnce(title: string, year: number | undefined, language: string): Promise<TmdbMatch | null> {
+  async function searchOnce(title: string, year: number | undefined, language: string): Promise<FilmMatch | null> {
     const body = await get<TmdbSearchResponse>('/search/multi', {
       query: title,
       language,
@@ -267,7 +243,7 @@ export function createTmdbAdapter(fetch: FetchFn, key: string, loc: Locale = loc
     if (!best) return null;
     const { item, mediaType } = best.candidate;
     return {
-      tmdbId: item.id,
+      id: String(item.id),
       mediaType,
       query: title,
       matchedName: best.matchedName,
@@ -289,7 +265,7 @@ export function createTmdbAdapter(fetch: FetchFn, key: string, loc: Locale = loc
         match.mediaType === 'movie'
           ? 'credits,release_dates,external_ids,translations'
           : 'aggregate_credits,content_ratings,external_ids,translations';
-      const body = await get<TmdbDetailsResponse>(`/${match.mediaType}/${match.tmdbId}`, {
+      const body = await get<TmdbDetailsResponse>(`/${match.mediaType}/${match.id}`, {
         language: DETAILS_LANGUAGE[loc],
         append_to_response: append,
       });

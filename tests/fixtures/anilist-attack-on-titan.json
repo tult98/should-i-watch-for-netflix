@@ -1,0 +1,351 @@
+{
+ "data": {
+  "Page": {
+   "media": [
+    {
+     "id": 16498,
+     "idMal": 16498,
+     "title": {
+      "romaji": "Shingeki no Kyojin",
+      "english": "Attack on Titan",
+      "native": "進撃の巨人"
+     },
+     "synonyms": [
+      "SnK",
+      "AoT",
+      "Ataque a los Titanes",
+      "Ataque dos Titãs",
+      "L'Attacco dei Giganti",
+      "מתקפת הטיטאנים",
+      "进击的巨人",
+      "L’Attaque des Titans",
+      "الهجوم على العمالقة",
+      "ผ่าพิภพไททัน",
+      "حمله به تایتان",
+      "Ataque de Titãs",
+      "Atak Tytanów",
+      "Атака титанов",
+      "Đại Chiến Titan"
+     ],
+     "seasonYear": 2013,
+     "format": "TV",
+     "episodes": 25,
+     "status": "FINISHED",
+     "averageScore": 85,
+     "popularity": 1072805,
+     "genres": [
+      "Action",
+      "Drama",
+      "Fantasy",
+      "Mystery"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "WIT STUDIO"
+       },
+       {
+        "name": "Pony Canyon"
+       },
+       {
+        "name": "Kodansha"
+       },
+       {
+        "name": "Production I.G"
+       },
+       {
+        "name": "Dentsu"
+       },
+       {
+        "name": "Pony Canyon Enterprise"
+       },
+       {
+        "name": "Mainichi Broadcasting System"
+       }
+      ]
+     },
+     "description": "Several hundred years ago, humans were nearly exterminated by titans. Titans are typically several stories tall, seem to have no intelligence, devour human beings and, worst of all, seem to do it for the pleasure rather than as a food source. A small percentage of humanity survived by walling themselves in a city protected by extremely high walls, even taller than the biggest of titans.<br><br>\r\nFlash forward to the present and the city has not seen a titan in over 100 years. Teenage boy Eren and his foster sister Mikasa witness something horrific as the city walls are destroyed by a colossal titan that appears out of thin air. As the smaller titans flood the city, the two kids watch in horror as their mother is eaten alive. Eren vows that he will murder every single titan and take revenge for all of mankind.<br><br>\r\n(Source: MangaHelpers)",
+     "startDate": {
+      "year": 2013,
+      "month": 4,
+      "day": 7
+     },
+     "endDate": {
+      "year": 2013,
+      "month": 9,
+      "day": 28
+     },
+     "season": "SPRING"
+    },
+    {
+     "id": 110277,
+     "idMal": 40028,
+     "title": {
+      "romaji": "Shingeki no Kyojin: The Final Season",
+      "english": "Attack on Titan Final Season",
+      "native": "進撃の巨人 The Final Season"
+     },
+     "synonyms": [
+      "SnK 4",
+      "AoT 4",
+      "Shingeki no Kyojin 4",
+      "進撃の巨人4",
+      "Attack on Titan Season 4",
+      "진격의 거인 더 파이널 시즌",
+      "מתקפת הטיטאנים העונה האחרונה",
+      "L'Attaque des Titans Saison Finale",
+      "L'Attacco dei Giganti 4",
+      "L'Attacco dei Giganti - La Stagione Finale",
+      "حمله به تایتان فصل 4 ",
+      " ผ่าพิภพไททัน ไฟนอล ซีซั่น",
+      "ผ่าพิภพไททัน Final Season",
+      "ผ่าพิภพไททัน ภาค 4",
+      "هجوم العملاقة الجزء الأخير",
+      "Атака Титанов: Финал"
+     ],
+     "seasonYear": 2021,
+     "format": "TV",
+     "episodes": 16,
+     "status": "FINISHED",
+     "averageScore": 87,
+     "popularity": 653426,
+     "genres": [
+      "Action",
+      "Drama",
+      "Fantasy",
+      "Mystery"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "MAPPA"
+       },
+       {
+        "name": "Pony Canyon"
+       },
+       {
+        "name": "Kodansha"
+       },
+       {
+        "name": "Production I.G"
+       },
+       {
+        "name": "Dentsu"
+       },
+       {
+        "name": "Mainichi Broadcasting System"
+       },
+       {
+        "name": "Pony Canyon Enterprise"
+       },
+       {
+        "name": "MAPPA"
+       }
+      ]
+     },
+     "description": "It’s been four years since the Scout Regiment reached the shoreline, and the world looks different now. Things are heating up as the fate of the Scout Regiment—and the people of Paradis—are determined at last. However, Eren is missing. Will he reappear before age-old tensions between Marleyans and Eldians result in the war of all wars?<br>\n<br>\n(Source: Crunchyroll)",
+     "startDate": {
+      "year": 2020,
+      "month": 12,
+      "day": 7
+     },
+     "endDate": {
+      "year": 2021,
+      "month": 3,
+      "day": 29
+     },
+     "season": "WINTER"
+    },
+    {
+     "id": 20958,
+     "idMal": 25777,
+     "title": {
+      "romaji": "Shingeki no Kyojin Season 2",
+      "english": "Attack on Titan Season 2",
+      "native": "進撃の巨人 Season２"
+     },
+     "synonyms": [
+      "SnK 2",
+      "AoT 2",
+      "+מתקפת הטיטאנים עונה 2",
+      "L'Attacco dei Giganti 2",
+      "L'Attacco dei Giganti - Seconda Stagione",
+      "ผ่าพิภพไททัน ภาค 2",
+      "حمله به تایتان فصل 2",
+      "Атака титанов 2"
+     ],
+     "seasonYear": 2017,
+     "format": "TV",
+     "episodes": 12,
+     "status": "FINISHED",
+     "averageScore": 85,
+     "popularity": 745135,
+     "genres": [
+      "Action",
+      "Drama",
+      "Fantasy",
+      "Mystery"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "WIT STUDIO"
+       },
+       {
+        "name": "Pony Canyon"
+       },
+       {
+        "name": "Kodansha"
+       },
+       {
+        "name": "Production I.G"
+       },
+       {
+        "name": "Dentsu"
+       },
+       {
+        "name": "Pony Canyon Enterprise"
+       },
+       {
+        "name": "Mainichi Broadcasting System"
+       },
+       {
+        "name": "Funimation"
+       }
+      ]
+     },
+     "description": "Eren Jaeger swore to wipe out every last Titan, but in a battle for his life he wound up becoming the thing he hates most. With his new powers, he fights for humanity's freedom facing the monsters that threaten his home. After a bittersweet victory against the Female Titan, Eren finds no time to rest—a horde of Titans is approaching Wall Rose and the battle for humanity continues!<br><br>\n\n(Source: Funimation)",
+     "startDate": {
+      "year": 2017,
+      "month": 4,
+      "day": 1
+     },
+     "endDate": {
+      "year": 2017,
+      "month": 6,
+      "day": 17
+     },
+     "season": "SPRING"
+    },
+    {
+     "id": 99147,
+     "idMal": 35760,
+     "title": {
+      "romaji": "Shingeki no Kyojin Season 3",
+      "english": "Attack on Titan Season 3",
+      "native": "進撃の巨人 Season３"
+     },
+     "synonyms": [
+      "SnK 3",
+      "AoT 3",
+      "מתקפת הטיטאנים עונה 3",
+      "L'Attacco dei Giganti 3",
+      "L'Attacco dei Giganti - Terza Stagione",
+      "ผ่าพิภพไททัน ภาค 3",
+      "حمله به تایتان فصل 3",
+      "ผ่าพิภพไททัน ภาค 3 Part 1",
+      "Атака титанов 3"
+     ],
+     "seasonYear": 2018,
+     "format": "TV",
+     "episodes": 12,
+     "status": "FINISHED",
+     "averageScore": 86,
+     "popularity": 697391,
+     "genres": [
+      "Action",
+      "Drama",
+      "Fantasy",
+      "Mystery"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "WIT STUDIO"
+       },
+       {
+        "name": "Pony Canyon"
+       },
+       {
+        "name": "Kodansha"
+       },
+       {
+        "name": "Production I.G"
+       },
+       {
+        "name": "Dentsu"
+       },
+       {
+        "name": "Pony Canyon Enterprise"
+       },
+       {
+        "name": "Mainichi Broadcasting System"
+       }
+      ]
+     },
+     "description": "Eren and his companions in the 104th are assigned to the newly-formed Levi Squad, whose assignment is to keep Eren and Historia safe given Eren's newly-discovered power and Historia's knowledge and pedigree. Levi and Erwin have good reason to be concerned, because the priest of the Church that Hanji had hidden away was found tortured to death, making it clear that the Military Police are involved with the cover-up. Things get more harrowing when the MPs make a move on Erwin and the Levi Squad narrowly avoids capture. Eren is also having problems with his Titan transformation, and a deadly killer has been hired to secure Eren and Historia, one Levi knows all too well from his youth.<br>\n<br>\n(Source: Anime News Network)",
+     "startDate": {
+      "year": 2018,
+      "month": 7,
+      "day": 23
+     },
+     "endDate": {
+      "year": 2018,
+      "month": 10,
+      "day": 15
+     },
+     "season": "SUMMER"
+    },
+    {
+     "id": 20811,
+     "idMal": 25781,
+     "title": {
+      "romaji": "Shingeki no Kyojin Gaiden: Kuinaki Sentaku",
+      "english": "Attack on Titan: No Regrets",
+      "native": "進撃の巨人 外伝 悔いなき選択"
+     },
+     "synonyms": [
+      "SnK",
+      "AoT",
+      "ผ่าพิภพไททัน ภาค OAD No Regret",
+      "ผ่าพิภพไททัน OAD ",
+      "Атака титанов: Выбор без сожалений"
+     ],
+     "seasonYear": 2015,
+     "format": "OVA",
+     "episodes": 2,
+     "status": "FINISHED",
+     "averageScore": 83,
+     "popularity": 155019,
+     "genres": [
+      "Action",
+      "Drama",
+      "Fantasy"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "Production I.G"
+       },
+       {
+        "name": "WIT STUDIO"
+       }
+      ]
+     },
+     "description": "This prequel to megahit Attack on Titan answers the questions: How did Captain Levi of the Survey Corps go from street thug to humanity's strongest soldier? And how did Commander Erwin become a cold, calculating leader, ready to sacrifice anything to save the human race? The fires that forged this bond of loyalty and trust were intense indeed!\n<br><br>\n(Source: Anime News Network, revised)",
+     "startDate": {
+      "year": 2014,
+      "month": 12,
+      "day": 9
+     },
+     "endDate": {
+      "year": 2015,
+      "month": 4,
+      "day": 9
+     },
+     "season": "WINTER"
+    }
+   ]
+  }
+ }
+}

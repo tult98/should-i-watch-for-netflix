@@ -4,9 +4,9 @@ import { MATCH_THRESHOLD, normalizeTitle } from '../shared/normalize';
 import type { Settings } from '../shared/settings';
 import type { AnimeInfo, LookupResult, Score } from '../shared/types';
 import type { AnimeAdapter } from './adapters/AnimeAdapter';
+import type { FilmAdapter, FilmDetails, FilmMatch } from './adapters/FilmAdapter';
 import { canUseMalOfficial } from './adapters/MalOfficialAdapter';
 import type { OmdbAdapter } from './adapters/OmdbAdapter';
-import type { TmdbAdapter, TmdbDetails, TmdbMatch } from './adapters/TmdbAdapter';
 import { lookupCacheKey, type LookupCache } from './cache';
 import { RequestError } from './requestQueue';
 import { route } from './routing';
@@ -16,7 +16,7 @@ export interface LookupDeps {
   loadSettings: () => Promise<Settings>;
   jikan: AnimeAdapter;
   malOfficial: (clientId: string) => AnimeAdapter;
-  tmdb: (key: string) => TmdbAdapter;
+  tmdb: (key: string) => FilmAdapter;
   omdb: (key: string) => OmdbAdapter;
   log?: (message: string) => void;
 }
@@ -37,7 +37,7 @@ function errorReason(err: unknown): string {
   return err instanceof RequestError ? err.reason : 'network';
 }
 
-function isAnimeLike(match: TmdbMatch): boolean {
+function isAnimeLike(match: FilmMatch): boolean {
   return match.animated || match.japanese;
 }
 
@@ -79,10 +79,10 @@ export function createLookup(deps: LookupDeps): Lookup {
 
   async function withImdb(
     anime: AnimeInfo,
-    tmdb: TmdbAdapter | null,
-    match: TmdbMatch | null,
+    tmdb: FilmAdapter | null,
+    match: FilmMatch | null,
     omdb: OmdbAdapter | null,
-    known: TmdbDetails | undefined,
+    known: FilmDetails | undefined,
   ): Promise<AnimeInfo> {
     if (anime.format !== 'Movie' || !omdb || !tmdb || match?.mediaType !== 'movie') return anime;
     let details = known;
@@ -123,7 +123,7 @@ export function createLookup(deps: LookupDeps): Lookup {
       }
       let anime = animeResult.status === 'fulfilled' ? animeResult.value : null;
 
-      let details: TmdbDetails | undefined;
+      let details: FilmDetails | undefined;
       if (!anime && tmdb && tmdbMatch && isAnimeLike(tmdbMatch)) {
         details = await tmdb.details(tmdbMatch);
         anime = await secondAnimePass(request, details.englishName, settings);

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { createTmdbAdapter, isReadAccessToken, type TmdbMatch } from '../src/background/adapters/TmdbAdapter';
+import type { FilmMatch } from '../src/background/adapters/FilmAdapter';
+import { createTmdbAdapter, isReadAccessToken } from '../src/background/adapters/TmdbAdapter';
 import { RequestError, type FetchFn } from '../src/background/requestQueue';
 import irishmanSearch from './fixtures/tmdb-search-irishman.json';
 import onePieceSearch from './fixtures/tmdb-search-one-piece.json';
@@ -17,9 +18,9 @@ function respondWith(...bodies: unknown[]) {
 const V3_KEY = 'abc123';
 const V4_TOKEN = 'eyJhbGciOiJIUzI1NiJ9.payload.sig';
 
-function match(over: Partial<TmdbMatch>): TmdbMatch {
+function match(over: Partial<FilmMatch>): FilmMatch {
   return {
-    tmdbId: 1,
+    id: '1',
     mediaType: 'movie',
     query: 'Query',
     matchedName: 'Matched',
@@ -70,7 +71,7 @@ describe('TmdbAdapter search', () => {
   it('ignores people, matches original_title, and breaks ties by vote_count', async () => {
     const found = await createTmdbAdapter(respondWith(irishmanSearch), V3_KEY).search('The Irishman', undefined, 'vi');
     expect(found).toEqual({
-      tmdbId: 398978,
+      id: '398978',
       mediaType: 'movie',
       query: 'The Irishman',
       matchedName: 'The Irishman',
@@ -83,13 +84,13 @@ describe('TmdbAdapter search', () => {
 
   it('lets the card year pick between same-name entries', async () => {
     const found = await createTmdbAdapter(respondWith(irishmanSearch), V3_KEY).search('The Irishman', 1978, 'en');
-    expect(found).toMatchObject({ tmdbId: 123, year: 1978 });
+    expect(found).toMatchObject({ id: '123', year: 1978 });
   });
 
   it('exposes the animation and Japanese signals', async () => {
     const adapter = (year?: number) => createTmdbAdapter(respondWith(onePieceSearch), V3_KEY).search('One Piece', year, 'en');
-    expect(await adapter(1999)).toMatchObject({ tmdbId: 37854, mediaType: 'tv', animated: true, japanese: true });
-    expect(await adapter(2023)).toMatchObject({ tmdbId: 111110, animated: false, japanese: false });
+    expect(await adapter(1999)).toMatchObject({ id: '37854', mediaType: 'tv', animated: true, japanese: true });
+    expect(await adapter(2023)).toMatchObject({ id: '111110', animated: false, japanese: false });
   });
 
   it('flags original_language ja without JP origin as Japanese', async () => {
@@ -101,7 +102,7 @@ describe('TmdbAdapter search', () => {
   it('retries once in en-US when the profile language finds nothing', async () => {
     const fetch = respondWith({ results: [] }, irishmanSearch);
     const found = await createTmdbAdapter(fetch, V3_KEY).search('The Irishman', undefined, 'de');
-    expect(found?.tmdbId).toBe(398978);
+    expect(found?.id).toBe('398978');
     expect(fetch).toHaveBeenCalledTimes(2);
     expect(fetch.mock.calls[1]![0]).toContain('language=en-US');
   });
@@ -119,7 +120,7 @@ describe('TmdbAdapter search', () => {
 describe('TmdbAdapter details', () => {
   it('maps a movie with Vietnamese overview and VN certification', async () => {
     const fetch = respondWith(irishman);
-    const m = match({ tmdbId: 398978, query: 'The Irishman', matchedName: 'The Irishman', confidence: 1 });
+    const m = match({ id: '398978', query: 'The Irishman', matchedName: 'The Irishman', confidence: 1 });
     const details = await createTmdbAdapter(fetch, V3_KEY).details(m);
     expect(fetch).toHaveBeenCalledWith(
       'https://api.themoviedb.org/3/movie/398978?language=vi-VN&append_to_response=credits%2Crelease_dates%2Cexternal_ids%2Ctranslations&api_key=abc123',
@@ -146,7 +147,7 @@ describe('TmdbAdapter details', () => {
   });
 
   it('falls back to the en-US overview and the US certification', async () => {
-    const details = await createTmdbAdapter(respondWith(spiritedAway), V3_KEY).details(match({ tmdbId: 129 }));
+    const details = await createTmdbAdapter(respondWith(spiritedAway), V3_KEY).details(match({ id: '129' }));
     expect(details.info.synopsis).toEqual({ text: 'A girl wanders into a world of spirits.', lang: 'en' });
     expect(details.englishName).toBe('Spirited Away');
     expect(details.imdbId).toBe('tt0245429');
@@ -155,7 +156,7 @@ describe('TmdbAdapter details', () => {
 
   it('maps a tv series and uses the tv append list', async () => {
     const fetch = respondWith(onePieceLive);
-    const details = await createTmdbAdapter(fetch, V4_TOKEN).details(match({ tmdbId: 111110, mediaType: 'tv' }));
+    const details = await createTmdbAdapter(fetch, V4_TOKEN).details(match({ id: '111110', mediaType: 'tv' }));
     expect(fetch.mock.calls[0]![0]).toBe(
       'https://api.themoviedb.org/3/tv/111110?language=vi-VN&append_to_response=aggregate_credits%2Ccontent_ratings%2Cexternal_ids%2Ctranslations',
     );
@@ -185,7 +186,7 @@ describe('TmdbAdapter details', () => {
 
   it('tolerates a sparse canceled series', async () => {
     const details = await createTmdbAdapter(respondWith(sparseTv), V3_KEY).details(
-      match({ tmdbId: 1, mediaType: 'tv', matchedName: 'Sparse Show' }),
+      match({ id: '1', mediaType: 'tv', matchedName: 'Sparse Show' }),
     );
     expect(details).toEqual({
       imdbId: undefined,
@@ -215,7 +216,7 @@ describe('TmdbAdapter details', () => {
 describe('TmdbAdapter details in English', () => {
   it('asks for en-US and tags the overview with the locale', async () => {
     const fetch = respondWith({ ...irishman, overview: 'An aging hitman looks back.' });
-    const m = match({ tmdbId: 398978, query: 'The Irishman', matchedName: 'The Irishman', confidence: 1 });
+    const m = match({ id: '398978', query: 'The Irishman', matchedName: 'The Irishman', confidence: 1 });
     const details = await createTmdbAdapter(fetch, V3_KEY, 'en').details(m);
     expect(fetch.mock.calls[0]![0]).toContain('language=en-US');
     expect(details.info.synopsis).toEqual({ text: 'An aging hitman looks back.', lang: 'en' });

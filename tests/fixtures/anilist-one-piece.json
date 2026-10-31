@@ -1,0 +1,277 @@
+{
+ "data": {
+  "Page": {
+   "media": [
+    {
+     "id": 21,
+     "idMal": 21,
+     "title": {
+      "romaji": "ONE PIECE",
+      "english": "ONE PIECE",
+      "native": "ONE PIECE"
+     },
+     "synonyms": [
+      "ワンピース",
+      "海贼王",
+      "וואן פיס",
+      "ون بيس",
+      "วันพีซ",
+      "Vua Hải Tặc",
+      "All'arrembaggio!",
+      "Tutti all'arrembaggio!",
+      "Ντρέηκ, το Κυνήγι του Θησαυρού",
+      "OP",
+      "Ван-Пис"
+     ],
+     "seasonYear": 1999,
+     "format": "TV",
+     "episodes": null,
+     "status": "RELEASING",
+     "averageScore": 87,
+     "popularity": 764559,
+     "genres": [
+      "Action",
+      "Adventure",
+      "Comedy",
+      "Drama",
+      "Fantasy"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "Toei Animation"
+       },
+       {
+        "name": "Funimation"
+       },
+       {
+        "name": "Fuji TV"
+       },
+       {
+        "name": "4Kids Entertainment"
+       },
+       {
+        "name": "TAP"
+       },
+       {
+        "name": "Asatsu DK"
+       },
+       {
+        "name": "Magic Bus"
+       },
+       {
+        "name": "Mushi Production"
+       },
+       {
+        "name": "Studio Guts"
+       },
+       {
+        "name": "Asahi Production"
+       },
+       {
+        "name": "Avex Pictures"
+       }
+      ]
+     },
+     "description": "Gold Roger was known as the Pirate King, the strongest and most infamous being to have sailed the Grand Line. The capture and death of Roger by the World Government brought a change throughout the world. His last words before his death revealed the location of the greatest treasure in the world, One Piece. It was this revelation that brought about the Grand Age of Pirates, men who dreamed of finding One Piece (which promises an unlimited amount of riches and fame), and quite possibly the most coveted of titles for the person who found it, the title of the Pirate King.<br><br>\nEnter Monkey D. Luffy, a 17-year-old boy that defies your standard definition of a pirate. Rather than the popular persona of a wicked, hardened, toothless pirate who ransacks villages for fun, Luffy’s reason for being a pirate is one of pure wonder; the thought of an exciting adventure and meeting new and intriguing people, along with finding One Piece, are his reasons of becoming a pirate. Following in the footsteps of his childhood hero, Luffy and his crew travel across the Grand Line, experiencing crazy adventures, unveiling dark mysteries and battling strong enemies, all in order to reach One Piece.<br><br>\n<b>*This includes the following special episodes:</b><br>\n- Chopperman to the Rescue! Protect the TV Station by the Shore! (Episode 336)<br>\n- The Strongest Tag-Team! Luffy and Toriko's Hard Struggle! (Episode 492)<br>\n- Team Formation! Save Chopper (Episode 542)<br>\n- History's Strongest Collaboration vs. Glutton of the Sea (Episode 590)<br>\n- 20th Anniversary! Special Romance Dawn (Episode 907)",
+     "startDate": {
+      "year": 1999,
+      "month": 10,
+      "day": 20
+     },
+     "endDate": {
+      "year": null,
+      "month": null,
+      "day": null
+     },
+     "season": "FALL"
+    },
+    {
+     "id": 171630,
+     "idMal": 57557,
+     "title": {
+      "romaji": "THE ONE PIECE",
+      "english": "THE ONE PIECE",
+      "native": "THE ONE PIECE"
+     },
+     "synonyms": [
+      "ザワンピース"
+     ],
+     "seasonYear": 2027,
+     "format": null,
+     "episodes": 7,
+     "status": "NOT_YET_RELEASED",
+     "averageScore": null,
+     "popularity": 29922,
+     "genres": [
+      "Adventure"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "WIT STUDIO"
+       },
+       {
+        "name": "Netflix"
+       },
+       {
+        "name": "Fuji TV"
+       },
+       {
+        "name": "Shueisha"
+       },
+       {
+        "name": "Toei Animation"
+       }
+      ]
+     },
+     "description": "To commemorate the <i>ONE PIECE</i> anime's 25th anniversary: <i>THE ONE PIECE</i> anime by WIT Studio will recreate the story of the original <i>ONE PIECE</i> manga, starting from the East Blue arc.<br><br>\n\n(Source: Netflix, edited)",
+     "startDate": {
+      "year": 2027,
+      "month": 2,
+      "day": null
+     },
+     "endDate": {
+      "year": null,
+      "month": null,
+      "day": null
+     },
+     "season": "WINTER"
+    },
+    {
+     "id": 459,
+     "idMal": 459,
+     "title": {
+      "romaji": "ONE PIECE (Movie)",
+      "english": "ONE PIECE: The Movie",
+      "native": "ONE PIECE (Movie)"
+     },
+     "synonyms": [
+      "One Piece: The Movie",
+      "One Piece (2000)",
+      "One Piece: La Película",
+      "วันพีซ เดอะมูฟวี่ 1 เกาะสมบัติแห่งวูนัน",
+      "Vua Hải Tặc: Đảo Châu Báu",
+      "One Piece: Golden Island Adventure",
+      "One Piece - Per tutto l'oro del mondo"
+     ],
+     "seasonYear": 2000,
+     "format": "MOVIE",
+     "episodes": 1,
+     "status": "FINISHED",
+     "averageScore": 68,
+     "popularity": 35909,
+     "genres": [
+      "Action",
+      "Adventure",
+      "Comedy",
+      "Fantasy"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "Toei Animation"
+       }
+      ]
+     },
+     "description": "There once was a pirate known as the Great Gold Pirate Woonan, who obtained almost 1/3 of the world's gold. Over the course of a few years, the pirate's existence faded, and a legend grew that he disappeared with his gold to a remote island, an island pirates continue to search for. Aboard the Going Merry, Luffy and his crew, starved and reckless, are robbed of their treasure. In an attempt to get it back, they wreck the getaway ship, guided by a young boy named Tabio, who's a captured part of El Drago's pirate crew. El Drago's love for gold has driven him to look for Woonan's island, and thanks to Woonan's treasure map, he finds it. During this time, Luffy's crew have been split up, and despite their own circumstances, they must find a way to stop El Drago from obtaining Woonan's gold. <br><br>\n(Source: Anime News Network)",
+     "startDate": {
+      "year": 2000,
+      "month": 3,
+      "day": 4
+     },
+     "endDate": {
+      "year": 2000,
+      "month": 3,
+      "day": 4
+     },
+     "season": "WINTER"
+    },
+    {
+     "id": 19123,
+     "idMal": 19123,
+     "title": {
+      "romaji": "ONE PIECE: Episode of Merry - Mou Hitori no Nakama no Monogatari",
+      "english": "One Piece: Episode of Merry - The Tale of One More Friend",
+      "native": "ONE PIECE エピソードオブメリー 〜もうひとりの仲間の物語〜"
+     },
+     "synonyms": [
+      "One Piece Special"
+     ],
+     "seasonYear": 2013,
+     "format": "SPECIAL",
+     "episodes": 1,
+     "status": "FINISHED",
+     "averageScore": 78,
+     "popularity": 15488,
+     "genres": [
+      "Action",
+      "Adventure",
+      "Comedy",
+      "Drama",
+      "Fantasy"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "Toei Animation"
+       },
+       {
+        "name": "Fuji TV"
+       }
+      ]
+     },
+     "description": "The story arcs aboard the Straw Hat Crew's first ship Going Merry (Merry Go in some adaptations) are recreated with brand-new animation, from Luffy and Usopp's fight and Robin's disappearance to the crew's final farewell to the ship. Going Merry is treated as another member of the Straw Hats as Luffy, Zoro, Nami, and the rest of the crew set sail for the legendary treasure, the One Piece.<br><br>\n(Source: Anime News Network)",
+     "startDate": {
+      "year": 2013,
+      "month": 8,
+      "day": 24
+     },
+     "endDate": {
+      "year": 2013,
+      "month": 8,
+      "day": 24
+     },
+     "season": "SUMMER"
+    },
+    {
+     "id": 188668,
+     "idMal": 61293,
+     "title": {
+      "romaji": "Koisuru ONE PIECE",
+      "english": null,
+      "native": "恋するワンピース"
+     },
+     "synonyms": [
+      "One Piece in Love"
+     ],
+     "seasonYear": 2025,
+     "format": "ONA",
+     "episodes": 5,
+     "status": "FINISHED",
+     "averageScore": 66,
+     "popularity": 4888,
+     "genres": [
+      "Comedy",
+      "Romance"
+     ],
+     "studios": {
+      "nodes": []
+     },
+     "description": "The premise of this spinoff is about three high school students: a young male student, his girlfriend and a third wheel who is a One Piece fanatic. Their names are similar to the Straw Hat Pirates and the group form a fan club dedicated to One Piece.\n<br><Br>\n(Source: One Piece Wiki)",
+     "startDate": {
+      "year": 2025,
+      "month": 4,
+      "day": 1
+     },
+     "endDate": {
+      "year": 2025,
+      "month": 4,
+      "day": 5
+     },
+     "season": "SPRING"
+    }
+   ]
+  }
+ }
+}

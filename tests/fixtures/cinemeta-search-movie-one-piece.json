@@ -1,0 +1,1026 @@
+{
+ "query": "One Piece",
+ "rank": 33.125,
+ "cacheMaxAge": 86400,
+ "metas": [
+  {
+   "id": "tt9430698",
+   "imdb_id": "tt9430698",
+   "type": "movie",
+   "name": "One Piece: Stampede",
+   "poster": "https://m.media-amazon.com/images/M/MV5BY2FlYzRmZGMtM2Y5OC00NzFhLTgyNDAtZDk1YjdkZTlmMjE3XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt9430698/img",
+   "releaseInfo": "2019",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt9430698",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt16183464",
+   "imdb_id": "tt16183464",
+   "type": "movie",
+   "name": "One Piece Film: Red",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNTdjY2YxYTQtNjIzYy00ZDczLThhNTUtNmY2ZWNkZjZiMTYzXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt16183464/img",
+   "releaseInfo": "2022",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt16183464",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt0814243",
+   "imdb_id": "tt0814243",
+   "type": "movie",
+   "name": "One Piece: The Movie",
+   "poster": "https://m.media-amazon.com/images/M/MV5BOWNhMDU3NDQtYWViMC00M2Y4LTk4YTUtYjI2M2ZmN2Q5NDViXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt0814243/img",
+   "releaseInfo": "2000",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt0814243",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt2375379",
+   "imdb_id": "tt2375379",
+   "type": "movie",
+   "name": "One Piece Film: Z",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNjY3ODNiZjgtY2RmNS00MjAyLWIwMzUtNTE0ZWIxNDU3YThhXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt2375379/img",
+   "releaseInfo": "2012",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt2375379",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt5251328",
+   "name": "One Piece Film: Gold",
+   "popularities": {
+    "moviedb": 5.7997,
+    "stremio": 0.19332333333333332,
+    "stremio_lib": 0,
+    "trakt": 2
+   },
+   "type": "movie",
+   "trailers": [
+    {
+     "source": "YYnal1n0bBY",
+     "type": "Trailer"
+    },
+    {
+     "source": "YwPVKV0jEvc",
+     "type": "Trailer"
+    },
+    {
+     "source": "NmyGak3l12Y",
+     "type": "Trailer"
+    }
+   ],
+   "year": "2017",
+   "runtime": "120 min",
+   "genre": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "released": "2017-01-10T00:00:00.000Z",
+   "director": [
+    "Hiroaki Miyamoto"
+   ],
+   "writer": [
+    "Eiichirô Oda",
+    "Clint Bickham",
+    "Tsutomu Kuroiwa"
+   ],
+   "cast": [
+    "Mayumi Tanaka",
+    "Kazuya Nakai",
+    "Akemi Okamura"
+   ],
+   "imdbRating": "7.1",
+   "poster": "https://images.metahub.space/poster/small/tt5251328/img",
+   "description": "Luffy and his pirates can't wait to board the glittering Sin City ship known as Gran Tesoro, but they soon find themselves in way over their heads.",
+   "awards": "1 win & 3 nominations total",
+   "dvdRelease": "2017-05-06T00:00:00.000Z",
+   "slug": "movie/one-piece-film-gold-5251328",
+   "background": "https://images.metahub.space/background/medium/tt5251328/img",
+   "logo": "https://images.metahub.space/logo/medium/tt5251328/img",
+   "popularity": 0.19332333333333332,
+   "id": "tt5251328",
+   "score": 26.666666666666668,
+   "genres": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "releaseInfo": "2017",
+   "trailerStreams": [
+    {
+     "title": "One Piece Film: Gold",
+     "ytId": "YYnal1n0bBY"
+    },
+    {
+     "title": "One Piece Film: Gold",
+     "ytId": "YwPVKV0jEvc"
+    },
+    {
+     "title": "One Piece Film: Gold",
+     "ytId": "NmyGak3l12Y"
+    }
+   ],
+   "links": [
+    {
+     "name": "7.1",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt5251328"
+    },
+    {
+     "name": "One Piece Film: Gold",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/one-piece-film-gold-5251328"
+    },
+    {
+     "name": "Animation",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Animation"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Mayumi Tanaka",
+     "category": "Cast",
+     "url": "stremio:///search?search=Mayumi%20Tanaka"
+    },
+    {
+     "name": "Kazuya Nakai",
+     "category": "Cast",
+     "url": "stremio:///search?search=Kazuya%20Nakai"
+    },
+    {
+     "name": "Akemi Okamura",
+     "category": "Cast",
+     "url": "stremio:///search?search=Akemi%20Okamura"
+    },
+    {
+     "name": "Eiichirô Oda",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eiichir%C3%B4%20Oda"
+    },
+    {
+     "name": "Clint Bickham",
+     "category": "Writers",
+     "url": "stremio:///search?search=Clint%20Bickham"
+    },
+    {
+     "name": "Tsutomu Kuroiwa",
+     "category": "Writers",
+     "url": "stremio:///search?search=Tsutomu%20Kuroiwa"
+    },
+    {
+     "name": "Hiroaki Miyamoto",
+     "category": "Directors",
+     "url": "stremio:///search?search=Hiroaki%20Miyamoto"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt5251328",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt44733971",
+   "imdb_id": "tt44733971",
+   "type": "movie",
+   "name": "One Piece Film: God Valley",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNDMwMmM4YWMtYWUyZi00MWZmLTk4NjQtMWViMWZhOGI1MzM5XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt44733971/img",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt44733971",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "awards": "6 nominations total",
+   "cast": [
+    "Felecia Angelle",
+    "Bryan Baker",
+    "Jeff Banks"
+   ],
+   "description": "Straw Hat Pirates must save their navigator and stop the legendary Pirate, Shiki the Golden Lion from conquering East Blue.",
+   "director": [
+    "Munehisa Sakai"
+   ],
+   "dvdRelease": "2020-11-25T00:00:00.000Z",
+   "genre": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "imdbRating": "7.4",
+   "imdb_id": "tt1485763",
+   "name": "One Piece: Strong World",
+   "popularity": 0.20987333333333333,
+   "poster": "https://images.metahub.space/poster/small/tt1485763/img",
+   "released": "2013-11-19T00:00:00.000Z",
+   "runtime": "114 min",
+   "trailers": [
+    {
+     "source": "3n58UPvcD7I",
+     "type": "Trailer"
+    }
+   ],
+   "type": "movie",
+   "writer": [
+    "Eiichirô Oda",
+    "Hirohiko Uesaka"
+   ],
+   "year": "2013",
+   "background": "https://images.metahub.space/background/medium/tt1485763/img",
+   "logo": "https://images.metahub.space/logo/medium/tt1485763/img",
+   "popularities": {
+    "moviedb": 6.2962,
+    "stremio": 0.20987333333333333,
+    "trakt": 2,
+    "stremio_lib": 0
+   },
+   "slug": "movie/one-piece-strong-world-1485763",
+   "id": "tt1485763",
+   "score": 26.666666666666668,
+   "genres": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "releaseInfo": "2013",
+   "trailerStreams": [
+    {
+     "title": "One Piece: Strong World",
+     "ytId": "3n58UPvcD7I"
+    }
+   ],
+   "links": [
+    {
+     "name": "7.4",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt1485763"
+    },
+    {
+     "name": "One Piece: Strong World",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/one-piece-strong-world-1485763"
+    },
+    {
+     "name": "Animation",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Animation"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Felecia Angelle",
+     "category": "Cast",
+     "url": "stremio:///search?search=Felecia%20Angelle"
+    },
+    {
+     "name": "Bryan Baker",
+     "category": "Cast",
+     "url": "stremio:///search?search=Bryan%20Baker"
+    },
+    {
+     "name": "Jeff Banks",
+     "category": "Cast",
+     "url": "stremio:///search?search=Jeff%20Banks"
+    },
+    {
+     "name": "Eiichirô Oda",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eiichir%C3%B4%20Oda"
+    },
+    {
+     "name": "Hirohiko Uesaka",
+     "category": "Writers",
+     "url": "stremio:///search?search=Hirohiko%20Uesaka"
+    },
+    {
+     "name": "Munehisa Sakai",
+     "category": "Directors",
+     "url": "stremio:///search?search=Munehisa%20Sakai"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt1485763",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt1018764",
+   "imdb_id": "tt1018764",
+   "type": "movie",
+   "name": "One Piece: Baron Omatsuri and the Secret Island",
+   "poster": "https://m.media-amazon.com/images/M/MV5BMTU4ZDkwMDMtYmFkMS00ODIyLTgxYTQtNzA3M2QyOTQ5ODMzXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt1018764/img",
+   "releaseInfo": "2005",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt1018764",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt1206326",
+   "imdb_id": "tt1206326",
+   "type": "movie",
+   "name": "One Piece: Episode of Chopper Plus - Bloom in the Winter, Miracle Sakura",
+   "poster": "https://m.media-amazon.com/images/M/MV5BODQxY2FlNjMtZTk5NS00MWU3LTgxZTAtMzdhNzFiNTgzZWNlXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt1206326/img",
+   "releaseInfo": "2008",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt1206326",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt0832449",
+   "imdb_id": "tt0832449",
+   "type": "movie",
+   "name": "One Piece: Clockwork Island Adventure",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNDRjN2NmNDAtZDE3Mi00ZDJlLTkwODktMmNkMTBkYTRjMTY3XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt0832449/img",
+   "releaseInfo": "2001",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt0832449",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt11744496",
+   "imdb_id": "tt11744496",
+   "type": "movie",
+   "name": "One Piece: Episode of Skypiea",
+   "poster": "https://m.media-amazon.com/images/M/MV5BYTViNTBhZmEtYTZkYi00MTI0LTk1M2YtZjIxZWMwMmZmMTdkXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt11744496/img",
+   "releaseInfo": "2018",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt11744496",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt0044903",
+   "imdb_id": "tt0044903",
+   "type": "movie",
+   "name": "Million Dollar Mermaid",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNTc3MmE0ZDAtMTM1Yy00M2NmLWFjMjgtYzM0ZTI3MDFmN2RhXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt0044903/img",
+   "releaseInfo": "1952",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt0044903",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt1006926",
+   "imdb_id": "tt1006926",
+   "type": "movie",
+   "name": "One Piece: Dead End Adventure",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNmU5ZjU1ZGMtMTM0YS00NTZjLWI1NjctMjIzNDVmNTI0ZGQ4XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt1006926/img",
+   "releaseInfo": "2003",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt1006926",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt6609162",
+   "imdb_id": "tt6609162",
+   "type": "movie",
+   "name": "One Piece: Adventure of Nebulandia",
+   "poster": "https://m.media-amazon.com/images/M/MV5BMzY4OTg5YzAtOTk5ZS00YWY0LWIxY2QtM2I2NmYyM2QxN2NiXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt6609162/img",
+   "releaseInfo": "2015",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt6609162",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt1010435",
+   "imdb_id": "tt1010435",
+   "type": "movie",
+   "name": "One Piece: The Cursed Holy Sword",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNjkwYjdhNzktZWMyZS00MjBkLTg0NzgtZDRkNzQ2ODY5ZTUxXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt1010435/img",
+   "releaseInfo": "2004",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt1010435",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "id": "tt0215010",
+   "imdb_id": "tt0215010",
+   "type": "movie",
+   "name": "One Piece!",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNzFlZDI3YzEtMGFmOS00ZGIzLWEzZWMtNzA4NGNkNGE0MGRmXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt0215010/img",
+   "releaseInfo": "1999",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": "tt0215010",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt0975705",
+   "name": "One piece TV special: Umi no heso daiboken hen",
+   "type": "movie",
+   "cast": [
+    "Hiroaki Hirata",
+    "Takayuki Inoue",
+    "Kazuya Nakai"
+   ],
+   "description": "It was another peaceful day on board the Going Merry. Nami yelled at Luffy for whizzing in the ocean. As it'll just contaminate the fish that are swimming. Luffy was on fishing duty, but he was using sponges for bait, which he see...",
+   "genre": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "imdbRating": "6.6",
+   "released": "2000-12-20T00:00:00.000Z",
+   "slug": "movie/one-piece-tv-special-umi-no-heso-daiboken-hen-0975705",
+   "writer": [
+    "Eiichiro Oda"
+   ],
+   "year": "2000",
+   "popularities": {
+    "moviedb": 4.9896,
+    "stremio": 0.16632,
+    "stremio_lib": 0
+   },
+   "poster": "https://images.metahub.space/poster/small/tt0975705/img",
+   "runtime": "49 min",
+   "director": [],
+   "background": "https://images.metahub.space/background/medium/tt0975705/img",
+   "logo": "https://images.metahub.space/logo/medium/tt0975705/img",
+   "popularity": 0.16632,
+   "id": "tt0975705",
+   "score": 24.49652777777778,
+   "genres": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "releaseInfo": "2000",
+   "links": [
+    {
+     "name": "6.6",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt0975705"
+    },
+    {
+     "name": "One piece TV special: Umi no heso daiboken hen",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/one-piece-tv-special-umi-no-heso-daiboken-hen-0975705"
+    },
+    {
+     "name": "Animation",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Animation"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Hiroaki Hirata",
+     "category": "Cast",
+     "url": "stremio:///search?search=Hiroaki%20Hirata"
+    },
+    {
+     "name": "Takayuki Inoue",
+     "category": "Cast",
+     "url": "stremio:///search?search=Takayuki%20Inoue"
+    },
+    {
+     "name": "Kazuya Nakai",
+     "category": "Cast",
+     "url": "stremio:///search?search=Kazuya%20Nakai"
+    },
+    {
+     "name": "Eiichiro Oda",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eiichiro%20Oda"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt0975705",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt1059950",
+   "type": "movie",
+   "name": "One Piece: The Giant Mechanical Soldier of Karakuri Castle",
+   "year": "2006",
+   "runtime": "94 min",
+   "genre": [
+    "Animation",
+    "Action",
+    "Comedy"
+   ],
+   "released": "2006-03-04T00:00:00.000Z",
+   "director": [
+    "Kônosuke Uda"
+   ],
+   "writer": [
+    "Masahiro Ito",
+    "Eiichirô Oda"
+   ],
+   "cast": [
+    "Takeshi Aono",
+    "Naya Fujikawa",
+    "Yuki Fujikawa"
+   ],
+   "imdbRating": "6.4",
+   "poster": "https://images.metahub.space/poster/small/tt1059950/img",
+   "description": "The Straw Hat crew salvage a treasure chest but it turns out to be an old lady hiding inside it. To get the Straw Hat Pirates to take her home, she promises them the treasure of a golden crown to Mecha Island.",
+   "trailers": [],
+   "popularities": {
+    "moviedb": 4.6854,
+    "stremio": 0.15617999999999999,
+    "trakt": 2,
+    "stremio_lib": 0
+   },
+   "slug": "movie/one-piece-the-giant-mechanical-soldier-of-karakuri-castle-1059950",
+   "background": "https://images.metahub.space/background/medium/tt1059950/img",
+   "logo": "https://images.metahub.space/logo/medium/tt1059950/img",
+   "popularity": 0.15617999999999999,
+   "id": "tt1059950",
+   "score": 24.6875,
+   "genres": [
+    "Animation",
+    "Action",
+    "Comedy"
+   ],
+   "releaseInfo": "2006",
+   "trailerStreams": [],
+   "links": [
+    {
+     "name": "6.4",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt1059950"
+    },
+    {
+     "name": "One Piece: The Giant Mechanical Soldier of Karakuri Castle",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/one-piece-the-giant-mechanical-soldier-of-karakuri-castle-1059950"
+    },
+    {
+     "name": "Animation",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Animation"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Comedy",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Comedy"
+    },
+    {
+     "name": "Takeshi Aono",
+     "category": "Cast",
+     "url": "stremio:///search?search=Takeshi%20Aono"
+    },
+    {
+     "name": "Naya Fujikawa",
+     "category": "Cast",
+     "url": "stremio:///search?search=Naya%20Fujikawa"
+    },
+    {
+     "name": "Yuki Fujikawa",
+     "category": "Cast",
+     "url": "stremio:///search?search=Yuki%20Fujikawa"
+    },
+    {
+     "name": "Masahiro Ito",
+     "category": "Writers",
+     "url": "stremio:///search?search=Masahiro%20Ito"
+    },
+    {
+     "name": "Eiichirô Oda",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eiichir%C3%B4%20Oda"
+    },
+    {
+     "name": "Kônosuke Uda",
+     "category": "Directors",
+     "url": "stremio:///search?search=K%C3%B4nosuke%20Uda"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt1059950",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt5098548",
+   "type": "movie",
+   "name": "One Piece: 3D2Y - Overcome Ace's Death! Luffy's Vow to His Friends",
+   "year": "2014",
+   "runtime": "105 min",
+   "genre": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "released": "2014-08-30T00:00:00.000Z",
+   "writer": [
+    "Eiichirô Oda",
+    "Tomohiro Nakayama",
+    "Jin Tanaka"
+   ],
+   "imdbRating": "7.5",
+   "poster": "https://images.metahub.space/poster/small/tt5098548/img",
+   "description": "The special takes place during the two year before the Straw Hats reunite on Sabaody. Luffy is currently in Rusukaina training to get stronger to take on the New World. However the training is interrupted when Hancock's sisters, M...",
+   "trailers": [],
+   "popularities": {
+    "moviedb": 4.6204,
+    "stremio": 0.15401333333333334,
+    "stremio_lib": 0
+   },
+   "cast": [
+    "Felecia Angelle",
+    "Ryôhei Arai",
+    "Sôta Arai"
+   ],
+   "director": [
+    "Naoyuki Itô"
+   ],
+   "slug": "movie/one-piece-3d2y-overcome-aces-death-luffys-vow-to-his-friends-5098548",
+   "background": "https://images.metahub.space/background/medium/tt5098548/img",
+   "logo": "https://images.metahub.space/logo/medium/tt5098548/img",
+   "popularity": 0.15401333333333334,
+   "id": "tt5098548",
+   "score": 24.128787878787875,
+   "genres": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "releaseInfo": "2014",
+   "trailerStreams": [],
+   "links": [
+    {
+     "name": "7.5",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt5098548"
+    },
+    {
+     "name": "One Piece: 3D2Y - Overcome Ace's Death! Luffy's Vow to His Friends",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/one-piece-3d2y-overcome-aces-death-luffys-vow-to-his-friends-5098548"
+    },
+    {
+     "name": "Animation",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Animation"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Felecia Angelle",
+     "category": "Cast",
+     "url": "stremio:///search?search=Felecia%20Angelle"
+    },
+    {
+     "name": "Ryôhei Arai",
+     "category": "Cast",
+     "url": "stremio:///search?search=Ry%C3%B4hei%20Arai"
+    },
+    {
+     "name": "Sôta Arai",
+     "category": "Cast",
+     "url": "stremio:///search?search=S%C3%B4ta%20Arai"
+    },
+    {
+     "name": "Eiichirô Oda",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eiichir%C3%B4%20Oda"
+    },
+    {
+     "name": "Tomohiro Nakayama",
+     "category": "Writers",
+     "url": "stremio:///search?search=Tomohiro%20Nakayama"
+    },
+    {
+     "name": "Jin Tanaka",
+     "category": "Writers",
+     "url": "stremio:///search?search=Jin%20Tanaka"
+    },
+    {
+     "name": "Naoyuki Itô",
+     "category": "Directors",
+     "url": "stremio:///search?search=Naoyuki%20It%C3%B4"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt5098548",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt1037116",
+   "popularity": 0.14912666666666666,
+   "name": "One Piece: Episode of Alabasta - The Desert Princess and the Pirates",
+   "year": "2007",
+   "runtime": "90 min",
+   "genre": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "released": "2007-03-03T00:00:00.000Z",
+   "director": [
+    "Takahiro Imamura"
+   ],
+   "writer": [
+    "Eiichirô Oda",
+    "Hirohiko Uesaka",
+    "Eric Vale"
+   ],
+   "cast": [
+    "Mayumi Tanaka",
+    "Kazuya Nakai",
+    "Akemi Okamura"
+   ],
+   "imdbRating": "6.7",
+   "poster": "https://images.metahub.space/poster/small/tt1037116/img",
+   "description": "A re-telling of the Alabaster Arc from One Piece (TV). Luffy and his crew come to rescue a land in the midst of a civil war, due to a powerful devil fruit user.",
+   "awards": null,
+   "dvdRelease": "2020-12-03T00:00:00.000Z",
+   "type": "movie",
+   "trailers": [
+    {
+     "source": "MwjNsKXbcpo",
+     "type": "Trailer"
+    },
+    {
+     "source": "FgtOfTYjPB4",
+     "type": "Trailer"
+    }
+   ],
+   "popularities": {
+    "moviedb": 4.4738,
+    "stremio": 0.14912666666666666,
+    "stremio_lib": 0,
+    "trakt": 2
+   },
+   "slug": "movie/one-piece-episode-of-alabasta-the-desert-princess-and-the-pirates-1037116",
+   "background": "https://images.metahub.space/background/medium/tt1037116/img",
+   "logo": "https://images.metahub.space/logo/medium/tt1037116/img",
+   "id": "tt1037116",
+   "score": 24.227272727272727,
+   "genres": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "releaseInfo": "2007",
+   "trailerStreams": [
+    {
+     "title": "One Piece: Episode of Alabasta - The Desert Princess and the Pirates",
+     "ytId": "MwjNsKXbcpo"
+    },
+    {
+     "title": "One Piece: Episode of Alabasta - The Desert Princess and the Pirates",
+     "ytId": "FgtOfTYjPB4"
+    }
+   ],
+   "links": [
+    {
+     "name": "6.7",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt1037116"
+    },
+    {
+     "name": "One Piece: Episode of Alabasta - The Desert Princess and the Pirates",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/one-piece-episode-of-alabasta-the-desert-princess-and-the-pirates-1037116"
+    },
+    {
+     "name": "Animation",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Animation"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Mayumi Tanaka",
+     "category": "Cast",
+     "url": "stremio:///search?search=Mayumi%20Tanaka"
+    },
+    {
+     "name": "Kazuya Nakai",
+     "category": "Cast",
+     "url": "stremio:///search?search=Kazuya%20Nakai"
+    },
+    {
+     "name": "Akemi Okamura",
+     "category": "Cast",
+     "url": "stremio:///search?search=Akemi%20Okamura"
+    },
+    {
+     "name": "Eiichirô Oda",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eiichir%C3%B4%20Oda"
+    },
+    {
+     "name": "Hirohiko Uesaka",
+     "category": "Writers",
+     "url": "stremio:///search?search=Hirohiko%20Uesaka"
+    },
+    {
+     "name": "Eric Vale",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eric%20Vale"
+    },
+    {
+     "name": "Takahiro Imamura",
+     "category": "Directors",
+     "url": "stremio:///search?search=Takahiro%20Imamura"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt1037116",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt0997084",
+   "cast": [
+    "Takeshi Aono",
+    "Masashi Ebara",
+    "Toshiko Fujita"
+   ],
+   "description": "As the Straw Hat Pirates sail through the Grand Line. Chopper has been teased by Usopp about him not being brave enough to face dangers like a real pirate. They spot an upcoming island, and according to Nami's map reading. The isl...",
+   "director": [
+    "Junji Shimizu"
+   ],
+   "genre": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "imdbRating": "6.2",
+   "name": "One Piece: Chopper's Kingdom in the Strange Animal Island",
+   "poster": "https://images.metahub.space/poster/small/tt0997084/img",
+   "released": "2002-03-02T00:00:00.000Z",
+   "runtime": "56 min",
+   "slug": "movie/one-piece-choppers-kingdom-in-the-strange-animal-island-0997084",
+   "type": "movie",
+   "writer": [
+    "Hiroshi Hashimoto",
+    "Eiichirô Oda"
+   ],
+   "year": "2002",
+   "popularities": {
+    "moviedb": 4.0038,
+    "stremio": 0.13346,
+    "stremio_lib": 0,
+    "trakt": 2
+   },
+   "trailers": [],
+   "background": "https://images.metahub.space/background/medium/tt0997084/img",
+   "logo": "https://images.metahub.space/logo/medium/tt0997084/img",
+   "popularity": 0.13346,
+   "id": "tt0997084",
+   "score": 24.94047619047619,
+   "genres": [
+    "Animation",
+    "Action",
+    "Adventure"
+   ],
+   "releaseInfo": "2002",
+   "trailerStreams": [],
+   "links": [
+    {
+     "name": "6.2",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt0997084"
+    },
+    {
+     "name": "One Piece: Chopper's Kingdom in the Strange Animal Island",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/one-piece-choppers-kingdom-in-the-strange-animal-island-0997084"
+    },
+    {
+     "name": "Animation",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Animation"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Takeshi Aono",
+     "category": "Cast",
+     "url": "stremio:///search?search=Takeshi%20Aono"
+    },
+    {
+     "name": "Masashi Ebara",
+     "category": "Cast",
+     "url": "stremio:///search?search=Masashi%20Ebara"
+    },
+    {
+     "name": "Toshiko Fujita",
+     "category": "Cast",
+     "url": "stremio:///search?search=Toshiko%20Fujita"
+    },
+    {
+     "name": "Hiroshi Hashimoto",
+     "category": "Writers",
+     "url": "stremio:///search?search=Hiroshi%20Hashimoto"
+    },
+    {
+     "name": "Eiichirô Oda",
+     "category": "Writers",
+     "url": "stremio:///search?search=Eiichir%C3%B4%20Oda"
+    },
+    {
+     "name": "Junji Shimizu",
+     "category": "Directors",
+     "url": "stremio:///search?search=Junji%20Shimizu"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt0997084",
+    "hasScheduledVideos": false
+   }
+  }
+ ]
+}

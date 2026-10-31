@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { AnimeAdapter } from '../src/background/adapters/AnimeAdapter';
 import type { OmdbAdapter, OmdbResult } from '../src/background/adapters/OmdbAdapter';
-import type { TmdbAdapter, TmdbDetails, TmdbMatch } from '../src/background/adapters/TmdbAdapter';
+import type { FilmAdapter, FilmDetails, FilmMatch } from '../src/background/adapters/FilmAdapter';
 import type { LookupCache } from '../src/background/cache';
 import { createLookup } from '../src/background/lookup';
 import { RequestError } from '../src/background/requestQueue';
@@ -21,9 +21,9 @@ function animeInfo(over: Partial<AnimeInfo> = {}): AnimeInfo {
 
 const anime = animeInfo();
 
-function tmdbMatch(over: Partial<TmdbMatch> = {}): TmdbMatch {
+function tmdbMatch(over: Partial<FilmMatch> = {}): FilmMatch {
   return {
-    tmdbId: 398978,
+    id: '398978',
     mediaType: 'movie',
     query: 'The Irishman',
     matchedName: 'The Irishman',
@@ -35,7 +35,7 @@ function tmdbMatch(over: Partial<TmdbMatch> = {}): TmdbMatch {
   };
 }
 
-function tmdbDetails(over: Partial<TmdbDetails> = {}): TmdbDetails {
+function tmdbDetails(over: Partial<FilmDetails> = {}): FilmDetails {
   const info = {
     id: 'tmdb:movie:398978',
     kind: 'movie',
@@ -55,8 +55,8 @@ const omdbOk: OmdbResult = {
 interface Options {
   settings?: Settings;
   anime?: AnimeAdapter['search'];
-  tmdbSearch?: TmdbAdapter['search'];
-  tmdbDetails?: TmdbAdapter['details'];
+  tmdbSearch?: FilmAdapter['search'];
+  tmdbDetails?: FilmAdapter['details'];
   omdb?: OmdbAdapter['scores'];
 }
 
@@ -242,11 +242,11 @@ describe('lookup with TMDB', () => {
     const { lookup, tmdbAdapter, omdbAdapter } = setup({
       settings: keys,
       anime: async () => film,
-      tmdbSearch: async () => tmdbMatch({ tmdbId: 129, animated: true, japanese: true }),
+      tmdbSearch: async () => tmdbMatch({ id: '129', animated: true, japanese: true }),
       tmdbDetails: async () => tmdbDetails({ imdbId: 'tt0245429' }),
     });
     const result = await lookup({ ...request, title: 'Spirited Away' });
-    expect(tmdbAdapter.details).toHaveBeenCalledWith(expect.objectContaining({ tmdbId: 129 }));
+    expect(tmdbAdapter.details).toHaveBeenCalledWith(expect.objectContaining({ id: '129' }));
     expect(omdbAdapter.scores).toHaveBeenCalledWith('tt0245429');
     expect(result).toEqual({
       status: 'match',

@@ -1,0 +1,91 @@
+{
+ "query": "One Piece",
+ "rank": 33.125,
+ "cacheMaxAge": 86400,
+ "metas": [
+  {
+   "id": "tt0388629",
+   "imdb_id": "tt0388629",
+   "type": "series",
+   "name": "One Piece",
+   "poster": "https://m.media-amazon.com/images/M/MV5BMTNjNGU4NTUtYmVjMy00YjRiLTkxMWUtNzZkMDNiYjZhNmViXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt0388629/img",
+   "releaseInfo": "1999-",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt11737520",
+   "imdb_id": "tt11737520",
+   "type": "series",
+   "name": "One Piece",
+   "poster": "https://m.media-amazon.com/images/M/MV5BNDk5MDFlYjYtZjQ5ZS00ZjhkLWJkYmMtYzhmZjkyOWExY2M3XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt11737520/img",
+   "releaseInfo": "2023-",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt30476502",
+   "imdb_id": "tt30476502",
+   "type": "series",
+   "name": "The One Piece",
+   "poster": "https://m.media-amazon.com/images/M/MV5BZjcwN2ZlMzQtNzQ5Yi00YWY3LWJlNjMtZjVkYjVlN2U4MWUzXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt30476502/img",
+   "releaseInfo": "2027-",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt41538904",
+   "imdb_id": "tt41538904",
+   "type": "series",
+   "name": "Lego One Piece",
+   "poster": "https://m.media-amazon.com/images/M/MV5BN2NlMGYxMzYtN2Y5My00NWY3LWI0NDItNGY3YjE0YmI0NDFjXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt41538904/img",
+   "releaseInfo": "2026",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt41295042",
+   "imdb_id": "tt41295042",
+   "type": "series",
+   "name": "One Piece: Heroines",
+   "poster": "https://m.media-amazon.com/images/M/MV5BOGE0NThiMWUtMzQyNC00MGM4LWEwNTUtM2ZkNDFhMmMxZTU3XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt41295042/img",
+   "releaseInfo": "2026-",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt33992229",
+   "imdb_id": "tt33992229",
+   "type": "series",
+   "name": "One Piece Log: Fish-Man Island Saga",
+   "poster": "https://m.media-amazon.com/images/M/MV5BYzRiYTcwM2YtMTE1OC00MGFkLTlmZjctMjI0YjQ5MWY1MTAwXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt33992229/img",
+   "releaseInfo": "2024-2025",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  }
+ ]
+}

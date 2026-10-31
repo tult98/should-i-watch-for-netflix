@@ -1,0 +1,218 @@
+{
+ "query": "Breaking Bad",
+ "rank": 33.125,
+ "cacheMaxAge": 86400,
+ "metas": [
+  {
+   "awards": "Won 16 Primetime Emmys. 172 wins & 269 nominations total",
+   "cast": [
+    "Bryan Cranston",
+    "Aaron Paul",
+    "Anna Gunn"
+   ],
+   "description": "A chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine with a former student to secure his family's future.",
+   "director": null,
+   "dvdRelease": null,
+   "genre": [
+    "Crime",
+    "Drama",
+    "Thriller"
+   ],
+   "imdbRating": "9.5",
+   "imdb_id": "tt0903747",
+   "name": "Breaking Bad",
+   "popularity": 14.097606666666668,
+   "poster": "https://images.metahub.space/poster/small/tt0903747/img",
+   "released": "2008-01-20T00:00:00.000Z",
+   "runtime": "49 min",
+   "status": "Ended",
+   "type": "series",
+   "writer": [
+    "Vince Gilligan"
+   ],
+   "year": "2008–2013",
+   "background": "https://images.metahub.space/background/medium/tt0903747/img",
+   "logo": "https://images.metahub.space/logo/medium/tt0903747/img",
+   "popularities": {
+    "PXS_TEST": 0,
+    "PXS": 3,
+    "SCM": 6,
+    "EXMD": 1,
+    "ALLIANCE": 0,
+    "EJD": 0,
+    "moviedb": 422.9282,
+    "trakt": 637,
+    "stremio": 14.097606666666668,
+    "stremio_lib": 0
+   },
+   "slug": "series/breaking-bad-0903747",
+   "trailers": [
+    {
+     "source": "VFkjBy2b50Q",
+     "type": "Trailer"
+    }
+   ],
+   "id": "tt0903747",
+   "score": 33.125,
+   "genres": [
+    "Crime",
+    "Drama",
+    "Thriller"
+   ],
+   "releaseInfo": "2008–2013",
+   "trailerStreams": [
+    {
+     "title": "Breaking Bad",
+     "ytId": "VFkjBy2b50Q"
+    }
+   ],
+   "links": [
+    {
+     "name": "9.5",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt0903747"
+    },
+    {
+     "name": "Breaking Bad",
+     "category": "share",
+     "url": "https://www.strem.io/s/series/breaking-bad-0903747"
+    },
+    {
+     "name": "Crime",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Crime"
+    },
+    {
+     "name": "Drama",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Drama"
+    },
+    {
+     "name": "Thriller",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Thriller"
+    },
+    {
+     "name": "Bryan Cranston",
+     "category": "Cast",
+     "url": "stremio:///search?search=Bryan%20Cranston"
+    },
+    {
+     "name": "Aaron Paul",
+     "category": "Cast",
+     "url": "stremio:///search?search=Aaron%20Paul"
+    },
+    {
+     "name": "Anna Gunn",
+     "category": "Cast",
+     "url": "stremio:///search?search=Anna%20Gunn"
+    },
+    {
+     "name": "Vince Gilligan",
+     "category": "Writers",
+     "url": "stremio:///search?search=Vince%20Gilligan"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "awards": null,
+   "cast": [
+    "Bob Odenkirk",
+    "Matt Jones",
+    "Aaron Paul"
+   ],
+   "description": "A side series that focuses on the other scenarios revolving around the characters of Breaking Bad.",
+   "director": null,
+   "dvdRelease": null,
+   "genre": [
+    "Short",
+    "Comedy",
+    "Crime"
+   ],
+   "imdbRating": "7.5",
+   "imdb_id": "tt2387761",
+   "name": "Breaking Bad: Original Minisodes",
+   "popularity": 0.011519999999999999,
+   "poster": "https://images.metahub.space/poster/small/tt2387761/img",
+   "released": "2009-02-17T00:00:00.000Z",
+   "runtime": "5 min",
+   "type": "series",
+   "writer": [
+    "Vince Gilligan"
+   ],
+   "year": "2009–2011",
+   "popularities": {
+    "moviedb": 3.456,
+    "stremio": 0.011519999999999999,
+    "stremio_lib": 0
+   },
+   "slug": "series/breaking-bad-original-minisodes-2387761",
+   "status": "Ended",
+   "background": "https://images.metahub.space/background/medium/tt2387761/img",
+   "logo": "https://images.metahub.space/logo/medium/tt2387761/img",
+   "id": "tt2387761",
+   "score": 26.666666666666668,
+   "genres": [
+    "Short",
+    "Comedy",
+    "Crime"
+   ],
+   "releaseInfo": "2009–2011",
+   "links": [
+    {
+     "name": "7.5",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt2387761"
+    },
+    {
+     "name": "Breaking Bad: Original Minisodes",
+     "category": "share",
+     "url": "https://www.strem.io/s/series/breaking-bad-original-minisodes-2387761"
+    },
+    {
+     "name": "Short",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Short"
+    },
+    {
+     "name": "Comedy",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Comedy"
+    },
+    {
+     "name": "Crime",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Crime"
+    },
+    {
+     "name": "Bob Odenkirk",
+     "category": "Cast",
+     "url": "stremio:///search?search=Bob%20Odenkirk"
+    },
+    {
+     "name": "Matt Jones",
+     "category": "Cast",
+     "url": "stremio:///search?search=Matt%20Jones"
+    },
+    {
+     "name": "Aaron Paul",
+     "category": "Cast",
+     "url": "stremio:///search?search=Aaron%20Paul"
+    },
+    {
+     "name": "Vince Gilligan",
+     "category": "Writers",
+     "url": "stremio:///search?search=Vince%20Gilligan"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  }
+ ]
+}

@@ -1,0 +1,133 @@
+{
+ "query": "Frieren",
+ "rank": 5.5,
+ "cacheMaxAge": 86400,
+ "metas": [
+  {
+   "id": "tt22248376",
+   "imdb_id": "tt22248376",
+   "type": "series",
+   "name": "Frieren: Beyond Journey's End",
+   "poster": "https://m.media-amazon.com/images/M/MV5BZTI4ZGMxN2UtODlkYS00MTBjLWE1YzctYzc3NDViMGI0ZmJmXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt22248376/img",
+   "releaseInfo": "2023-",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt34754926",
+   "imdb_id": "tt34754926",
+   "type": "series",
+   "name": "Frieren: Beyond Journey's End Original Mini-Anime - Magic of ??",
+   "poster": "https://m.media-amazon.com/images/M/MV5BZTdjODc2NDAtMmJkYS00Mzk1LTgxMzktYWExMjJiZWUzYjE0XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt34754926/img",
+   "releaseInfo": "2023-2026",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt0185906",
+   "imdb_id": "tt0185906",
+   "type": "series",
+   "name": "Band of Brothers",
+   "poster": "https://m.media-amazon.com/images/M/MV5BYjdlNGJlYjQtMDU2Mi00ZjA1LWEwYzgtYzlmNDM5MmE1ZGUwXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt0185906/img",
+   "releaseInfo": "2001",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt10639680",
+   "imdb_id": "tt10639680",
+   "type": "series",
+   "name": "Labyrinth of Peace",
+   "poster": "https://m.media-amazon.com/images/M/MV5BZDQ4MDhjYTQtODEwOC00OWU3LTg2Y2EtYzZhNzZkNzM5MjY3XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt10639680/img",
+   "releaseInfo": "2020",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt7694874",
+   "imdb_id": "tt7694874",
+   "type": "series",
+   "name": "Pros and Cons",
+   "poster": "https://m.media-amazon.com/images/M/MV5BYTAzNWZhMjAtYmFhMS00MWM4LTg2NzMtZDliZjg0Y2E5OGIyXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt7694874/img",
+   "releaseInfo": "2018-",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt0368530",
+   "imdb_id": "tt0368530",
+   "type": "series",
+   "name": "One Tree Hill",
+   "poster": "https://m.media-amazon.com/images/M/MV5BMzk2YjJiNzMtZjk2Mi00ZGU5LWI1ZTUtNjIwMGI2NjZiMTVjXkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt0368530/img",
+   "releaseInfo": "2003-2012",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt3910804",
+   "imdb_id": "tt3910804",
+   "type": "series",
+   "name": "War & Peace",
+   "poster": "https://m.media-amazon.com/images/M/MV5BMTUxNzY5MzgwNV5BMl5BanBnXkFtZTgwNDM0NDgxNzE@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt3910804/img",
+   "releaseInfo": "2016",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt8749198",
+   "imdb_id": "tt8749198",
+   "type": "series",
+   "name": "Daisy Jones & The Six",
+   "poster": "https://m.media-amazon.com/images/M/MV5BOTMwNzIzZDItYzYzYS00ZDA4LThiNmYtYTJjYjMwZTUxNTk1XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt8749198/img",
+   "releaseInfo": "2023",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  },
+  {
+   "id": "tt12661338",
+   "imdb_id": "tt12661338",
+   "type": "series",
+   "name": "A Friend of the Family",
+   "poster": "https://m.media-amazon.com/images/M/MV5BMzQyMmM4MzktZmI3YS00YWI5LWEwYTktODJlODNlMDM2NGM4XkEyXkFqcGc@._V1_SX250.jpg",
+   "background": "https://images.metahub.space/background/medium/tt12661338/img",
+   "releaseInfo": "2022",
+   "links": [],
+   "behaviorHints": {
+    "defaultVideoId": null,
+    "hasScheduledVideos": true
+   }
+  }
+ ]
+}

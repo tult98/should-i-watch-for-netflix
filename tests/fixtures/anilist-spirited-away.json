@@ -1,0 +1,78 @@
+{
+ "data": {
+  "Page": {
+   "media": [
+    {
+     "id": 199,
+     "idMal": 199,
+     "title": {
+      "romaji": "Sen to Chihiro no Kamikakushi",
+      "english": "Spirited Away",
+      "native": "千と千尋の神隠し"
+     },
+     "synonyms": [
+      "Le Voyage de Chihiro",
+      "La Città Incantata",
+      "El Viaje de Chihiro",
+      "Chihiros Reise ins Zauberland",
+      "Ruhların Kaçışı",
+      "המסע המופלא",
+      "Călătoria lui Chihiro",
+      "Spirited Away: W krainie bogów",
+      "Chihiro Szellemországban",
+      "A Viagem de Chihiro",
+      "千与千寻",
+      "Унесённые призраками",
+      "Chihiro og heksene",
+      "Ταξίδι στην Χώρα των Θαυμάτων",
+      "มิติวิญญาณมหัศจรรย์",
+      "Henkien kätkemä",
+      "Chihiro ilmmiid gaskkas",
+      "Vaimudest viidud",
+      "Chihiro og álögin"
+     ],
+     "seasonYear": 2001,
+     "format": "MOVIE",
+     "episodes": 1,
+     "status": "FINISHED",
+     "averageScore": 86,
+     "popularity": 487684,
+     "genres": [
+      "Adventure",
+      "Drama",
+      "Fantasy",
+      "Supernatural"
+     ],
+     "studios": {
+      "nodes": [
+       {
+        "name": "Studio Ghibli"
+       },
+       {
+        "name": "Studio Hibari"
+       },
+       {
+        "name": "Walt Disney Studios"
+       },
+       {
+        "name": "GKIDS"
+       }
+      ]
+     },
+     "description": "On the way to their new home, 10-year-old Chihiro Ogino's family stumbles upon a deserted theme park. Intrigued, the family investigates the park, though unbeknownst to them, it is secretly inhabited by spirits who sleep by day and appear at night. When Chihiro's mother and father eat food from a restaurant in the street, angry spirits turn them into pigs. Furthermore, a wide sea has appeared between the spirit world and the human one, trapping Chihiro, the sole human, in a land of spirits. Luckily for her though, a mysterious boy named Haku appears, claiming to know her from the past. Under his instructions, Chihiro secures a job in the bathhouse where Haku works. With only her courage and some new found friends to aid her, Chihiro embarks on a journey to turn her parents back to their original forms and return home.\n",
+     "startDate": {
+      "year": 2001,
+      "month": 7,
+      "day": 20
+     },
+     "endDate": {
+      "year": 2001,
+      "month": 7,
+      "day": 20
+     },
+     "season": "SUMMER"
+    }
+   ]
+  }
+ }
+}
