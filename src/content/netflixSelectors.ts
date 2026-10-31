@@ -5,10 +5,11 @@
  *
  * When hover logs stop appearing or show the wrong title, open DevTools on
  * netflix.com, inspect a card, and check:
- * - the card is still an <a> whose data-uia is one of CARD_UIA_VALUES
+ * - the card is still an <a> whose data-uia is one of CARD_UIA_VALUES, or, on
+ *   New & Popular, an <a aria-label> inside data-uia "title-card-container"
  * - the anchor's aria-label still holds the title (readTitle)
- * - the href still carries the title id as /browse?jbv=<id> or /title/<id>
- *   (readNetflixId)
+ * - the href still carries the title id as /browse?jbv=<id>, /title/<id> or
+ *   /watch/<id> (readNetflixId)
  * - the hover preview is still a dialog with data-uia
  *   "modal-motion-container-MINI_MODAL" and a "videoMetadata--container"
  *   inside (findPreview, findOpenPreview, readYear)
@@ -22,7 +23,10 @@
 
 const CARD_UIA_VALUES = ['progress-card', 'standard-card', 'ranked-card'];
 
-const CARD_SELECTOR = CARD_UIA_VALUES.map((uia) => `a[aria-label][data-uia="${uia}"]`).join(', ');
+const CARD_SELECTOR = [
+  ...CARD_UIA_VALUES.map((uia) => `a[aria-label][data-uia="${uia}"]`),
+  '[data-uia="title-card-container"] a[aria-label]:not([data-uia="episodic-card"])',
+].join(', ');
 
 const FALLBACK_CARD_SELECTOR = 'a[aria-label][data-uia$="-card"]:not([data-uia="episodic-card"])';
 
@@ -67,7 +71,7 @@ export function readNetflixId(card: Element): string | undefined {
   const url = new URL(href, 'https://www.netflix.com');
   const jbv = url.searchParams.get('jbv');
   if (jbv && /^\d+$/.test(jbv)) return jbv;
-  return url.pathname.match(/\/title\/(\d+)/)?.[1];
+  return url.pathname.match(/\/(?:title|watch)\/(\d+)/)?.[1];
 }
 
 export function readYear(card: Element): number | undefined {
