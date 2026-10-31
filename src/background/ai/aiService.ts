@@ -1,4 +1,4 @@
-import { locale } from '../../shared/i18n';
+import { initLocale, locale } from '../../shared/i18n';
 import type { AiCachedResponse, AiOk, AiOpinionResponse } from '../../shared/messages';
 import { needSummary } from '../../shared/needSummary';
 import type { QuickBadge } from '../../shared/quickBadge';
@@ -36,7 +36,9 @@ export function createAiService(deps: AiServiceDeps): AiService {
   const inFlight = new Map<string, Promise<AiOpinionResponse>>();
 
   async function context(info: TitleInfo) {
-    const config = aiSettingsOf(await deps.loadSettings());
+    const settings = await deps.loadSettings();
+    initLocale(settings);
+    const config = aiSettingsOf(settings);
     const taste = await deps.getTasteProfile(info.kind);
     return { config, taste, key: aiCacheKey(info.id, info.kind, taste.version, config.model, locale) };
   }
