@@ -151,8 +151,8 @@ The content script computes the badge at render time from cached `TitleInfo` and
 | MAL best match | TMDB best match | Result |
 |---|---|---|
 | Confidence ≥ threshold | None | Anime, MAL primary |
-| Confidence ≥ threshold | Genre 16 (Animation), or `origin_country` has `JP`, or `original_language` is `ja` | Anime, MAL primary. If MAL `type` is Movie and an OMDb key exists, add IMDb from TMDB's `imdb_id`. |
-| Confidence ≥ threshold | Live action, not Japanese | TMDB and OMDb |
+| Confidence ≥ threshold | Genre 16 (Animation) | Anime, MAL primary. If MAL `type` is Movie and an OMDb key exists, add IMDb from TMDB's `imdb_id`. |
+| Confidence ≥ threshold | Live action, Japanese or not | TMDB and OMDb |
 | Below threshold or none | Confident match | TMDB and OMDb |
 | Below threshold or none | None | `no_match`, popover stays hidden |
 
