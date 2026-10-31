@@ -7,7 +7,9 @@ import {
   type FetchFn,
 } from '../src/background/requestQueue';
 
-const JIKAN = 'https://api.jikan.moe/v4/anime?q=x';
+const MAL = 'https://api.myanimelist.net/v2/anime?q=x';
+const CINEMETA = 'https://v3-cinemeta.strem.io/catalog/movie/top/search=x.json';
+const ANILIST = 'https://graphql.anilist.co';
 
 function ok(): Response {
   return new Response('{}', { status: 200 });
@@ -46,31 +48,29 @@ describe('requestQueue', () => {
   });
   afterEach(() => vi.useRealTimers());
 
-  it('sends at most 3 Jikan requests per second', async () => {
+  it('sends at most 5 Cinemeta requests per second', async () => {
     const { queue, calls } = setup();
-    const all = Promise.all(Array.from({ length: 7 }, () => queue.fetch(JIKAN)));
+    const all = Promise.all(Array.from({ length: 11 }, () => queue.fetch(CINEMETA)));
     await vi.advanceTimersByTimeAsync(0);
-    expect(calls).toEqual([0, 0, 0]);
+    expect(calls).toEqual([0, 0, 0, 0, 0]);
     await vi.advanceTimersByTimeAsync(999);
-    expect(calls).toHaveLength(3);
+    expect(calls).toHaveLength(5);
     await vi.advanceTimersByTimeAsync(1);
-    expect(calls).toEqual([0, 0, 0, 1000, 1000, 1000]);
+    expect(calls).toHaveLength(10);
     await vi.advanceTimersByTimeAsync(1000);
     await all;
-    expect(calls).toEqual([0, 0, 0, 1000, 1000, 1000, 2000]);
+    expect(calls[10]).toBe(2000);
   });
 
-  it('sends at most 60 Jikan requests per minute', async () => {
+  it('sends at most 30 AniList requests per minute', async () => {
     const { queue, calls } = setup();
-    const all = Promise.all(Array.from({ length: 61 }, () => queue.fetch(JIKAN)));
-    await vi.advanceTimersByTimeAsync(30_000);
-    expect(calls).toHaveLength(60);
-    expect(calls[59]).toBe(19_000);
-    await vi.advanceTimersByTimeAsync(29_999);
-    expect(calls).toHaveLength(60);
+    const all = Promise.all(Array.from({ length: 31 }, () => queue.fetch(ANILIST, { method: 'POST' })));
+    await vi.advanceTimersByTimeAsync(59_999);
+    expect(calls).toHaveLength(30);
+    expect(calls.every((t) => t === 0)).toBe(true);
     await vi.advanceTimersByTimeAsync(1);
     await all;
-    expect(calls[60]).toBe(60_000);
+    expect(calls[30]).toBe(60_000);
   });
 
   it('sends at most 3 MAL API requests per second', async () => {
@@ -93,7 +93,7 @@ describe('requestQueue', () => {
 
   it('keeps a separate window per host', async () => {
     const { queue, calls } = setup();
-    void Promise.all(Array.from({ length: 3 }, () => queue.fetch(JIKAN)));
+    void Promise.all(Array.from({ length: 3 }, () => queue.fetch(MAL)));
     void queue.fetch('https://api.themoviedb.org/3/search/multi');
     await vi.advanceTimersByTimeAsync(0);
     expect(calls).toEqual([0, 0, 0, 0]);
@@ -102,7 +102,7 @@ describe('requestQueue', () => {
   it('waits Retry-After seconds on a 429', async () => {
     const responses = [tooMany('5'), ok()];
     const { queue, calls } = setup(() => responses.shift()!);
-    const result = queue.fetch(JIKAN);
+    const result = queue.fetch(MAL);
     await vi.advanceTimersByTimeAsync(4_999);
     expect(calls).toEqual([0]);
     await vi.advanceTimersByTimeAsync(1);
@@ -113,7 +113,7 @@ describe('requestQueue', () => {
   it('backs off 1 s, 2 s, then 4 s without Retry-After', async () => {
     const responses = [tooMany(), tooMany(), tooMany(), ok()];
     const { queue, calls } = setup(() => responses.shift()!);
-    const result = queue.fetch(JIKAN);
+    const result = queue.fetch(MAL);
     await vi.advanceTimersByTimeAsync(7_000);
     expect((await result).status).toBe(200);
     expect(calls).toEqual([0, 1_000, 3_000, 7_000]);
@@ -121,7 +121,7 @@ describe('requestQueue', () => {
 
   it('gives up with rate_limited after three retries', async () => {
     const { queue, calls } = setup(() => tooMany());
-    const result = queue.fetch(JIKAN).catch((e: unknown) => e);
+    const result = queue.fetch(MAL).catch((e: unknown) => e);
     await vi.advanceTimersByTimeAsync(10_000);
     const error = await result;
     expect(error).toBeInstanceOf(RequestError);
@@ -133,7 +133,7 @@ describe('requestQueue', () => {
     const { queue } = setup(() => {
       throw new TypeError('Failed to fetch');
     });
-    await expect(queue.fetch(JIKAN)).rejects.toMatchObject({ reason: 'network' });
+    await expect(queue.fetch(MAL)).rejects.toMatchObject({ reason: 'network' });
   });
 
   it('aborts a request that hangs past the timeout as a network error', async () => {
@@ -142,7 +142,7 @@ describe('requestQueue', () => {
       signal = init?.signal ?? undefined;
       return new Promise<Response>(() => {});
     });
-    const result = queue.fetch(JIKAN).catch((e: unknown) => e);
+    const result = queue.fetch(MAL).catch((e: unknown) => e);
     await vi.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS - 1);
     expect(signal?.aborted).toBe(false);
     await vi.advanceTimersByTimeAsync(1);
@@ -156,11 +156,11 @@ describe('requestQueue', () => {
     const hang = () => new Promise<Response>(() => {});
     const { queue } = setup(hang, (host) => (host === 'api.deepseek.com' ? 30_000 : undefined));
     let aiDone = false;
-    let jikanDone = false;
+    let malDone = false;
     void queue.fetch('https://api.deepseek.com/chat/completions').catch(() => (aiDone = true));
-    void queue.fetch(JIKAN).catch(() => (jikanDone = true));
+    void queue.fetch(MAL).catch(() => (malDone = true));
     await vi.advanceTimersByTimeAsync(REQUEST_TIMEOUT_MS);
-    expect(jikanDone).toBe(true);
+    expect(malDone).toBe(true);
     expect(aiDone).toBe(false);
     await vi.advanceTimersByTimeAsync(30_000 - REQUEST_TIMEOUT_MS);
     expect(aiDone).toBe(true);
@@ -168,13 +168,13 @@ describe('requestQueue', () => {
 
   it('clears the timeout once the response arrives', async () => {
     const { queue } = setup();
-    await queue.fetch(JIKAN);
+    await queue.fetch(MAL);
     expect(vi.getTimerCount()).toBe(0);
   });
 
   it('returns other error statuses to the caller', async () => {
     const { queue } = setup(() => new Response('', { status: 500 }));
-    expect((await queue.fetch(JIKAN)).status).toBe(500);
+    expect((await queue.fetch(MAL)).status).toBe(500);
   });
 });
 

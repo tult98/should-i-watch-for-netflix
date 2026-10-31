@@ -14,9 +14,10 @@ import { route } from './routing';
 export interface LookupDeps {
   cache: LookupCache;
   loadSettings: () => Promise<Settings>;
-  jikan: AnimeAdapter;
+  anilist: AnimeAdapter;
   malOfficial: (clientId: string) => AnimeAdapter;
   tmdb: (key: string) => FilmAdapter;
+  cinemeta: () => FilmAdapter;
   omdb: (key: string) => OmdbAdapter;
   log?: (message: string) => void;
 }
@@ -37,6 +38,12 @@ function errorReason(err: unknown): string {
   return err instanceof RequestError ? err.reason : 'network';
 }
 
+// A score from the extra source replaces the base one, so Cinemeta's vote-less IMDb score gives way to OMDb's.
+function mergeScores(base: Score[], extra: Score[]): Score[] {
+  const replaced = new Set(extra.map((s) => s.source));
+  return [...base.filter((s) => !replaced.has(s.source)), ...extra];
+}
+
 function isAnimeLike(match: FilmMatch): boolean {
   return match.animated || match.japanese;
 }
@@ -48,8 +55,8 @@ export function createLookup(deps: LookupDeps): Lookup {
   function searchAnime(title: string, year: number | undefined, settings: Settings): Promise<AnimeInfo | null> {
     const clientId = settings.malClientId;
     const official = clientId && canUseMalOfficial(title) ? deps.malOfficial(clientId) : null;
-    log(`[sw] fetch ${official ? 'mal-official' : 'jikan'} ${title}`);
-    return (official ?? deps.jikan).search(title, year);
+    log(`[sw] fetch ${official ? 'mal-official' : 'anilist'} ${title}`);
+    return (official ?? deps.anilist).search(title, year);
   }
 
   // Confidence stays against the TMDB name; only the query is reset to the card title.
@@ -79,74 +86,74 @@ export function createLookup(deps: LookupDeps): Lookup {
 
   async function withImdb(
     anime: AnimeInfo,
-    tmdb: FilmAdapter | null,
+    film: FilmAdapter,
     match: FilmMatch | null,
     omdb: OmdbAdapter | null,
     known: FilmDetails | undefined,
   ): Promise<AnimeInfo> {
-    if (anime.format !== 'Movie' || !omdb || !tmdb || match?.mediaType !== 'movie') return anime;
+    if (anime.format !== 'Movie' || !omdb || match?.mediaType !== 'movie') return anime;
     let details = known;
     try {
-      details ??= await tmdb.details(match);
+      details ??= await film.details(match);
     } catch (err) {
       log(`[sw] omdb skipped tmdb_${errorReason(err)}`);
       return anime;
     }
     const imdb = (await omdbScores(omdb, details.imdbId)).filter((s) => s.source === 'imdb');
-    return imdb.length ? { ...anime, scores: [...anime.scores, ...imdb] } : anime;
+    return imdb.length ? { ...anime, scores: mergeScores(anime.scores, imdb) } : anime;
   }
 
   async function resolve(request: LookupRequest): Promise<Resolved> {
     try {
       const settings = await deps.loadSettings();
-      const tmdb = settings.tmdbKey ? deps.tmdb(settings.tmdbKey) : null;
+      const filmName = settings.tmdbKey ? 'tmdb' : 'cinemeta';
+      const film = settings.tmdbKey ? deps.tmdb(settings.tmdbKey) : deps.cinemeta();
       const omdb = settings.omdbKey ? deps.omdb(settings.omdbKey) : null;
-      if (tmdb) log(`[sw] fetch tmdb ${request.title}`);
-      const [animeResult, tmdbResult] = await Promise.allSettled([
+      log(`[sw] fetch ${filmName} ${request.title}`);
+      const [animeResult, filmResult] = await Promise.allSettled([
         searchAnime(request.title, request.year, settings),
-        tmdb ? tmdb.search(request.title, request.year, request.lang) : Promise.resolve(null),
+        film.search(request.title, request.year, request.lang),
       ]);
 
       // A failed side only blocks the result when its answer could change the route.
-      if (tmdbResult.status === 'rejected') {
+      if (filmResult.status === 'rejected') {
         const found = animeResult.status === 'fulfilled' ? animeResult.value : null;
         if (found && found.match.confidence >= MATCH_THRESHOLD) {
-          log(`[sw] tmdb failed ${errorReason(tmdbResult.reason)}, using anime`);
+          log(`[sw] ${filmName} failed ${errorReason(filmResult.reason)}, using anime`);
           log(`[sw] route anime ${request.title}`);
           return { result: { status: 'match', info: found }, cacheable: false };
         }
-        return { result: toError(tmdbResult.reason), cacheable: false };
+        return { result: toError(filmResult.reason), cacheable: false };
       }
-      const tmdbMatch = tmdbResult.value;
-      if (animeResult.status === 'rejected' && (!tmdbMatch || isAnimeLike(tmdbMatch))) {
+      const filmMatch = filmResult.value;
+      if (animeResult.status === 'rejected' && (!filmMatch || isAnimeLike(filmMatch))) {
         return { result: toError(animeResult.reason), cacheable: false };
       }
       let anime = animeResult.status === 'fulfilled' ? animeResult.value : null;
 
       let details: FilmDetails | undefined;
-      if (!anime && tmdb && tmdbMatch && isAnimeLike(tmdbMatch)) {
-        details = await tmdb.details(tmdbMatch);
+      if (!anime && filmMatch && isAnimeLike(filmMatch)) {
+        details = await film.details(filmMatch);
         anime = await secondAnimePass(request, details.englishName, settings);
       }
 
-      const decision = route(anime?.match ?? null, tmdbMatch);
+      const decision = route(anime?.match ?? null, filmMatch);
       log(`[sw] route ${decision} ${request.title}`);
 
       if (decision === 'anime' && anime) {
         return {
-          result: { status: 'match', info: await withImdb(anime, tmdb, tmdbMatch, omdb, details) },
+          result: { status: 'match', info: await withImdb(anime, film, filmMatch, omdb, details) },
           cacheable: true,
         };
       }
-      if (decision === 'tmdb' && tmdb && tmdbMatch) {
-        details ??= await tmdb.details(tmdbMatch);
+      if (decision === 'tmdb' && filmMatch) {
+        details ??= await film.details(filmMatch);
         const extra = omdb ? await omdbScores(omdb, details.imdbId) : [];
         return {
-          result: { status: 'match', info: { ...details.info, scores: [...details.info.scores, ...extra] } },
+          result: { status: 'match', info: { ...details.info, scores: mergeScores(details.info.scores, extra) } },
           cacheable: true,
         };
       }
-      if (!tmdb) log('[sw] no tmdb key');
       return { result: { status: 'no_match' }, cacheable: true };
     } catch (err) {
       return { result: toError(err), cacheable: false };

@@ -1,0 +1,194 @@
+{
+ "meta": {
+  "imdb_id": "tt22248376",
+  "name": "Frieren: Beyond Journey's End",
+  "popularities": {
+   "trakt": 198,
+   "moviedb": 100.8061,
+   "stremio": 3.360203333333333,
+   "stremio_lib": 0
+  },
+  "type": "series",
+  "cast": [
+   "Atsumi Tanezaki",
+   "Kana Ichinose",
+   "Mallorie Rodak"
+  ],
+  "country": "Japan",
+  "description": "Elf mage Frieren and her fellow adventurers have defeated the Demon King and brought peace to the land. But Frieren will long outlive the rest of her former party. How will she come to understand what life means to the people arou...",
+  "genre": [
+   "Animation",
+   "Adventure",
+   "Comedy"
+  ],
+  "imdbRating": "8.9",
+  "released": "2023-09-29T00:00:00.000Z",
+  "slug": "series/frieren-beyond-journeys-end-22248376",
+  "year": "2023–",
+  "runtime": "25 min",
+  "status": "Continuing",
+  "tvdb_id": 424536,
+  "moviedb_id": 209867,
+  "poster": "https://images.metahub.space/poster/small/tt22248376/img",
+  "trailers": [
+   {
+    "source": "01WEqntM1NI",
+    "type": "Trailer"
+   },
+   {
+    "source": "Y3l9RTUiYy0",
+    "type": "Trailer"
+   },
+   {
+    "source": "qgQunxD0qCk",
+    "type": "Trailer"
+   },
+   {
+    "source": "94i5TO_lcuw",
+    "type": "Trailer"
+   },
+   {
+    "source": "Iwr1aLEDpe4",
+    "type": "Trailer"
+   }
+  ],
+  "director": [],
+  "writer": [
+   "Tsukasa Abe",
+   "Kanehito Yamada"
+  ],
+  "background": "https://images.metahub.space/background/medium/tt22248376/img",
+  "logo": "https://images.metahub.space/logo/medium/tt22248376/img",
+  "awards": "21 wins & 36 nominations total",
+  "popularity": 3.360203333333333,
+  "id": "tt22248376",
+  "genres": [
+   "Animation",
+   "Adventure",
+   "Comedy"
+  ],
+  "releaseInfo": "2023–",
+  "videos": [
+   {
+    "name": "The Journey's End",
+    "season": 1,
+    "number": 1,
+    "firstAired": "2023-09-29T14:00:00.000Z",
+    "tvdb_id": 9350138,
+    "rating": "0",
+    "overview": "The world celebrates the Demon King's defeat at the hands of the Hero and his companions. Now that their great adventure is over, what will Frieren the mage do next?",
+    "thumbnail": "https://episodes.metahub.space/tt22248376/1/1/w780.jpg",
+    "id": "tt22248376:1:1",
+    "released": "2023-09-29T14:00:00.000Z",
+    "episode": 1,
+    "description": "The world celebrates the Demon King's defeat at the hands of the Hero and his companions. Now that their great adventure is over, what will Frieren the mage do next?"
+   },
+   {
+    "name": "It Didn't Have to Be Magic...",
+    "season": 1,
+    "number": 2,
+    "firstAired": "2023-09-29T14:00:00.000Z",
+    "tvdb_id": 9993737,
+    "rating": "0",
+    "overview": "Frieren instructs Fern in the use of magic while deciphering a grimoire for Heiter.",
+    "thumbnail": "https://episodes.metahub.space/tt22248376/1/2/w780.jpg",
+    "id": "tt22248376:1:2",
+    "released": "2023-09-29T14:00:00.000Z",
+    "episode": 2,
+    "description": "Frieren instructs Fern in the use of magic while deciphering a grimoire for Heiter."
+   },
+   {
+    "name": "Killing Magic",
+    "season": 1,
+    "number": 3,
+    "firstAired": "2023-09-29T14:00:00.000Z",
+    "tvdb_id": 9993738,
+    "rating": "0",
+    "overview": "While retracing the path she took on her adventure with her former traveling companions, Frieren confronts an old enemy.",
+    "thumbnail": "https://episodes.metahub.space/tt22248376/1/3/w780.jpg",
+    "id": "tt22248376:1:3",
+    "released": "2023-09-29T14:00:00.000Z",
+    "episode": 3,
+    "description": "While retracing the path she took on her adventure with her former traveling companions, Frieren confronts an old enemy."
+   }
+  ],
+  "trailerStreams": [
+   {
+    "title": "Frieren: Beyond Journey's End",
+    "ytId": "01WEqntM1NI"
+   },
+   {
+    "title": "Frieren: Beyond Journey's End",
+    "ytId": "Y3l9RTUiYy0"
+   },
+   {
+    "title": "Frieren: Beyond Journey's End",
+    "ytId": "qgQunxD0qCk"
+   },
+   {
+    "title": "Frieren: Beyond Journey's End",
+    "ytId": "94i5TO_lcuw"
+   },
+   {
+    "title": "Frieren: Beyond Journey's End",
+    "ytId": "Iwr1aLEDpe4"
+   }
+  ],
+  "links": [
+   {
+    "name": "8.9",
+    "category": "imdb",
+    "url": "https://imdb.com/title/tt22248376"
+   },
+   {
+    "name": "Frieren: Beyond Journey's End",
+    "category": "share",
+    "url": "https://www.strem.io/s/series/frieren-beyond-journeys-end-22248376"
+   },
+   {
+    "name": "Animation",
+    "category": "Genres",
+    "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Animation"
+   },
+   {
+    "name": "Adventure",
+    "category": "Genres",
+    "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Adventure"
+   },
+   {
+    "name": "Comedy",
+    "category": "Genres",
+    "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Comedy"
+   },
+   {
+    "name": "Atsumi Tanezaki",
+    "category": "Cast",
+    "url": "stremio:///search?search=Atsumi%20Tanezaki"
+   },
+   {
+    "name": "Kana Ichinose",
+    "category": "Cast",
+    "url": "stremio:///search?search=Kana%20Ichinose"
+   },
+   {
+    "name": "Mallorie Rodak",
+    "category": "Cast",
+    "url": "stremio:///search?search=Mallorie%20Rodak"
+   },
+   {
+    "name": "Tsukasa Abe",
+    "category": "Writers",
+    "url": "stremio:///search?search=Tsukasa%20Abe"
+   },
+   {
+    "name": "Kanehito Yamada",
+    "category": "Writers",
+    "url": "stremio:///search?search=Kanehito%20Yamada"
+   }
+  ],
+  "behaviorHints": {
+   "defaultVideoId": null,
+   "hasScheduledVideos": true
+  }
+ }
+}
