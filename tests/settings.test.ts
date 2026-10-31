@@ -6,7 +6,9 @@ import {
   aiSettingsOf,
   enabledOf,
   saveEnabled,
+  saveLanguage,
   saveTheme,
+  languageOf,
   themeOf,
   parseAiBaseUrl,
   SETTINGS_KEY,
@@ -139,5 +141,27 @@ describe('settings theme', () => {
     store.data.set(SETTINGS_KEY, { tmdbKey: 'k', enabled: false });
     await saveTheme('light', store);
     expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', enabled: false, theme: 'light' });
+  });
+});
+
+describe('settings language', () => {
+  it('defaults to auto and keeps only the three known values', async () => {
+    const store = memoryStore();
+    expect(languageOf(await loadSettings(store))).toBe('auto');
+    for (const language of ['auto', 'vi', 'en']) {
+      store.data.set(SETTINGS_KEY, { language });
+      expect(languageOf(await loadSettings(store))).toBe(language);
+    }
+    for (const bad of ['fr', 1, null, true]) {
+      store.data.set(SETTINGS_KEY, { language: bad });
+      expect(await loadSettings(store)).toEqual({});
+    }
+  });
+
+  it('saves the language over the stored settings', async () => {
+    const store = memoryStore();
+    store.data.set(SETTINGS_KEY, { tmdbKey: 'k', theme: 'dark' });
+    await saveLanguage('en', store);
+    expect(store.data.get(SETTINGS_KEY)).toEqual({ tmdbKey: 'k', theme: 'dark', language: 'en' });
   });
 });

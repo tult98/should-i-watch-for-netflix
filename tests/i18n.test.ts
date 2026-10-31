@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { detectLocale } from '../src/shared/i18n';
+import { afterEach } from 'vitest';
+import { detectLocale, initLocale, resolveLocale, setLocale, strings } from '../src/shared/i18n';
 import { en } from '../src/shared/strings.en';
 import { vi as viStrings } from '../src/shared/strings.vi';
 
@@ -46,6 +47,43 @@ describe('locale at load', () => {
     const mod = await loadWith({});
     expect(mod.locale).toBe('vi');
     expect(mod.strings.popup.keySet).toBe(viStrings.popup.keySet);
+  });
+});
+
+describe('resolveLocale', () => {
+  it('follows the browser for auto', () => {
+    expect(resolveLocale('auto', 'vi-VN')).toBe('vi');
+    expect(resolveLocale('auto', 'en-US')).toBe('en');
+    expect(resolveLocale('auto', undefined)).toBe('vi');
+  });
+
+  it('ignores the browser for an explicit choice', () => {
+    expect(resolveLocale('vi', 'en-US')).toBe('vi');
+    expect(resolveLocale('en', 'vi')).toBe('en');
+  });
+});
+
+describe('runtime locale', () => {
+  afterEach(() => setLocale('vi'));
+
+  it('changes what an already captured section returns', () => {
+    const t = strings.popup;
+    setLocale('vi');
+    expect(t.keySet).toBe(viStrings.popup.keySet);
+    setLocale('en');
+    expect(t.keySet).toBe(en.popup.keySet);
+  });
+
+  it('keeps functions callable and the key tree enumerable', () => {
+    setLocale('en');
+    expect(strings.options.cacheCleared(2)).toBe(en.options.cacheCleared(2));
+    expect(Object.keys(strings.options)).toEqual(Object.keys(en.options));
+  });
+
+  it('applies the saved preference through initLocale', () => {
+    expect(initLocale({ language: 'en' })).toBe('en');
+    expect(strings.popup.keySet).toBe(en.popup.keySet);
+    expect(initLocale({})).toBe('vi');
   });
 });
 

@@ -4,6 +4,10 @@ export type ThemePref = 'dark' | 'light' | 'system';
 
 export const THEME_PREFS: readonly ThemePref[] = ['dark', 'light', 'system'];
 
+export type LanguagePref = 'auto' | 'vi' | 'en';
+
+export const LANGUAGE_PREFS: readonly LanguagePref[] = ['auto', 'vi', 'en'];
+
 export interface Settings {
   malClientId?: string;
   tmdbKey?: string;
@@ -14,6 +18,7 @@ export interface Settings {
   thresholds?: Thresholds;
   enabled?: boolean;
   theme?: ThemePref;
+  language?: LanguagePref;
 }
 
 const KEYS = ['malClientId', 'tmdbKey', 'omdbKey'] as const satisfies readonly (keyof Settings)[];
@@ -80,6 +85,10 @@ export function enabledOf(settings: Settings): boolean {
 
 export function themeOf(settings: Settings): ThemePref {
   return settings.theme ?? 'system';
+}
+
+export function languageOf(settings: Settings): LanguagePref {
+  return settings.language ?? 'auto';
 }
 
 export const SETTINGS_KEY = 'settings';
@@ -151,6 +160,7 @@ export function parseSettings(value: unknown): Settings {
   if (thresholds) clean.thresholds = thresholds;
   if (typeof value.enabled === 'boolean') clean.enabled = value.enabled;
   if (THEME_PREFS.includes(value.theme as ThemePref)) clean.theme = value.theme as ThemePref;
+  if (LANGUAGE_PREFS.includes(value.language as LanguagePref)) clean.language = value.language as LanguagePref;
   return clean;
 }
 
@@ -179,4 +189,11 @@ export async function saveEnabled(enabled: boolean, store: SettingsStore = chrom
 
 export async function saveTheme(theme: ThemePref, store: SettingsStore = chromeSettingsStore()): Promise<Settings> {
   return saveSettings({ ...(await loadSettings(store)), theme }, store);
+}
+
+export async function saveLanguage(
+  language: LanguagePref,
+  store: SettingsStore = chromeSettingsStore(),
+): Promise<Settings> {
+  return saveSettings({ ...(await loadSettings(store)), language }, store);
 }
