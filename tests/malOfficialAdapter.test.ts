@@ -29,7 +29,7 @@ describe('MalOfficialAdapter', () => {
     );
   });
 
-  it('maps the matched node to the same AnimeInfo shape as Jikan', async () => {
+  it('maps the matched node to the AnimeInfo shape', async () => {
     const info = await adapter(respondWith(attackOnTitan)).search('Attack on Titan');
     expect(info).toEqual({
       id: 'mal:16498',

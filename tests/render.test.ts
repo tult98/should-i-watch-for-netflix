@@ -347,7 +347,7 @@ describe('AI block', () => {
     setAiLoading(el, true);
     applyAiError(el, 'missing_ai_key', () => opened++);
     const line = el.querySelector('.ai-error')!;
-    expect(line.textContent).toBe('Chưa cài API key cho AI, mở trang cài đặt');
+    expect(line.textContent).toBe('Thêm API key cho AI để nhận xét, mở trang cài đặt');
     line.querySelector<HTMLButtonElement>('button')?.click();
     expect(opened).toBe(1);
     expect(aiLabel(el)).toBe('AI nhận xét');
