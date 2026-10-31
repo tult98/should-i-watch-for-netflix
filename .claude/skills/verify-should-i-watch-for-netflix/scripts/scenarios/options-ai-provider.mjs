@@ -8,7 +8,7 @@ try {
   await ai.waitFor();
   await s.title('Options page: AI provider');
   await s.click(page.locator('#ai-provider'), 'Open the provider list');
-  s.check('listbox open with 8 providers', (await page.locator('.p-option').count()) === 8 && (await page.locator('#ai-provider').getAttribute('aria-expanded')) === 'true');
+  s.check('listbox open with 8 providers', (await page.locator('[data-provider]').count()) === 8 && (await page.locator('#ai-provider').getAttribute('aria-expanded')) === 'true');
   await s.shot('list');
 
   await s.click(page.locator('[data-provider=openai]'), 'Pick OpenAI');
