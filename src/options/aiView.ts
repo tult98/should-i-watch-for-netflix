@@ -55,7 +55,7 @@ export function renderAiSection(deps: AiViewDeps): AiView {
     h(
       'div',
       { class: 'advanced-body' },
-      h('div', { class: 'field' }, h('label', { for: 'ai-format' }, t.apiFormatLabel), format),
+      h('div', { class: 'field' }, h('label', { for: 'ai-format' }, t.apiFormatLabel), h('span', { class: 'select-wrap' }, format)),
       baseUrl.wrap,
     ),
   );
