@@ -63,6 +63,8 @@ export interface HoverController {
   // Off drops any pending hover or lookup and hides the popover at once, even one held by AI work.
   setEnabled(enabled: boolean): void;
   pointerOver(target: Element | null): void;
+  // A press outside the popover is the user acting on a title (open details, play), so the popover goes at once.
+  pointerDown(target: Element | null): void;
   pointerOut(target: Element | null, relatedTarget: Element | null): void;
   attach(doc: Document): () => void;
 }
@@ -80,6 +82,8 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
   let nextRequestId = 0;
   let holds = 0;
   let hideDeferred = false;
+  // The card the user pressed. It stays closed until the pointer has left it, so the click's own mouse moves cannot reopen it.
+  let pressed: Element | null = null;
   let enabled = options.enabled ?? true;
 
   function currentCard(): Element | null {
@@ -203,6 +207,10 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
       return;
     }
     const card = reader.findCard(target);
+    if (pressed) {
+      if (card === pressed || inPreviewOf(target, pressed)) return;
+      pressed = null;
+    }
     if (card && card !== currentCard()) {
       arm(card);
       return;
@@ -225,6 +233,13 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
     return reader.findCard(el) === card || inPreviewOf(el, card) || view.contains(el);
   }
 
+  function pointerDown(target: Element | null): void {
+    if (!target || state.name === 'idle' || view.contains(target)) return;
+    const card = state.card;
+    pressed = belongsToCurrent(target, card) ? card : null;
+    toIdle();
+  }
+
   function pointerOut(target: Element | null, relatedTarget: Element | null): void {
     const card = currentCard();
     if (!card || !target || !belongsToCurrent(target, card)) return;
@@ -243,7 +258,10 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
     const out = (e: PointerEvent) => pointerOut(asElement(e.target), asElement(e.relatedTarget));
     doc.addEventListener('pointerover', over, true);
     doc.addEventListener('pointerout', out, true);
+    const down = (e: PointerEvent) => pointerDown(asElement(e.target));
+    doc.addEventListener('pointerdown', down, true);
     return () => {
+      doc.removeEventListener('pointerdown', down, true);
       doc.removeEventListener('pointerover', over, true);
       doc.removeEventListener('pointerout', out, true);
       toIdle();
@@ -256,6 +274,7 @@ export function createHoverController<T>(options: HoverControllerOptions<T>): Ho
     hold,
     setEnabled,
     pointerOver,
+    pointerDown,
     pointerOut,
     attach,
   };
