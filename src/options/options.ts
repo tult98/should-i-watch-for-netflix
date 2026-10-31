@@ -326,9 +326,9 @@ async function main(): Promise<void> {
   app.replaceChildren(
     header(),
     languageSection(fillers),
+    sourcesSection(fillers),
     aiSection(fillers),
     themeSection(fillers),
-    sourcesSection(fillers),
     ...SET_KEYS.map((set) => thresholdSection(set, fillers)),
     tasteSection(),
     cacheSection(),
