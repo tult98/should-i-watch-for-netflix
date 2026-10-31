@@ -3,3 +3,6 @@ dist/
 *.html
 !public/*.html
 !design/*.html
+.DS_Store
+.serena/
+*.zip
