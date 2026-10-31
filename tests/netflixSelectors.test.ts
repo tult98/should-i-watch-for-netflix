@@ -80,6 +80,29 @@ describe('netflixSelectors', () => {
     expect([readTitle(frieren), readNetflixId(frieren)]).toEqual(['Frieren', '81091393']);
   });
 
+  describe('New & Popular card', () => {
+    const title = 'The Exiled Heavy Knight Knows How To Game the System';
+
+    beforeEach(() => {
+      document.body.innerHTML = `<div class="title-card-container" data-uia="title-card-container"><div id="title-card-0-0" class="title-card"><div class="ptrack-content"><a href="/watch/82942166?tctx=0%2C0%2C%2C%2C%2C%2C%2C%2C%2CVideo%3A82942166%2C" role="link" aria-label="${title}" tabindex="0" aria-hidden="false" class="slider-refocus"><div class="boxart-container"><img class="boxart-image" alt=""><div class="fallback-text-container" aria-hidden="true"><p class="fallback-text">${title}</p></div></div></a></div><div class="bob-container"></div></div></div>`;
+    });
+
+    it('resolves the anchor from the image and the fallback text', () => {
+      expect(findCard(q('img.boxart-image'))).toBe(q('a[aria-label]'));
+      expect(findCard(q('.fallback-text'))).toBe(q('a[aria-label]'));
+    });
+
+    it('reads the title and the id from the /watch/ href', () => {
+      const card = q('a[aria-label]');
+      expect([readTitle(card), readNetflixId(card)]).toEqual([title, '82942166']);
+    });
+
+    it('still finds no card from an episode card inside the container', () => {
+      document.body.innerHTML = `<div data-uia="title-card-container"><a href="/watch/1?tctx=0" aria-label="Pilot" data-uia="episodic-card"><img class="ep" alt=""></a></div>`;
+      expect(findCard(q('img.ep'))).toBeNull();
+    });
+  });
+
   it('finds the preview dialog from inside it and nothing from a card', () => {
     const dialog = q('[data-uia="modal-motion-container-MINI_MODAL"]');
     expect(findPreview(q('[data-uia="mini-modal-controls"] button'))).toBe(dialog);
