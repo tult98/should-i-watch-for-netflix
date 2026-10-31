@@ -1,11 +1,12 @@
 import { clearLookupCache, type KeyValueStore } from '../background/cache';
-import { ensureAiPermission, type PermissionsApi } from './ai';
+import { ensureAiPermission, type AiDraft, type PermissionsApi } from './ai';
 import type { ThresholdSet, Thresholds } from '../shared/types';
 import {
   loadSettings,
   thresholdsOf,
   saveSettings,
   sourceKeysChanged,
+  type AiProfile,
   type Settings,
   type SettingsStore,
 } from '../shared/settings';
@@ -29,15 +30,24 @@ export async function saveAndInvalidate(
 
 export type SaveResult = ({ status: 'saved' } & SaveOutcome) | { status: 'refused'; reason: 'invalid_url' | 'denied' };
 
+// Makes the draft's provider the active one and merges its profile in, leaving the other providers' profiles alone.
 export async function saveWithPermission(
-  draft: Settings,
+  draft: AiDraft,
   permissions: PermissionsApi,
   settingsStore: SettingsStore,
   cacheStore: KeyValueStore,
 ): Promise<SaveResult> {
-  const permission = await ensureAiPermission(draft.aiBaseUrl, permissions);
+  const permission = await ensureAiPermission(draft.baseUrl, permissions);
   if (permission !== 'granted') return { status: 'refused', reason: permission };
-  return { status: 'saved', ...(await saveAndInvalidate(draft, settingsStore, cacheStore)) };
+  const before = await loadSettings(settingsStore);
+  const profile: AiProfile = {
+    format: draft.format,
+    baseUrl: draft.baseUrl.trim(),
+    model: draft.model.trim(),
+    key: draft.key,
+  };
+  const aiProfiles = { ...before.aiProfiles, [draft.provider]: profile };
+  return { status: 'saved', ...(await saveAndInvalidate({ aiProvider: draft.provider, aiProfiles }, settingsStore, cacheStore)) };
 }
 
 export async function saveThresholdSet(

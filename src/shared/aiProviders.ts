@@ -90,7 +90,7 @@ export const AI_PROVIDERS: Record<AiProviderId, AiPreset> = {
   },
   ollama: {
     id: 'ollama',
-    label: 'Ollama (local)',
+    label: 'Ollama',
     format: 'openai',
     baseUrl: 'http://localhost:11434/v1/chat/completions',
     model: 'llama3.2',

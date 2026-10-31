@@ -3,13 +3,20 @@ import { describe, expect, it, vi } from 'vitest';
 import type { RatedTitle } from '../src/background/taste/tasteStore';
 import { popupModel } from '../src/popup/model';
 import { renderPopup, type PopupHandlers } from '../src/popup/view';
+import type { Settings } from '../src/shared/settings';
 import type { Kind } from '../src/shared/types';
 
 function rated(id: string, kind: Kind): RatedTitle {
   return { id, kind, rating: 'up', genres: [], makers: [], ratedAt: 0 };
 }
 
-const ALL_KEYS = { malClientId: 'm', tmdbKey: 't', omdbKey: 'o', aiKey: 'sk' };
+const ALL_KEYS: Settings = {
+  malClientId: 'm',
+  tmdbKey: 't',
+  omdbKey: 'o',
+  aiProvider: 'deepseek',
+  aiProfiles: { deepseek: { format: 'openai', baseUrl: 'https://api.deepseek.com/chat/completions', model: 'm', key: 'sk' } },
+};
 
 describe('popupModel', () => {
   it('marks every key as set with no notes', () => {
@@ -31,6 +38,29 @@ describe('popupModel', () => {
       ['omdbKey', false, 'Chưa cài', 'Không có điểm IMDb, Rotten Tomatoes, Metacritic'],
       ['aiKey', false, 'Chưa cài', 'Nút AI nhận xét không dùng được'],
     ]);
+  });
+
+  it('labels the AI row with the active provider and reads its own profile', () => {
+    const settings: Settings = {
+      aiProvider: 'openai',
+      aiProfiles: {
+        deepseek: ALL_KEYS.aiProfiles!.deepseek!,
+        openai: { format: 'openai', baseUrl: 'https://api.openai.com/v1/chat/completions', model: 'm' },
+      },
+    };
+    const ai = popupModel(settings, []).keys.find((k) => k.key === 'aiKey')!;
+    expect([ai.label, ai.set, ai.status]).toEqual(['AI (OpenAI)', false, 'Chưa cài']);
+    const withKey = popupModel({ ...settings, aiProfiles: { openai: { ...settings.aiProfiles!.openai!, key: 'k' } } }, []);
+    expect(withKey.keys.find((k) => k.key === 'aiKey')).toMatchObject({ label: 'AI (OpenAI)', set: true, status: 'Đã cài' });
+  });
+
+  it('shows a keyless provider as ready, not missing', () => {
+    const ai = popupModel({ aiProvider: 'ollama' }, []).keys.find((k) => k.key === 'aiKey')!;
+    expect(ai).toMatchObject({ label: 'AI (Ollama)', set: true, status: 'Sẵn sàng' });
+  });
+
+  it('names the custom provider', () => {
+    expect(popupModel({ aiProvider: 'custom' }, []).keys[3]!.label).toBe('AI (Tùy chỉnh)');
   });
 
   it('counts ratings per kind', () => {
