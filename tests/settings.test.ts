@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
-  DEFAULT_AI_BASE_URL,
-  DEFAULT_AI_MODEL,
   DEFAULT_THRESHOLDS,
+  aiProfileOf,
   aiSettingsOf,
+  parseSettings,
   enabledOf,
   saveEnabled,
   saveLanguage,
@@ -77,27 +77,113 @@ describe('settings thresholds', () => {
 });
 
 describe('AI settings', () => {
-  it('defaults to DeepSeek', () => {
-    expect(aiSettingsOf({})).toEqual({ baseUrl: DEFAULT_AI_BASE_URL, model: DEFAULT_AI_MODEL, key: undefined });
-    expect(DEFAULT_AI_BASE_URL).toBe('https://api.deepseek.com/chat/completions');
-    expect(DEFAULT_AI_MODEL).toBe('deepseek-chat');
+  it('defaults to the DeepSeek preset with no key', () => {
+    expect(aiSettingsOf({})).toEqual({
+      provider: 'deepseek',
+      format: 'openai',
+      baseUrl: 'https://api.deepseek.com/chat/completions',
+      model: 'deepseek-chat',
+      key: undefined,
+    });
   });
 
-  it('saves trimmed AI fields and drops a base URL that is not https', async () => {
-    const store = memoryStore();
-    await saveSettings({ aiBaseUrl: ' https://openrouter.ai/api/v1/chat/completions ', aiModel: 'm', aiKey: ' sk ' }, store);
-    expect(await loadSettings(store)).toEqual({
-      aiBaseUrl: 'https://openrouter.ai/api/v1/chat/completions',
-      aiModel: 'm',
-      aiKey: 'sk',
+  it('resolves the active profile and fills each missing field from the preset', () => {
+    const settings = {
+      aiProvider: 'anthropic',
+      aiProfiles: {
+        anthropic: { format: 'anthropic', baseUrl: 'https://proxy.example/v1/messages', model: '', key: 'k' },
+        openai: { format: 'openai', baseUrl: 'https://api.openai.com/v1/chat/completions', model: 'x', key: 'other' },
+      },
+    } as const;
+    expect(aiSettingsOf(settings)).toEqual({
+      provider: 'anthropic',
+      format: 'anthropic',
+      baseUrl: 'https://proxy.example/v1/messages',
+      model: 'claude-haiku-4-5',
+      key: 'k',
     });
-    await saveSettings({ aiBaseUrl: 'http://localhost:1234/v1/chat/completions' }, store);
-    expect(await loadSettings(store)).toEqual({});
+    expect(aiProfileOf({ aiProvider: 'gemini' }, 'gemini')).toMatchObject({ format: 'gemini', baseUrl: expect.stringContaining('v1beta') });
+  });
+
+  it('does not carry the key of one provider into another', () => {
+    const settings = { aiProvider: 'openai', aiProfiles: { deepseek: { format: 'openai', baseUrl: 'https://api.deepseek.com/chat/completions', model: 'm', key: 'ds' } } } as const;
+    expect(aiSettingsOf(settings).key).toBeUndefined();
+    expect(aiSettingsOf(settings).baseUrl).toBe('https://api.openai.com/v1/chat/completions');
+  });
+
+  it('saves trimmed profiles and drops one whose base URL is not allowed', async () => {
+    const store = memoryStore();
+    await saveSettings(
+      {
+        aiProvider: 'custom',
+        aiProfiles: {
+          custom: { format: 'openai', baseUrl: ' https://llm.example.com/v1/chat/completions ', model: ' m ', key: ' sk ' },
+          openai: { format: 'openai', baseUrl: 'http://example.com/v1', model: 'm' },
+        },
+      },
+      store,
+    );
+    expect(await loadSettings(store)).toEqual({
+      aiProvider: 'custom',
+      aiProfiles: { custom: { format: 'openai', baseUrl: 'https://llm.example.com/v1/chat/completions', model: 'm', key: 'sk' } },
+    });
+  });
+
+  it('drops an unknown provider id, an unknown profile key and a bad format', () => {
+    const clean = parseSettings({
+      aiProvider: 'bogus',
+      aiProfiles: {
+        bogus: { format: 'openai', baseUrl: 'https://a.example', model: 'm' },
+        gemini: { format: 'xml', baseUrl: 'https://generativelanguage.googleapis.com/v1beta', model: '' },
+      },
+    });
+    expect(clean.aiProvider).toBeUndefined();
+    expect(clean.aiProfiles).toEqual({
+      gemini: { format: 'gemini', baseUrl: 'https://generativelanguage.googleapis.com/v1beta', model: 'gemini-2.5-flash' },
+    });
+    expect(parseSettings({ aiProfiles: { bogus: {} } }).aiProfiles).toBeUndefined();
+  });
+
+  it('migrates legacy flat fields on DeepSeek into the deepseek profile', () => {
+    expect(parseSettings({ aiKey: ' sk ', aiModel: 'deepseek-reasoner', tmdbKey: 't' })).toEqual({
+      tmdbKey: 't',
+      aiProvider: 'deepseek',
+      aiProfiles: {
+        deepseek: { format: 'openai', baseUrl: 'https://api.deepseek.com/chat/completions', model: 'deepseek-reasoner', key: 'sk' },
+      },
+    });
+    expect(parseSettings({ aiBaseUrl: 'https://api.deepseek.com/chat/completions', aiKey: 'k' }).aiProvider).toBe('deepseek');
+  });
+
+  it('migrates a legacy base URL on another host into the custom profile', () => {
+    expect(parseSettings({ aiBaseUrl: 'https://openrouter.ai/api/v1/chat/completions', aiModel: 'm', aiKey: 'sk' })).toEqual({
+      aiProvider: 'custom',
+      aiProfiles: { custom: { format: 'openai', baseUrl: 'https://openrouter.ai/api/v1/chat/completions', model: 'm', key: 'sk' } },
+    });
+  });
+
+  it('migrates once, then stores no flat fields and ignores them next to profiles', async () => {
+    const store = memoryStore();
+    store.data.set(SETTINGS_KEY, { aiKey: 'old' });
+    const migrated = await loadSettings(store);
+    await saveSettings(migrated, store);
+    expect(JSON.stringify(store.data.get(SETTINGS_KEY))).not.toContain('aiKey');
+    const both = parseSettings({ aiKey: 'old', aiProfiles: { openai: { format: 'openai', baseUrl: 'https://api.openai.com/v1/chat/completions', model: 'm', key: 'new' } } });
+    expect(both.aiProfiles?.deepseek).toBeUndefined();
+    expect(parseSettings({ aiBaseUrl: 'http://example.com', tmdbKey: 't' })).toEqual({ tmdbKey: 't' });
+  });
+
+  it('accepts plain http only for localhost, 127.0.0.1 and ::1 on any port', () => {
+    expect(parseAiBaseUrl('http://localhost:11434/v1/chat/completions')?.hostname).toBe('localhost');
+    expect(parseAiBaseUrl('http://127.0.0.1:8080/x')?.hostname).toBe('127.0.0.1');
+    expect(parseAiBaseUrl('http://[::1]:1234/x')?.hostname).toBe('[::1]');
+    expect(parseAiBaseUrl('http://localhost.evil.com/x')).toBeNull();
   });
 
   it('parses only https base URLs', () => {
     expect(parseAiBaseUrl('https://api.deepseek.com/chat/completions')?.origin).toBe('https://api.deepseek.com');
     expect(parseAiBaseUrl('ftp://x')).toBeNull();
+    expect(parseAiBaseUrl('http://example.com')).toBeNull();
     expect(parseAiBaseUrl('not a url')).toBeNull();
   });
 });

@@ -6,12 +6,9 @@ import { h } from '../content/popover/dom';
 import { watchTheme } from '../content/themeWatcher';
 import { appName } from '../shared/appName';
 import {
-  DEFAULT_AI_BASE_URL,
-  DEFAULT_AI_MODEL,
   DEFAULT_THRESHOLDS,
   chromeSettingsStore,
   loadSettings,
-  parseAiBaseUrl,
   saveLanguage,
   saveTheme,
   thresholdsOf,
@@ -20,7 +17,8 @@ import {
 } from '../shared/settings';
 import { initLocale, locale, strings } from '../shared/i18n';
 import type { Kind } from '../shared/types';
-import { testAiConnection, type ConnectionResult } from './ai';
+import { testAiConnection } from './ai';
+import { renderAiSection } from './aiView';
 import { saveAndInvalidate, saveThresholdSet, saveWithPermission } from './save';
 import { renderTasteBody } from './tasteView';
 import { renderLanguageSection } from './languageView';
@@ -31,17 +29,6 @@ import { actions, button, link, section, setStatus, statusLine, textField, type 
 
 const t = strings.options;
 const KINDS: readonly Kind[] = ['anime', 'movie', 'series'];
-
-function originOf(baseUrl: string): string {
-  return parseAiBaseUrl(baseUrl)?.origin ?? baseUrl;
-}
-
-function connectionText(result: ConnectionResult, baseUrl: string): string {
-  if (result.ok) return t.testOk;
-  if (result.reason === 'invalid_url') return t.invalidAiBaseUrl;
-  if (result.reason === 'denied') return t.permissionDeniedTest(originOf(baseUrl));
-  return strings.aiError[result.reason];
-}
 
 function clearOnInput(fields: TextField[], ...statuses: HTMLElement[]): void {
   for (const { input } of fields) input.addEventListener('input', () => statuses.forEach((s) => setStatus(s, '')));
@@ -58,66 +45,12 @@ function header(): HTMLElement {
 }
 
 function aiSection(fillers: ((s: Settings) => void)[]): HTMLElement {
-  const model = textField('ai-model', t.aiModelLabel, { hint: [t.aiModelHint], placeholder: DEFAULT_AI_MODEL });
-  const baseUrl = textField('ai-base-url', t.aiBaseUrlLabel, {
-    hint: [t.aiBaseUrlHint],
-    placeholder: DEFAULT_AI_BASE_URL,
-    inputmode: 'url',
+  const view = renderAiSection({
+    save: (draft) => saveWithPermission(draft, chrome.permissions, chromeSettingsStore(), chromeLocalStore()),
+    test: (draft) => testAiConnection(draft, chrome.permissions, (url, init) => fetch(url, init)),
   });
-  const key = textField('ai-key', t.aiKeyLabel, {
-    type: 'password',
-    hint: [t.aiKeyHintBefore, link('https://platform.deepseek.com/api_keys', 'platform.deepseek.com/api_keys'), t.aiKeyHintAfter],
-  });
-  const status = statusLine();
-  const draft = () => ({ aiBaseUrl: baseUrl.input.value, aiModel: model.input.value, aiKey: key.input.value });
-
-  const save = button(t.saveAi, 'primary', () => {
-    const value = draft();
-    save.disabled = true;
-    setStatus(status, t.saving);
-    saveWithPermission(value, chrome.permissions, chromeSettingsStore(), chromeLocalStore())
-      .then((result) => {
-        if (result.status === 'refused') {
-          setStatus(status, result.reason === 'invalid_url' ? t.invalidAiBaseUrl : t.permissionDenied(originOf(value.aiBaseUrl)), true);
-          return;
-        }
-        fill(result.saved);
-        setStatus(status, t.saved);
-      })
-      .catch(() => setStatus(status, t.saveFailed, true))
-      .finally(() => {
-        save.disabled = false;
-      });
-  });
-
-  const test = button(t.testConnection, 'secondary', () => {
-    const value = draft();
-    test.disabled = true;
-    setStatus(status, t.testing);
-    testAiConnection(value, chrome.permissions, (url, init) => fetch(url, init))
-      .then((result) => setStatus(status, connectionText(result, value.aiBaseUrl), !result.ok))
-      .finally(() => {
-        test.disabled = false;
-      });
-  });
-
-  function fill(settings: Settings): void {
-    baseUrl.input.value = settings.aiBaseUrl ?? DEFAULT_AI_BASE_URL;
-    model.input.value = settings.aiModel ?? DEFAULT_AI_MODEL;
-    key.input.value = settings.aiKey ?? '';
-  }
-  fillers.push(fill);
-  clearOnInput([model, baseUrl, key], status);
-
-  return section(
-    'ai',
-    t.aiHeading,
-    t.aiDescription,
-    h('div', { class: 'grid' }, model.wrap),
-    baseUrl.wrap,
-    key.wrap,
-    actions(save, test, status),
-  );
+  fillers.push(view.fill);
+  return view.element;
 }
 
 interface SourceField {
