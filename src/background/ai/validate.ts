@@ -15,7 +15,7 @@ function nonEmpty(value: unknown): value is string {
   return typeof value === 'string' && value.trim() !== '';
 }
 
-export function validateOpinion(text: string): Validation {
+export function parseJsonObject(text: string): { ok: true; value: Record<string, unknown> } | { ok: false; error: string } {
   const body = extractObject(text);
   if (body === null) return { ok: false, error: 'no JSON object in the reply' };
   let parsed: unknown;
@@ -27,7 +27,13 @@ export function validateOpinion(text: string): Validation {
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
     return { ok: false, error: 'the reply is not a JSON object' };
   }
-  const { summary_vi, verdict, reason_vi } = parsed as Record<string, unknown>;
+  return { ok: true, value: parsed as Record<string, unknown> };
+}
+
+export function validateOpinion(text: string): Validation {
+  const parsed = parseJsonObject(text);
+  if (!parsed.ok) return parsed;
+  const { summary_vi, verdict, reason_vi } = parsed.value;
   for (const [name, value] of [
     ['summary_vi', summary_vi],
     ['reason_vi', reason_vi],
