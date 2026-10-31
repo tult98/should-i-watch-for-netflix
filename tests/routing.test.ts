@@ -17,14 +17,14 @@ describe('route', () => {
     expect(route(mal, weakTmdb)).toBe('anime');
   });
 
-  it('confident MAL and an animated or Japanese TMDB match goes to anime', () => {
+  it('confident MAL and an animated TMDB match goes to anime', () => {
     expect(route(mal, animated)).toBe('anime');
-    expect(route(mal, japanese)).toBe('anime');
     expect(route(mal, { ...animated, japanese: true })).toBe('anime');
   });
 
-  it('confident MAL and a live action, non-Japanese TMDB match goes to TMDB', () => {
+  it('confident MAL and a live action TMDB match goes to TMDB, Japanese or not', () => {
     expect(route(mal, liveAction)).toBe('tmdb');
+    expect(route(mal, japanese)).toBe('tmdb');
   });
 
   it('weak or missing MAL and a confident TMDB match goes to TMDB', () => {
