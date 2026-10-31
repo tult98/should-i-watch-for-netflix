@@ -1,3 +1,4 @@
+import { AI_PROVIDERS } from '../../shared/aiProviders';
 import { initLocale, locale } from '../../shared/i18n';
 import type { AiCachedResponse, AiOk, AiOpinionResponse } from '../../shared/messages';
 import { needSummary } from '../../shared/needSummary';
@@ -8,7 +9,7 @@ import type { KeyValueStore } from '../cache';
 import type { TasteProfile } from '../taste/tasteProfile';
 import { aiCacheKey, readCachedOpinion, type CachedOpinion } from './aiCache';
 import { AIError, type AIProvider } from './AIProvider';
-import { providerLabel } from './OpenAICompatibleProvider';
+import { providerLabel } from './createProvider';
 
 export interface AiServiceDeps {
   store: KeyValueStore;
@@ -40,7 +41,7 @@ export function createAiService(deps: AiServiceDeps): AiService {
     initLocale(settings);
     const config = aiSettingsOf(settings);
     const taste = await deps.getTasteProfile(info.kind);
-    return { config, taste, key: aiCacheKey(info.id, info.kind, taste.version, config.model, locale) };
+    return { config, taste, key: aiCacheKey(info.id, info.kind, taste.version, config, locale) };
   }
 
   async function fetchOpinion(info: TitleInfo, badge: QuickBadge): Promise<AiOpinionResponse> {
@@ -51,12 +52,12 @@ export function createAiService(deps: AiServiceDeps): AiService {
         log(`[sw] ai cache hit ${info.id}`);
         return okResponse(hit, true);
       }
-      if (!config.key) throw new AIError('missing_ai_key');
+      if (!config.key && AI_PROVIDERS[config.provider].keyRequired) throw new AIError('missing_ai_key');
       log(`[sw] ai fetch ${info.id}`);
       const opinion = await deps.provider(config).opinion({ info, taste, badge, needSummary: needSummary(info) });
       const entry: CachedOpinion = {
         opinion,
-        providerLabel: providerLabel(config.baseUrl),
+        providerLabel: providerLabel(config),
         model: config.model,
         tasteCount: tasteCount(taste),
       };

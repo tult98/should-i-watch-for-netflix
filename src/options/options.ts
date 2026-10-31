@@ -5,10 +5,11 @@ import { RATINGS_KEY, VERSIONS_KEY, createTasteStore, type RatedTitle, type Tast
 import { h } from '../content/popover/dom';
 import { watchTheme } from '../content/themeWatcher';
 import { appName } from '../shared/appName';
+import { AI_PROVIDERS, DEFAULT_AI_PROVIDER, type AiProviderId, type ApiFormat } from '../shared/aiProviders';
 import {
-  DEFAULT_AI_BASE_URL,
-  DEFAULT_AI_MODEL,
   DEFAULT_THRESHOLDS,
+  aiProfileOf,
+  aiProviderOf,
   chromeSettingsStore,
   loadSettings,
   parseAiBaseUrl,
@@ -20,7 +21,7 @@ import {
 } from '../shared/settings';
 import { initLocale, locale, strings } from '../shared/i18n';
 import type { Kind } from '../shared/types';
-import { testAiConnection, type ConnectionResult } from './ai';
+import { testAiConnection, type AiDraft, type ConnectionResult } from './ai';
 import { saveAndInvalidate, saveThresholdSet, saveWithPermission } from './save';
 import { renderTasteBody } from './tasteView';
 import { renderLanguageSection } from './languageView';
@@ -58,10 +59,10 @@ function header(): HTMLElement {
 }
 
 function aiSection(fillers: ((s: Settings) => void)[]): HTMLElement {
-  const model = textField('ai-model', t.aiModelLabel, { hint: [t.aiModelHint], placeholder: DEFAULT_AI_MODEL });
+  const model = textField('ai-model', t.aiModelLabel, { hint: [t.aiModelHint], placeholder: AI_PROVIDERS.deepseek.model });
   const baseUrl = textField('ai-base-url', t.aiBaseUrlLabel, {
     hint: [t.aiBaseUrlHint],
-    placeholder: DEFAULT_AI_BASE_URL,
+    placeholder: AI_PROVIDERS.deepseek.baseUrl,
     inputmode: 'url',
   });
   const key = textField('ai-key', t.aiKeyLabel, {
@@ -69,7 +70,15 @@ function aiSection(fillers: ((s: Settings) => void)[]): HTMLElement {
     hint: [t.aiKeyHintBefore, link('https://platform.deepseek.com/api_keys', 'platform.deepseek.com/api_keys'), t.aiKeyHintAfter],
   });
   const status = statusLine();
-  const draft = () => ({ aiBaseUrl: baseUrl.input.value, aiModel: model.input.value, aiKey: key.input.value });
+  let provider: AiProviderId = DEFAULT_AI_PROVIDER;
+  let format: ApiFormat = 'openai';
+  const draft = (): AiDraft => ({
+    provider,
+    format,
+    baseUrl: baseUrl.input.value.trim() || AI_PROVIDERS[provider].baseUrl,
+    model: model.input.value.trim() || AI_PROVIDERS[provider].model,
+    key: key.input.value.trim() || undefined,
+  });
 
   const save = button(t.saveAi, 'primary', () => {
     const value = draft();
@@ -78,7 +87,7 @@ function aiSection(fillers: ((s: Settings) => void)[]): HTMLElement {
     saveWithPermission(value, chrome.permissions, chromeSettingsStore(), chromeLocalStore())
       .then((result) => {
         if (result.status === 'refused') {
-          setStatus(status, result.reason === 'invalid_url' ? t.invalidAiBaseUrl : t.permissionDenied(originOf(value.aiBaseUrl)), true);
+          setStatus(status, result.reason === 'invalid_url' ? t.invalidAiBaseUrl : t.permissionDenied(originOf(value.baseUrl)), true);
           return;
         }
         fill(result.saved);
@@ -95,16 +104,19 @@ function aiSection(fillers: ((s: Settings) => void)[]): HTMLElement {
     test.disabled = true;
     setStatus(status, t.testing);
     testAiConnection(value, chrome.permissions, (url, init) => fetch(url, init))
-      .then((result) => setStatus(status, connectionText(result, value.aiBaseUrl), !result.ok))
+      .then((result) => setStatus(status, connectionText(result, value.baseUrl), !result.ok))
       .finally(() => {
         test.disabled = false;
       });
   });
 
   function fill(settings: Settings): void {
-    baseUrl.input.value = settings.aiBaseUrl ?? DEFAULT_AI_BASE_URL;
-    model.input.value = settings.aiModel ?? DEFAULT_AI_MODEL;
-    key.input.value = settings.aiKey ?? '';
+    provider = aiProviderOf(settings);
+    const profile = aiProfileOf(settings, provider);
+    format = profile.format;
+    baseUrl.input.value = profile.baseUrl;
+    model.input.value = profile.model;
+    key.input.value = profile.key ?? '';
   }
   fillers.push(fill);
   clearOnInput([model, baseUrl, key], status);

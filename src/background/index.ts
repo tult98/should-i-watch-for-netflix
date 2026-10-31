@@ -15,7 +15,8 @@ import { createMalOfficialAdapter } from './adapters/MalOfficialAdapter';
 import { createOmdbAdapter } from './adapters/OmdbAdapter';
 import { createTmdbAdapter } from './adapters/TmdbAdapter';
 import { createAiService } from './ai/aiService';
-import { AI_TIMEOUT_MS, DEEPSEEK_ORIGIN, createOpenAICompatibleProvider } from './ai/OpenAICompatibleProvider';
+import { AI_TIMEOUT_MS, DEEPSEEK_ORIGIN } from './ai/OpenAICompatibleProvider';
+import { createProvider } from './ai/createProvider';
 import { chromeLocalStore, createLookupCache } from './cache';
 import { createLookup } from './lookup';
 import { createRequestQueue } from './requestQueue';
@@ -47,7 +48,7 @@ const ai = createAiService({
   getTasteProfile: (kind) => getTasteProfile(kind, taste),
   provider: (config) => {
     aiHosts.add(new URL(config.baseUrl).host);
-    return createOpenAICompatibleProvider(queue.fetch, config);
+    return createProvider(queue.fetch, config);
   },
   log: (message) => console.log(message),
 });

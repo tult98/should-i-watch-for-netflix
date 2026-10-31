@@ -1,4 +1,5 @@
 import type { Locale } from '../../shared/i18n';
+import { parseAiBaseUrl, type AiSettings } from '../../shared/settings';
 import type { AIOpinion, Kind } from '../../shared/types';
 import type { KeyValueStore } from '../cache';
 import { validateOpinion } from './validate';
@@ -10,8 +11,16 @@ export interface CachedOpinion {
   tasteCount: number;
 }
 
-export function aiCacheKey(id: string, kind: Kind, tasteVersion: number, model: string, locale: Locale): string {
-  return `ai:${id}|${kind}|v${tasteVersion}|${model}|${locale}`;
+// Provider and host are part of the key so switching provider or endpoint never serves another one's opinion.
+export function aiCacheKey(
+  id: string,
+  kind: Kind,
+  tasteVersion: number,
+  ai: Pick<AiSettings, 'provider' | 'baseUrl' | 'model'>,
+  locale: Locale,
+): string {
+  const host = parseAiBaseUrl(ai.baseUrl)?.host ?? '';
+  return `ai:${id}|${kind}|v${tasteVersion}|${ai.provider}@${host}|${ai.model}|${locale}`;
 }
 
 function isCached(value: unknown): value is CachedOpinion {
