@@ -1,5 +1,6 @@
 import { h, icon } from '../content/popover/dom';
 import { AI_PROVIDERS, AI_PROVIDER_IDS, apiFormatLabel, type AiProviderId } from '../shared/aiProviders';
+import { PROVIDER_LOGOS } from '../shared/providerLogos';
 import { providerName } from '../shared/providerName';
 
 export interface ProviderSelect {
@@ -11,7 +12,10 @@ export interface ProviderSelect {
 
 function badge(id: AiProviderId): HTMLElement {
   const preset = AI_PROVIDERS[id];
-  const el = h('span', { class: 'p-icon', 'aria-hidden': 'true' }, providerName(id).charAt(0).toUpperCase());
+  const logo = PROVIDER_LOGOS[id];
+  const mark = logo ? icon([logo], { size: 20, fill: 'currentColor' }) : providerName(id).charAt(0).toUpperCase();
+  if (mark instanceof SVGElement) mark.setAttribute('fill-rule', 'evenodd');
+  const el = h('span', { class: 'p-icon', 'aria-hidden': 'true' }, mark);
   el.style.background = preset.color;
   return el;
 }

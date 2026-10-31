@@ -271,7 +271,15 @@ describe('provider dropdown', () => {
     const options = [...s.list.querySelectorAll('[role="option"]')];
     expect(options).toHaveLength(8);
     expect(options.filter((o) => o.getAttribute('aria-selected') === 'true').map((o) => o.getAttribute('data-provider'))).toEqual(['deepseek']);
-    expect(options[0]!.querySelector('.p-icon')?.textContent).toBe('D');
+    for (const o of options) {
+      const mark = o.querySelector('.p-icon');
+      if (o.getAttribute('data-provider') === 'custom') {
+        expect(mark?.querySelector('svg')).toBeNull();
+        expect(mark?.textContent).toHaveLength(1);
+      }
+      else expect(mark?.querySelector('svg path')?.getAttribute('d')).toBeTruthy();
+    }
+    expect(options[0]!.querySelector('.p-icon svg')?.getAttribute('fill-rule')).toBe('evenodd');
     expect(options[0]!.querySelector('.p-sub')?.textContent).toBe('OpenAI-compatible (chat/completions)');
     expect(s.option('anthropic').querySelector('.p-sub')?.textContent).toBe('Anthropic (messages)');
   });

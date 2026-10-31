@@ -205,12 +205,12 @@ input[aria-invalid='true'] {
   border-color: var(--focus);
 }
 
-.p-button svg {
+.p-button > svg {
   flex: none;
   color: var(--muted);
 }
 
-.p-button[aria-expanded='true'] svg {
+.p-button[aria-expanded='true'] > svg {
   transform: rotate(180deg);
 }
 
