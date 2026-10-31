@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Should I Watch for Netflix",
   "version": "0.1.0",
+  "description": "See at a glance whether a Netflix title is worth watching, with ratings from IMDb, TMDB, MyAnimeList and AniList on hover.",
   "icons": {
     "16": "icons/icon16.png",
     "32": "icons/icon32.png",
