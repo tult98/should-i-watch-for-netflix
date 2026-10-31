@@ -218,6 +218,15 @@ describe('lookup with TMDB', () => {
     expect(result.status === 'match' && result.info.kind).toBe('movie');
   });
 
+  it('prefers a Japanese live action TMDB match over a confident MAL match', async () => {
+    const { lookup } = setup({
+      settings: keys,
+      tmdbSearch: async () => tmdbMatch({ mediaType: 'tv', japanese: true, animated: false }),
+    });
+    const result = await lookup(request);
+    expect(result.status === 'match' && result.info.kind).toBe('movie');
+  });
+
   it('keeps an anime TV series on MAL without calling TMDB details or OMDb', async () => {
     const { lookup, tmdbAdapter, omdbAdapter } = setup({
       settings: keys,
