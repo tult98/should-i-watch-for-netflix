@@ -1,7 +1,7 @@
 import type { LookupResult, Score, ScoreSource } from '../shared/types';
 
-const ORDER: ScoreSource[] = ['mal', 'imdb', 'rt', 'metacritic', 'tmdb'];
-const LABEL: Record<ScoreSource, string> = { mal: 'mal', imdb: 'imdb', rt: 'rt', metacritic: 'mc', tmdb: 'tmdb' };
+const ORDER: ScoreSource[] = ['mal', 'anilist', 'imdb', 'rt', 'metacritic', 'tmdb'];
+const LABEL: Record<ScoreSource, string> = { mal: 'mal', anilist: 'anilist', imdb: 'imdb', rt: 'rt', metacritic: 'mc', tmdb: 'tmdb' };
 
 function trim(n: number, digits: number): string {
   return String(Number(n.toFixed(digits)));

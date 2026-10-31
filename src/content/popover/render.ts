@@ -216,12 +216,14 @@ function renderAnime(info: AnimeInfo, badge: QuickBadge, now: Date, hooks: Popov
     cell(t.season, info.season),
   ]);
   const aired = formatAired(info.aired, info.status === 'Currently Airing');
-  return shell(topBar({ text: t.malPill, cls: 'pill-mal' }, t.malName, badge), [
-    heading(info, t.malPill),
-    scoreBlock(badge, t.malName, t.animeVotes),
+  const anilist = info.match.source === 'anilist';
+  const pill = anilist ? { text: t.anilistName, cls: 'pill-anilist' } : { text: t.malPill, cls: 'pill-mal' };
+  return shell(topBar(pill, anilist ? t.anilistName : t.malName, badge), [
+    heading(info, pill.text),
+    scoreBlock(badge, badge.source && t.sourceName[badge.source], t.animeVotes),
     lowVotesWarning(badge),
     statsRow(stats),
-    synopsisBlock(info, t.synopsisMalEn),
+    synopsisBlock(info, anilist ? t.synopsisAniListEn : t.synopsisMalEn),
     aiSlot(),
     fieldGrid(meta, 'meta'),
     timeRow(t.aired, aired, ageLabel(info.year, now)),
@@ -232,7 +234,7 @@ function renderAnime(info: AnimeInfo, badge: QuickBadge, now: Date, hooks: Popov
 
 function filmStats(info: MovieInfo | SeriesInfo, badge: QuickBadge): Cell[] {
   const order: ScoreSource[] = info.kind === 'movie' ? ['imdb', 'rt', 'metacritic'] : ['imdb', 'rt', 'tmdb'];
-  const labels: Record<ScoreSource, string> = { mal: t.malPill, imdb: t.imdb, rt: t.rt, metacritic: t.metacritic, tmdb: t.tmdb };
+  const labels: Record<ScoreSource, string> = { mal: t.malPill, anilist: t.anilistName, imdb: t.imdb, rt: t.rt, metacritic: t.metacritic, tmdb: t.tmdb };
   return cells(
     order
       .filter((source) => source !== badge.source)
@@ -279,8 +281,10 @@ function filmCredits(info: MovieInfo | SeriesInfo): Cell[] {
 
 function renderFilm(info: MovieInfo | SeriesInfo, badge: QuickBadge, now: Date, hooks: PopoverHooks): HTMLElement {
   const sourceName = badge.source && t.sourceName[badge.source];
-  return shell(topBar({ text: t.tmdbPill, cls: 'pill-tmdb' }, kindLabel(info.kind), badge), [
-    heading(info, t.tmdbPill),
+  const pill =
+    info.match.source === 'cinemeta' ? { text: t.cinemetaPill, cls: 'pill-cinemeta' } : { text: t.tmdbPill, cls: 'pill-tmdb' };
+  return shell(topBar(pill, kindLabel(info.kind), badge), [
+    heading(info, pill.text),
     scoreBlock(badge, sourceName, t.filmVotes),
     lowVotesWarning(badge),
     statsRow(filmStats(info, badge)),

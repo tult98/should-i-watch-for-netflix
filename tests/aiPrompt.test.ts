@@ -91,6 +91,17 @@ describe('buildMessages', () => {
   });
 });
 
+describe('scores without votes', () => {
+  it('omits votes from the payload and tells the model the count is unknown', () => {
+    const keyless = { ...movie, scores: [{ source: 'imdb' as const, value: 8.7 }] };
+    const [system, user] = buildMessages(input(keyless));
+    const payload = JSON.parse(user!.content);
+    expect(payload.quick_badge).toEqual({ verdict: 'highly_recommended', source: 'imdb', score: 8.7, low_votes: false });
+    expect(user!.content).not.toContain('"votes"');
+    expect(system!.content).toContain('never as zero');
+  });
+});
+
 describe('needSummary', () => {
   it('is true for foreign-language or missing synopses in Vietnamese', () => {
     expect(needSummary(anime, 'vi')).toBe(true);

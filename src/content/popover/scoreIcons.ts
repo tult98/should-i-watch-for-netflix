@@ -77,6 +77,10 @@ export function malIcon(): SVGSVGElement {
   return badge(30, "#2e51a2", "MAL", "#ffffff", 10);
 }
 
+export function anilistIcon(): SVGSVGElement {
+  return badge(46, "#0b7bbf", "AniList", "#ffffff", 9.5);
+}
+
 export const RT_FRESH_MIN = 60;
 
 export function rtIcon(score: number): SVGSVGElement {
@@ -139,5 +143,7 @@ export function scoreIcon(source: ScoreSource, score: number): SVGSVGElement {
       return tmdbIcon();
     case "mal":
       return malIcon();
+    case "anilist":
+      return anilistIcon();
   }
 }

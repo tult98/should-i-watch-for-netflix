@@ -94,9 +94,53 @@ describe('quickVerdict imdb', () => {
     expect(v(7, 4_999).lowVotes).toBe(true);
   });
 
-  it('treats missing votes as zero', () => {
-    const b = quickVerdict(movie([{ source: 'imdb', value: 9 }]), t);
-    expect(b).toMatchObject({ verdict: 'maybe', lowVotes: true });
+  it('skips the vote checks when the count is unknown', () => {
+    expect(quickVerdict(movie([{ source: 'imdb', value: 9 }]), t)).toMatchObject({ verdict: 'highly_recommended', lowVotes: false });
+    expect(quickVerdict(movie([{ source: 'imdb', value: 7.2 }]), t).verdict).toBe('recommended');
+    expect(quickVerdict(movie([{ source: 'imdb', value: 6.5 }]), t).verdict).toBe('maybe');
+    expect(quickVerdict(movie([{ source: 'imdb', value: 6.4 }]), t).verdict).toBe('skip');
+  });
+
+  it('still checks the votes when the count is known', () => {
+    expect(quickVerdict(movie([{ source: 'imdb', value: 9, votes: 0 }]), t)).toMatchObject({ verdict: 'maybe', lowVotes: true });
+  });
+});
+
+describe('quickVerdict anilist', () => {
+  const v = (value: number, rank?: number) => quickVerdict(anime([{ source: 'anilist', value }], rank), t);
+
+  it('badges an anime from AniList with the anime thresholds and no vote checks', () => {
+    expect(v(8.0)).toMatchObject({ verdict: 'highly_recommended', source: 'anilist', lowVotes: false });
+    expect(v(7.99).verdict).toBe('recommended');
+    expect(v(7.5).verdict).toBe('recommended');
+    expect(v(7.49).verdict).toBe('maybe');
+    expect(v(7.0).verdict).toBe('maybe');
+    expect(v(6.99).verdict).toBe('skip');
+  });
+
+  it('has no rank to hold against it', () => {
+    expect(v(9.1, undefined).verdict).toBe('highly_recommended');
+  });
+
+  it('follows custom anime thresholds', () => {
+    const custom = { ...t, mal: { ...t.mal, maybe: { score: 6.0 } } };
+    expect(quickVerdict(anime([{ source: 'anilist', value: 6.5 }]), t).verdict).toBe('skip');
+    expect(quickVerdict(anime([{ source: 'anilist', value: 6.5 }]), custom).verdict).toBe('maybe');
+  });
+
+  it('prefers a MAL score over AniList', () => {
+    const b = quickVerdict(anime([{ source: 'anilist', value: 9 }, { source: 'mal', value: 6, votes: 1e5 }]), t);
+    expect(b).toMatchObject({ verdict: 'skip', source: 'mal' });
+  });
+});
+
+describe('quickVerdict mal and tmdb keep the zero rule for unknown votes', () => {
+  it('mal', () => {
+    expect(quickVerdict(anime([{ source: 'mal', value: 9 }], 1), t)).toMatchObject({ verdict: 'maybe', lowVotes: true });
+  });
+
+  it('tmdb', () => {
+    expect(quickVerdict(series([{ source: 'tmdb', value: 9 }]), t)).toMatchObject({ verdict: 'maybe', lowVotes: true });
   });
 });
 

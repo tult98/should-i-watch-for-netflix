@@ -1,5 +1,5 @@
 export type Kind = 'anime' | 'movie' | 'series';
-export type ScoreSource = 'mal' | 'imdb' | 'tmdb' | 'rt' | 'metacritic';
+export type ScoreSource = 'mal' | 'anilist' | 'imdb' | 'tmdb' | 'rt' | 'metacritic';
 
 export interface Score {
   source: ScoreSource;
