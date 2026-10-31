@@ -237,11 +237,12 @@ input[aria-invalid='true'] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 112px;
+  width: 136px;
   height: 28px;
   border-radius: 14px;
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
 }
 
 .tbadge-highly {
