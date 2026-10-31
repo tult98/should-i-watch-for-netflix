@@ -23,6 +23,7 @@ export function formatScore(score: Score): string {
   switch (score.source) {
     case 'mal':
       return score.value.toFixed(2);
+    case 'anilist':
     case 'imdb':
     case 'tmdb':
       return score.value.toFixed(1);

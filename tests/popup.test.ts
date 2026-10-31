@@ -33,10 +33,10 @@ describe('popupModel', () => {
   it('says what each missing key costs', () => {
     const model = popupModel({}, []);
     expect(model.keys.map((k) => [k.key, k.set, k.status, k.note])).toEqual([
-      ['malClientId', false, 'Chưa cài', 'Đang dùng Jikan, có thể không ổn định'],
-      ['tmdbKey', false, 'Chưa cài', 'Phim và series cần TMDB key'],
-      ['omdbKey', false, 'Chưa cài', 'Không có điểm IMDb, Rotten Tomatoes, Metacritic'],
-      ['aiKey', false, 'Chưa cài', 'Nút AI nhận xét không dùng được'],
+      ['malClientId', false, 'Chưa cài', 'Đang dùng AniList, không cần khóa'],
+      ['tmdbKey', false, 'Chưa cài', 'Đang dùng Cinemeta, chỉ có tiếng Anh'],
+      ['omdbKey', false, 'Chưa cài', 'Không có điểm Rotten Tomatoes, Metacritic và số lượt chấm IMDb'],
+      ['aiKey', false, 'Chưa cài', 'Tùy chọn, thêm khóa để dùng AI nhận xét'],
     ]);
   });
 

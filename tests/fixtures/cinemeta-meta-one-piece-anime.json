@@ -1,0 +1,190 @@
+{
+ "meta": {
+  "awards": "8 wins & 20 nominations total",
+  "cast": [
+   "Mayumi Tanaka",
+   "Akemi Okamura",
+   "Kazuya Nakai"
+  ],
+  "country": "Japan",
+  "description": "A spirited young pirate sets sail with a growing crew in search of the legendary One Piece, facing dangerous seas and powerful rivals on his quest to become King of the Pirates.",
+  "director": null,
+  "dvdRelease": null,
+  "genre": [
+   "Animation",
+   "Action",
+   "Adventure"
+  ],
+  "imdbRating": "9.0",
+  "imdb_id": "tt0388629",
+  "name": "One Piece",
+  "popularity": 2.6431633333333333,
+  "poster": "https://images.metahub.space/poster/small/tt0388629/img",
+  "released": "1999-10-20T00:00:00.000Z",
+  "runtime": "25 min",
+  "status": "Continuing",
+  "tvdb_id": 81797,
+  "type": "series",
+  "writer": [
+   "Eiichirô Oda"
+  ],
+  "year": "1999–",
+  "background": "https://images.metahub.space/background/medium/tt0388629/img",
+  "logo": "https://images.metahub.space/logo/medium/tt0388629/img",
+  "popularities": {
+   "SCM": 1,
+   "PXS_TEST": 0,
+   "EXMD": 0,
+   "ALLIANCE": 0,
+   "EJD": 0,
+   "moviedb": 79.2949,
+   "trakt": 828,
+   "stremio": 2.6431633333333333,
+   "stremio_lib": 0
+  },
+  "moviedb_id": 37854,
+  "slug": "series/one-piece-0388629",
+  "trailers": [
+   {
+    "source": "1KMcoJBMWE4",
+    "type": "Trailer"
+   }
+  ],
+  "id": "tt0388629",
+  "genres": [
+   "Animation",
+   "Action",
+   "Adventure"
+  ],
+  "releaseInfo": "1999–",
+  "videos": [
+   {
+    "name": "One Piece: Defeat the Pirate Ganzack! (OVA 1)",
+    "season": 0,
+    "number": 1,
+    "firstAired": "1998-07-26T14:15:00.000Z",
+    "tvdb_id": 619671,
+    "rating": "0",
+    "overview": "One day, when Luffy, Zoro, and Nami were starving on their little boat, they are attacked by a long-neck dragon. The dragon wrecks the boat when Luffy bites into it, then takes Nami back with it. Meanwhile, Luffy and Zoro wash up on the shores of an island where Ganzack is using the island's inhabitants as slave labor to complete his base and ship. There, the two boys meet a girl named Medaka. Together with the girl, they infiltrate Ganzack's base..",
+    "thumbnail": "https://episodes.metahub.space/tt0388629/0/1/w780.jpg",
+    "id": "tt0388629:0:1",
+    "released": "1998-07-26T14:15:00.000Z",
+    "episode": 1,
+    "description": "One day, when Luffy, Zoro, and Nami were starving on their little boat, they are attacked by a long-neck dragon. The dragon wrecks the boat when Luffy bites into it, then takes Nami back with it. Meanwhile, Luffy and Zoro wash up on the shores of an island where Ganzack is using the island's inhabitants as slave labor to complete his base and ship. There, the two boys meet a girl named Medaka. Together with the girl, they infiltrate Ganzack's base.."
+   },
+   {
+    "name": "One Piece: The Movie",
+    "season": 0,
+    "number": 2,
+    "firstAired": "2000-03-04T14:15:00.000Z",
+    "tvdb_id": 390879,
+    "rating": "0",
+    "overview": "There once was a pirate named Woonan. He was known as the Great Gold Pirate, who obtained almost a third of the world's gold. Over the course of a few years, that pirate's existence faded and a legend grew, that he disappeared with his gold to a remote island, an island pirates continue to search for. Aboard the Going Merry, Luffy, and his crew, starved and reckless, are robbed of their treasure. In an attempt to get it back Luffy wrecks the getaway ship, freeing a young boy named Tobio, who was a captive of El Drago's pirate crew. El Drago's love for gold has driven him to look for Woonan's island and thanks to Woonan's treasure map, he finds it. Meanwhile Luffy's crew split up and despite their own circumstances, they must find a way to stop El Drago from obtaining Woonan's gold.",
+    "thumbnail": "https://episodes.metahub.space/tt0388629/0/2/w780.jpg",
+    "id": "tt0388629:0:2",
+    "released": "2000-03-04T14:15:00.000Z",
+    "episode": 2,
+    "description": "There once was a pirate named Woonan. He was known as the Great Gold Pirate, who obtained almost a third of the world's gold. Over the course of a few years, that pirate's existence faded and a legend grew, that he disappeared with his gold to a remote island, an island pirates continue to search for. Aboard the Going Merry, Luffy, and his crew, starved and reckless, are robbed of their treasure. In an attempt to get it back Luffy wrecks the getaway ship, freeing a young boy named Tobio, who was a captive of El Drago's pirate crew. El Drago's love for gold has driven him to look for Woonan's island and thanks to Woonan's treasure map, he finds it. Meanwhile Luffy's crew split up and despite their own circumstances, they must find a way to stop El Drago from obtaining Woonan's gold."
+   },
+   {
+    "name": "I'm Luffy! The Man Who's Gonna Be King of the Pirates!",
+    "season": 1,
+    "number": 1,
+    "firstAired": "1999-10-20T14:15:00.000Z",
+    "tvdb_id": 361887,
+    "rating": "0",
+    "overview": "Alvida pirates plunder a ship only to find a barrel containing a strange boy names Luffy who is on a quest to find the legendary One Piece and become the King of Pirates.",
+    "thumbnail": "https://episodes.metahub.space/tt0388629/1/1/w780.jpg",
+    "id": "tt0388629:1:1",
+    "released": "1999-10-20T14:15:00.000Z",
+    "episode": 1,
+    "description": "Alvida pirates plunder a ship only to find a barrel containing a strange boy names Luffy who is on a quest to find the legendary One Piece and become the King of Pirates."
+   },
+   {
+    "name": "Enter the Great Swordsman! Pirate Hunter Roronoa Zoro!",
+    "season": 1,
+    "number": 2,
+    "firstAired": "1999-11-17T14:15:00.000Z",
+    "tvdb_id": 361888,
+    "rating": "0",
+    "overview": "Luffy and his new companion Coby set sail in search of the infamous pirate hunter Zoro, rumored to be held captive at the Marine Base.",
+    "thumbnail": "https://episodes.metahub.space/tt0388629/1/2/w780.jpg",
+    "id": "tt0388629:1:2",
+    "released": "1999-11-17T14:15:00.000Z",
+    "episode": 2,
+    "description": "Luffy and his new companion Coby set sail in search of the infamous pirate hunter Zoro, rumored to be held captive at the Marine Base."
+   },
+   {
+    "name": "Morgan versus Luffy! Who's the Mysterious Pretty Girl?",
+    "season": 1,
+    "number": 3,
+    "firstAired": "1999-11-24T14:15:00.000Z",
+    "tvdb_id": 361889,
+    "rating": "0",
+    "overview": "Luffy is in the line of fire after saving Zoro, and now tyrannical Captain Morgan is out for their heads! Zoro must decide if he will join forces with Luffy or die in captivity.",
+    "thumbnail": "https://episodes.metahub.space/tt0388629/1/3/w780.jpg",
+    "id": "tt0388629:1:3",
+    "released": "1999-11-24T14:15:00.000Z",
+    "episode": 3,
+    "description": "Luffy is in the line of fire after saving Zoro, and now tyrannical Captain Morgan is out for their heads! Zoro must decide if he will join forces with Luffy or die in captivity."
+   }
+  ],
+  "trailerStreams": [
+   {
+    "title": "One Piece",
+    "ytId": "1KMcoJBMWE4"
+   }
+  ],
+  "links": [
+   {
+    "name": "9.0",
+    "category": "imdb",
+    "url": "https://imdb.com/title/tt0388629"
+   },
+   {
+    "name": "One Piece",
+    "category": "share",
+    "url": "https://www.strem.io/s/series/one-piece-0388629"
+   },
+   {
+    "name": "Animation",
+    "category": "Genres",
+    "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Animation"
+   },
+   {
+    "name": "Action",
+    "category": "Genres",
+    "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Action"
+   },
+   {
+    "name": "Adventure",
+    "category": "Genres",
+    "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/series/top?genre=Adventure"
+   },
+   {
+    "name": "Mayumi Tanaka",
+    "category": "Cast",
+    "url": "stremio:///search?search=Mayumi%20Tanaka"
+   },
+   {
+    "name": "Akemi Okamura",
+    "category": "Cast",
+    "url": "stremio:///search?search=Akemi%20Okamura"
+   },
+   {
+    "name": "Kazuya Nakai",
+    "category": "Cast",
+    "url": "stremio:///search?search=Kazuya%20Nakai"
+   },
+   {
+    "name": "Eiichirô Oda",
+    "category": "Writers",
+    "url": "stremio:///search?search=Eiichir%C3%B4%20Oda"
+   }
+  ],
+  "behaviorHints": {
+   "defaultVideoId": null,
+   "hasScheduledVideos": true
+  }
+ }
+}

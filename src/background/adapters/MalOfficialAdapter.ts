@@ -64,14 +64,14 @@ const FORMATS: Record<string, string> = {
   music: 'Music',
 };
 
-// Same display strings Jikan returns, so the popover sees one vocabulary.
+// The display strings the popover labels expect, shared with the AniList adapter.
 const STATUSES: Record<string, string> = {
   finished_airing: 'Finished Airing',
   currently_airing: 'Currently Airing',
   not_yet_aired: 'Not yet aired',
 };
 
-// MAL's v2 API files demographics under genres; Jikan keeps them separate.
+// MAL's v2 API files demographics under genres, so they are split back out.
 const DEMOGRAPHICS = new Set(['Shounen', 'Shoujo', 'Seinen', 'Josei', 'Kids']);
 
 export function canUseMalOfficial(title: string): boolean {

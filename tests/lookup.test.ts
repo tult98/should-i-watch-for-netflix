@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { AnimeAdapter } from '../src/background/adapters/AnimeAdapter';
 import type { OmdbAdapter, OmdbResult } from '../src/background/adapters/OmdbAdapter';
-import type { TmdbAdapter, TmdbDetails, TmdbMatch } from '../src/background/adapters/TmdbAdapter';
+import type { FilmAdapter, FilmDetails, FilmMatch } from '../src/background/adapters/FilmAdapter';
 import type { LookupCache } from '../src/background/cache';
 import { createLookup } from '../src/background/lookup';
 import { RequestError } from '../src/background/requestQueue';
@@ -21,9 +21,9 @@ function animeInfo(over: Partial<AnimeInfo> = {}): AnimeInfo {
 
 const anime = animeInfo();
 
-function tmdbMatch(over: Partial<TmdbMatch> = {}): TmdbMatch {
+function tmdbMatch(over: Partial<FilmMatch> = {}): FilmMatch {
   return {
-    tmdbId: 398978,
+    id: '398978',
     mediaType: 'movie',
     query: 'The Irishman',
     matchedName: 'The Irishman',
@@ -35,7 +35,7 @@ function tmdbMatch(over: Partial<TmdbMatch> = {}): TmdbMatch {
   };
 }
 
-function tmdbDetails(over: Partial<TmdbDetails> = {}): TmdbDetails {
+function tmdbDetails(over: Partial<FilmDetails> = {}): FilmDetails {
   const info = {
     id: 'tmdb:movie:398978',
     kind: 'movie',
@@ -55,8 +55,8 @@ const omdbOk: OmdbResult = {
 interface Options {
   settings?: Settings;
   anime?: AnimeAdapter['search'];
-  tmdbSearch?: TmdbAdapter['search'];
-  tmdbDetails?: TmdbAdapter['details'];
+  tmdbSearch?: FilmAdapter['search'];
+  tmdbDetails?: FilmAdapter['details'];
   omdb?: OmdbAdapter['scores'];
 }
 
@@ -69,7 +69,7 @@ function setup(options: Options = {}) {
     },
   };
   const search = options.anime ?? (async () => anime);
-  const mal = { search: vi.fn(search) };
+  const anilist = { search: vi.fn(search) };
   const official = { search: vi.fn(search) };
   const malOfficial = vi.fn((_clientId: string) => official);
   const tmdbAdapter = {
@@ -77,6 +77,7 @@ function setup(options: Options = {}) {
     details: vi.fn(options.tmdbDetails ?? (async () => tmdbDetails())),
   };
   const tmdb = vi.fn((_key: string) => tmdbAdapter);
+  const cinemeta = vi.fn(() => tmdbAdapter);
   const omdbAdapter = { scores: vi.fn(options.omdb ?? (async () => omdbOk)) };
   const omdb = vi.fn((_key: string) => omdbAdapter);
   const current = { settings: options.settings ?? {} };
@@ -84,44 +85,134 @@ function setup(options: Options = {}) {
   const lookup = createLookup({
     cache,
     loadSettings: async () => current.settings,
-    jikan: mal,
+    anilist,
     malOfficial,
     tmdb,
+    cinemeta,
     omdb,
     log: (m) => logs.push(m),
   });
-  return { lookup, mal, official, malOfficial, tmdb, tmdbAdapter, omdb, omdbAdapter, current, logs, data };
+  return { lookup, anilist, official, malOfficial, tmdb, cinemeta, tmdbAdapter, omdb, omdbAdapter, current, logs, data };
 }
 
 const request = { type: 'lookup' as const, title: 'One Piece', lang: 'en' };
 const irishman = { ...request, title: 'The Irishman' };
 const keys = { tmdbKey: 'tmdb-key', omdbKey: 'omdb-key' };
 
-describe('lookup without a TMDB key', () => {
+describe('lookup with no keys', () => {
   it('fetches on a miss and reads the cache on the second call', async () => {
-    const { lookup, mal, tmdb, logs } = setup();
+    const { lookup, anilist, tmdb, cinemeta, logs } = setup();
     expect(await lookup(request)).toEqual({ status: 'match', info: anime });
     expect(await lookup(request)).toEqual({ status: 'match', info: anime });
-    expect(mal.search).toHaveBeenCalledTimes(1);
-    expect(mal.search).toHaveBeenCalledWith('One Piece', undefined);
+    expect(anilist.search).toHaveBeenCalledTimes(1);
+    expect(anilist.search).toHaveBeenCalledWith('One Piece', undefined);
     expect(tmdb).not.toHaveBeenCalled();
+    expect(cinemeta).toHaveBeenCalledTimes(1);
     expect(logs).toEqual([
-      '[sw] fetch jikan One Piece',
+      '[sw] fetch cinemeta One Piece',
+      '[sw] fetch anilist One Piece',
       '[sw] route anime One Piece',
       '[sw] cache hit lookup:vi|en|one piece|-',
     ]);
   });
 
-  it('caches a silent no_match and logs the missing key', async () => {
-    const { lookup, mal, logs } = setup({ anime: async () => null });
+  it('caches a no_match when neither source knows the title', async () => {
+    const { lookup, anilist, logs } = setup({ anime: async () => null });
     expect(await lookup(request)).toEqual({ status: 'no_match' });
     await lookup(request);
-    expect(mal.search).toHaveBeenCalledTimes(1);
-    expect(logs).toContain('[sw] no tmdb key');
+    expect(anilist.search).toHaveBeenCalledTimes(1);
+    expect(logs).toContain('[sw] route none One Piece');
+  });
+
+  it('answers a live action film from Cinemeta with its IMDb score, without TMDB or OMDb', async () => {
+    const imdbOnly = tmdbDetails({
+      info: { id: 'imdb:tt1302006', kind: 'movie', scores: [{ source: 'imdb', value: 7.8 }] } as MovieInfo,
+    });
+    const { lookup, tmdb, cinemeta, tmdbAdapter, omdb, logs } = setup({
+      anime: async () => null,
+      tmdbSearch: async () => tmdbMatch(),
+      tmdbDetails: async () => imdbOnly,
+    });
+    expect(await lookup(irishman)).toEqual({ status: 'match', info: imdbOnly.info });
+    expect(cinemeta).toHaveBeenCalledTimes(1);
+    expect(tmdb).not.toHaveBeenCalled();
+    expect(omdb).not.toHaveBeenCalled();
+    expect(tmdbAdapter.search).toHaveBeenCalledWith('The Irishman', undefined, 'en');
+    expect(logs).toContain('[sw] fetch cinemeta The Irishman');
+    expect(logs).toContain('[sw] route tmdb The Irishman');
+  });
+
+  it('keeps an animated Japanese series on AniList and a live action remake on Cinemeta', async () => {
+    const live = tmdbDetails({
+      info: { id: 'imdb:tt11737520', kind: 'series', scores: [{ source: 'imdb', value: 8.3 }] } as unknown as MovieInfo,
+    });
+    const animated = setup({
+      tmdbSearch: async () => tmdbMatch({ mediaType: 'tv', animated: true, japanese: true }),
+    });
+    expect(await animated.lookup(request)).toEqual({ status: 'match', info: anime });
+    expect(animated.tmdbAdapter.details).not.toHaveBeenCalled();
+
+    // The live action One Piece also lists Japan, so only the animation flag separates it.
+    const remake = setup({
+      tmdbSearch: async () => tmdbMatch({ mediaType: 'tv', animated: false, japanese: true }),
+      tmdbDetails: async () => live,
+    });
+    expect(await remake.lookup(request)).toEqual({ status: 'match', info: live.info });
+  });
+
+  it('uses the anime answer when Cinemeta fails, and reports the failure when there is none', async () => {
+    const failing = async (): Promise<FilmMatch | null> => {
+      throw new RequestError('network');
+    };
+    const withAnime = setup({ tmdbSearch: failing });
+    expect(await withAnime.lookup(request)).toEqual({ status: 'match', info: anime });
+    expect(withAnime.logs).toContain('[sw] cinemeta failed network, using anime');
+    expect(withAnime.data.size).toBe(0);
+
+    const without = setup({ anime: async () => null, tmdbSearch: failing });
+    expect(await without.lookup(request)).toEqual({ status: 'error', reason: 'network' });
+    expect(without.data.size).toBe(0);
+  });
+
+  it('still answers a live action film when AniList fails, but not an animated one', async () => {
+    const failing = async (): Promise<AnimeInfo | null> => {
+      throw new RequestError('network');
+    };
+    const live = setup({ anime: failing, tmdbSearch: async () => tmdbMatch() });
+    expect((await live.lookup(irishman)).status).toBe('match');
+    expect(live.data.size).toBe(1);
+
+    const animated = setup({ anime: failing, tmdbSearch: async () => tmdbMatch({ animated: true }) });
+    expect(await animated.lookup(irishman)).toEqual({ status: 'error', reason: 'network' });
+    const nothing = setup({ anime: failing });
+    expect(await nothing.lookup(irishman)).toEqual({ status: 'error', reason: 'network' });
+  });
+
+  it('replaces the Cinemeta IMDb score with the OMDb one when an OMDb key is set', async () => {
+    const cinemetaOnly = tmdbDetails({
+      info: {
+        id: 'imdb:tt1302006',
+        kind: 'movie',
+        scores: [{ source: 'imdb', value: 7.8 }],
+      } as MovieInfo,
+    });
+    const { lookup, cinemeta, omdbAdapter } = setup({
+      settings: { omdbKey: 'omdb-key' },
+      anime: async () => null,
+      tmdbSearch: async () => tmdbMatch(),
+      tmdbDetails: async () => cinemetaOnly,
+    });
+    const result = await lookup(irishman);
+    expect(cinemeta).toHaveBeenCalledTimes(1);
+    expect(omdbAdapter.scores).toHaveBeenCalledWith('tt1302006');
+    expect(result.status === 'match' && result.info.scores).toEqual([
+      { source: 'imdb', value: 7.8, votes: 1234567 },
+      { source: 'rt', value: 95 },
+    ]);
   });
 
   it('maps a rate limit to an uncached error', async () => {
-    const { lookup, mal, data } = setup({
+    const { lookup, anilist, data } = setup({
       anime: async () => {
         throw new RequestError('rate_limited');
       },
@@ -129,7 +220,7 @@ describe('lookup without a TMDB key', () => {
     expect(await lookup(request)).toEqual({ status: 'error', reason: 'rate_limited' });
     expect(data.size).toBe(0);
     await lookup(request);
-    expect(mal.search).toHaveBeenCalledTimes(2);
+    expect(anilist.search).toHaveBeenCalledTimes(2);
   });
 
   it('maps an unexpected failure to a network error', async () => {
@@ -142,49 +233,50 @@ describe('lookup without a TMDB key', () => {
   });
 
   it('shares one search between concurrent identical lookups', async () => {
-    const { lookup, mal } = setup();
+    const { lookup, anilist } = setup();
     await Promise.all([lookup(request), lookup({ ...request, title: 'ONE PIECE!' })]);
-    expect(mal.search).toHaveBeenCalledTimes(1);
+    expect(anilist.search).toHaveBeenCalledTimes(1);
   });
 
   it('uses the official MAL API when a client id is set', async () => {
-    const { lookup, mal, official, malOfficial, logs } = setup({ settings: { malClientId: 'abc' } });
+    const { lookup, anilist, official, malOfficial, logs } = setup({ settings: { malClientId: 'abc' } });
     expect(await lookup(request)).toEqual({ status: 'match', info: anime });
     expect(malOfficial).toHaveBeenCalledWith('abc');
     expect(official.search).toHaveBeenCalledWith('One Piece', undefined);
-    expect(mal.search).not.toHaveBeenCalled();
-    expect(logs).toEqual(['[sw] fetch mal-official One Piece', '[sw] route anime One Piece']);
+    expect(anilist.search).not.toHaveBeenCalled();
+    expect(logs).toEqual(['[sw] fetch cinemeta One Piece', '[sw] fetch mal-official One Piece', '[sw] route anime One Piece']);
   });
 
-  it('falls back to Jikan for titles shorter than 3 characters', async () => {
-    const { lookup, mal, official, logs } = setup({ settings: { malClientId: 'abc' } });
+  it('falls back to AniList for titles shorter than 3 characters', async () => {
+    const { lookup, anilist, official, logs } = setup({ settings: { malClientId: 'abc' } });
     await lookup({ ...request, title: '86' });
     expect(official.search).not.toHaveBeenCalled();
-    expect(mal.search).toHaveBeenCalledWith('86', undefined);
-    expect(logs[0]).toBe('[sw] fetch jikan 86');
+    expect(anilist.search).toHaveBeenCalledWith('86', undefined);
+    expect(logs).toContain('[sw] fetch anilist 86');
   });
 
   it('retries with the new source after a bad client id is fixed', async () => {
-    const { lookup, official, mal, current } = setup({ settings: { malClientId: 'wrong' } });
+    const { lookup, official, anilist, current } = setup({ settings: { malClientId: 'wrong' } });
     official.search.mockRejectedValueOnce(new RequestError('bad_mal_client_id'));
     expect(await lookup(request)).toEqual({ status: 'error', reason: 'bad_mal_client_id' });
     current.settings = {};
     expect(await lookup(request)).toEqual({ status: 'match', info: anime });
-    expect(mal.search).toHaveBeenCalledTimes(1);
+    expect(anilist.search).toHaveBeenCalledTimes(1);
   });
 });
 
 describe('lookup with TMDB', () => {
   it('starts the anime and TMDB searches in parallel', async () => {
     let releaseAnime: (value: AnimeInfo | null) => void = () => {};
-    const { lookup, mal, tmdbAdapter, tmdb } = setup({
+    const { lookup, anilist, tmdbAdapter, tmdb, cinemeta } = setup({
       settings: keys,
       anime: () => new Promise((resolve) => (releaseAnime = resolve)),
       tmdbSearch: async () => tmdbMatch(),
     });
     const pending = lookup(irishman);
-    await vi.waitFor(() => expect(mal.search).toHaveBeenCalled());
+    await vi.waitFor(() => expect(anilist.search).toHaveBeenCalled());
     expect(tmdb).toHaveBeenCalledWith('tmdb-key');
+    expect(cinemeta).not.toHaveBeenCalled();
     expect(tmdbAdapter.search).toHaveBeenCalledWith('The Irishman', undefined, 'en');
     releaseAnime(null);
     expect((await pending).status).toBe('match');
@@ -242,11 +334,11 @@ describe('lookup with TMDB', () => {
     const { lookup, tmdbAdapter, omdbAdapter } = setup({
       settings: keys,
       anime: async () => film,
-      tmdbSearch: async () => tmdbMatch({ tmdbId: 129, animated: true, japanese: true }),
+      tmdbSearch: async () => tmdbMatch({ id: '129', animated: true, japanese: true }),
       tmdbDetails: async () => tmdbDetails({ imdbId: 'tt0245429' }),
     });
     const result = await lookup({ ...request, title: 'Spirited Away' });
-    expect(tmdbAdapter.details).toHaveBeenCalledWith(expect.objectContaining({ tmdbId: 129 }));
+    expect(tmdbAdapter.details).toHaveBeenCalledWith(expect.objectContaining({ id: '129' }));
     expect(omdbAdapter.scores).toHaveBeenCalledWith('tt0245429');
     expect(result).toEqual({
       status: 'match',
@@ -278,7 +370,7 @@ describe('lookup with TMDB', () => {
       id: 'mal:52991',
       match: { query: "Frieren: Beyond Journey's End", matchedName: "Frieren: Beyond Journey's End", confidence: 1, source: 'mal' },
     });
-    const { lookup, mal, tmdbAdapter, logs } = setup({
+    const { lookup, anilist, tmdbAdapter, logs } = setup({
       settings: keys,
       anime: async (title) => (title === "Frieren: Beyond Journey's End" ? frieren : null),
       tmdbSearch: async () => tmdbMatch({ mediaType: 'tv', animated: true, japanese: true, matchedName: 'Frieren' }),
@@ -286,7 +378,7 @@ describe('lookup with TMDB', () => {
     });
     const card = { ...request, title: 'Frieren – Nach dem Ende der Reise', lang: 'de', year: 2023 };
     const result = await lookup(card);
-    expect(mal.search).toHaveBeenNthCalledWith(2, "Frieren: Beyond Journey's End", 2023);
+    expect(anilist.search).toHaveBeenNthCalledWith(2, "Frieren: Beyond Journey's End", 2023);
     expect(tmdbAdapter.details).toHaveBeenCalledTimes(1);
     expect(result).toEqual({
       status: 'match',
@@ -297,27 +389,27 @@ describe('lookup with TMDB', () => {
   });
 
   it('falls back to TMDB when the second pass finds nothing, reusing the details', async () => {
-    const { lookup, mal, tmdbAdapter } = setup({
+    const { lookup, anilist, tmdbAdapter } = setup({
       settings: keys,
       anime: async () => null,
       tmdbSearch: async () => tmdbMatch({ animated: true }),
       tmdbDetails: async () => tmdbDetails({ englishName: 'Some English Name' }),
     });
     const result = await lookup(irishman);
-    expect(mal.search).toHaveBeenCalledTimes(2);
+    expect(anilist.search).toHaveBeenCalledTimes(2);
     expect(tmdbAdapter.details).toHaveBeenCalledTimes(1);
     expect(result.status === 'match' && result.info.id).toBe('tmdb:movie:398978');
   });
 
   it('skips the second pass when the TMDB name equals the card title', async () => {
-    const { lookup, mal } = setup({
+    const { lookup, anilist } = setup({
       settings: keys,
       anime: async () => null,
       tmdbSearch: async () => tmdbMatch({ japanese: true }),
       tmdbDetails: async () => tmdbDetails({ englishName: 'the irishman!' }),
     });
     await lookup(irishman);
-    expect(mal.search).toHaveBeenCalledTimes(1);
+    expect(anilist.search).toHaveBeenCalledTimes(1);
   });
 
   it('does not fail the lookup when OMDb is skipped', async () => {
@@ -343,15 +435,14 @@ describe('lookup with TMDB', () => {
     expect(logs).toContain('[sw] omdb skipped no_imdb_id');
   });
 
-  it('returns no_match when neither side matches, without the missing key log', async () => {
+  it('returns no_match when neither side matches', async () => {
     const { lookup, logs } = setup({ settings: keys, anime: async () => null });
     expect(await lookup(irishman)).toEqual({ status: 'no_match' });
     expect(logs).toContain('[sw] route none The Irishman');
-    expect(logs).not.toContain('[sw] no tmdb key');
   });
 
   it('routes a confident anime match when TMDB returns 401, without caching it', async () => {
-    const { lookup, mal, tmdbAdapter, omdbAdapter, data, logs } = setup({
+    const { lookup, anilist, tmdbAdapter, omdbAdapter, data, logs } = setup({
       settings: keys,
       tmdbSearch: async () => {
         throw new RequestError('bad_tmdb_key');
@@ -361,7 +452,7 @@ describe('lookup with TMDB', () => {
     expect(logs).toContain('[sw] tmdb failed bad_tmdb_key, using anime');
     expect(data.size).toBe(0);
     await lookup(request);
-    expect(mal.search).toHaveBeenCalledTimes(2);
+    expect(anilist.search).toHaveBeenCalledTimes(2);
     expect(tmdbAdapter.search).toHaveBeenCalledTimes(2);
     expect(tmdbAdapter.details).not.toHaveBeenCalled();
     expect(omdbAdapter.scores).not.toHaveBeenCalled();

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { compactCount, describeResult } from '../src/content/describeResult';
-import type { TitleInfo } from '../src/shared/types';
+import { compactCount, describeResult, describeScores } from '../src/content/describeResult';
+import type { AnimeInfo, TitleInfo } from '../src/shared/types';
 
 describe('describeResult', () => {
   it('prints kind, match, id and scores in a fixed order', () => {
@@ -18,6 +18,16 @@ describe('describeResult', () => {
     expect(describeResult({ status: 'match', info })).toBe(
       'movie The Irishman 100% tmdb:movie:398978 imdb=8.5(2.1M) rt=94% mc=80 tmdb=8.4(12k)',
     );
+  });
+
+  it('describes an AniList score and an IMDb score without a vote count', () => {
+    const anime = {
+      id: 'mal:52991', kind: 'anime', title: 'Frieren', genres: [], format: 'TV', status: 'Finished Airing', aired: {}, studios: [],
+      match: { query: 'Frieren', matchedName: 'Frieren', confidence: 1, source: 'anilist' },
+      scores: [{ source: 'anilist', value: 9.1 }],
+    } as unknown as AnimeInfo;
+    expect(describeResult({ status: 'match', info: anime })).toBe('anime Frieren 100% mal:52991 anilist=9.1');
+    expect(describeScores([{ source: 'imdb', value: 8.7 }])).toBe('imdb=8.7');
   });
 
   it('keeps two MAL decimals and drops an empty score list', () => {

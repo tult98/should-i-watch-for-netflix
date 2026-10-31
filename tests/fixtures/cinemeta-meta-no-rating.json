@@ -1,0 +1,29 @@
+{
+ "meta": {
+  "id": "tt44733971",
+  "imdb_id": "tt44733971",
+  "type": "movie",
+  "poster": "https://live.metahub.space/poster/small/tt44733971/img",
+  "logo": "https://live.metahub.space/logo/medium/tt44733971/img",
+  "background": "https://live.metahub.space/background/medium/tt44733971/img",
+  "moviedb_id": 1754789,
+  "name": "ONE PIECE FILM GOD VALLEY",
+  "description": "An adaptation of the God Valley Incident from the One Piece manga.",
+  "genres": [
+   "Adventure",
+   "Comedy",
+   "Action",
+   "Animation"
+  ],
+  "trailers": [],
+  "cast": [],
+  "credits_cast": [],
+  "credits_crew": [],
+  "director": [],
+  "slug": "movie/one-piece-film-god-valley-44733971",
+  "behaviorHints": {
+   "defaultVideoId": "tt44733971",
+   "hasScheduledVideos": false
+  }
+ }
+}

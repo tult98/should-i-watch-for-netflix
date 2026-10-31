@@ -39,6 +39,7 @@ export function systemPrompt(needSummary: boolean, loc: Locale = locale): string
     'verdict: exactly one of "highly_recommended", "recommended", "maybe", "skip".',
     `reason_vi: 2 to 3 sentences in ${language} that weigh the scores and vote counts against the taste profile. ` +
       'quick_badge is a rule-based verdict from score thresholds alone; you may differ from it when the taste profile gives a reason.',
+    'A score with no votes field comes from a source that does not publish a vote count. Treat the count as unknown, never as zero or as few votes.',
     'If taste_profile.count.up and taste_profile.count.down are both 0, the user has not rated anything yet: ' +
       'judge from the scores and do not claim to know their taste.',
     `The _vi suffix in summary_vi and reason_vi is a legacy name. Write both values in ${language}.`,

@@ -10,7 +10,8 @@ import {
 } from '../shared/messages';
 import { loadSettings } from '../shared/settings';
 import type { Kind } from '../shared/types';
-import { createJikanAdapter } from './adapters/JikanAdapter';
+import { createAniListAdapter } from './adapters/AniListAdapter';
+import { createCinemetaAdapter } from './adapters/CinemetaAdapter';
 import { createMalOfficialAdapter } from './adapters/MalOfficialAdapter';
 import { createOmdbAdapter } from './adapters/OmdbAdapter';
 import { createTmdbAdapter } from './adapters/TmdbAdapter';
@@ -33,9 +34,10 @@ const queue = createRequestQueue({
 const lookup = createLookup({
   cache: createLookupCache(chromeLocalStore()),
   loadSettings: () => loadSettings(),
-  jikan: createJikanAdapter(queue.fetch),
+  anilist: createAniListAdapter(queue.fetch),
   malOfficial: (clientId) => createMalOfficialAdapter(queue.fetch, clientId),
   tmdb: (key) => createTmdbAdapter(queue.fetch, key),
+  cinemeta: () => createCinemetaAdapter(queue.fetch),
   omdb: (key) => createOmdbAdapter(queue.fetch, key),
   log: (message) => console.log(message),
 });

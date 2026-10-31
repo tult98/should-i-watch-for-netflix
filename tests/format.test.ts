@@ -34,6 +34,7 @@ describe('format numbers', () => {
   it('formats scores per source', () => {
     expect(formatScore({ source: 'mal', value: 9.3 })).toBe('9.30');
     expect(formatScore({ source: 'imdb', value: 7.8 })).toBe('7.8');
+    expect(formatScore({ source: 'anilist', value: 9.1 })).toBe('9.1');
     expect(formatScore({ source: 'tmdb', value: 7.604 })).toBe('7.6');
     expect(formatScore({ source: 'rt', value: 88 })).toBe('88%');
     expect(formatScore({ source: 'metacritic', value: 94 })).toBe('94');

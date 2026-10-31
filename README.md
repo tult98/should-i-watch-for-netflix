@@ -2,7 +2,7 @@
 
 ## What it does
 
-The extension is a Chrome extension for netflix.com. When you hover a title, it opens a dark popover with scores and a quick verdict. Anime come from MyAnimeList. Movies and series come from TMDB, with optional scores from OMDb. If you click the AI button, an AI provider gives its opinion based on a taste profile built from your thumbs up and thumbs down. The interface follows your browser language by default: Vietnamese when the browser is set to Vietnamese, English otherwise. The Language section on the options page lets you pick Tiếng Việt or English instead, and the choice applies to the options page, the toolbar popup, the Netflix popover and AI opinions.
+The extension is a Chrome extension for netflix.com. When you hover a title, it opens a dark popover with scores and a quick verdict. It works with no API key at all. Without keys, anime come from AniList and movies and series come from Cinemeta, which carries IMDb ratings. Optional keys upgrade the data: a MyAnimeList Client ID gives real MyAnimeList scores, a TMDB key gives Vietnamese titles and TMDB scores, and an OMDb key adds IMDb votes, Rotten Tomatoes and Metacritic. If you click the AI button, an AI provider gives its opinion based on a taste profile built from your thumbs up and thumbs down. The interface follows your browser language by default: Vietnamese when the browser is set to Vietnamese, English otherwise. The Language section on the options page lets you pick Tiếng Việt or English instead, and the choice applies to the options page, the toolbar popup, the Netflix popover and AI opinions.
 
 ## Install
 
@@ -15,18 +15,22 @@ After each rebuild, reload the extension on `chrome://extensions` and refresh th
 
 ## Get your API keys
 
-TMDB is required for movies and series. The other keys are optional. You paste each key on the options page, see "Configure the extension".
+You need no key to use the extension. Every key below is an optional upgrade, and the AI key is optional too. Without keys, anime come from AniList and movies and series from Cinemeta. Both are free and keyless, but they have limits. AniList publishes no vote count and no rank. Cinemeta publishes the IMDb rating without its vote count, and it is English only. When a source gives no vote count, the badge skips the vote checks and shows no "few votes" warning, instead of treating the count as zero.
 
-### Get a MyAnimeList Client ID
+You paste each key on the options page, see "Configure the extension".
 
-Without a Client ID, the extension falls back to Jikan, which may be unreachable on some networks. It timed out for the author.
+### Get a MyAnimeList Client ID (optional)
+
+A Client ID gives real MyAnimeList scores, vote counts and ranks for anime. Without one, the extension uses AniList.
 
 1. Sign in at myanimelist.net and open myanimelist.net/apiconfig.
 2. Click **Create ID**.
 3. Set the app type to web, the redirect URL to `http://localhost`, and the purpose to non-commercial, hobbyist.
 4. Copy the Client ID. Do not copy the client secret.
 
-### Get a TMDB key
+### Get a TMDB key (optional)
+
+A TMDB key gives Vietnamese titles and synopses and TMDB scores for movies and series. Without one, the extension uses Cinemeta.
 
 1. Create an account at themoviedb.org and confirm your email address.
 2. Open themoviedb.org/settings/api.
@@ -37,7 +41,7 @@ TMDB asks for the following attribution line, and the options page shows it. "Th
 
 ### Get an OMDb key (optional)
 
-OMDb adds IMDb, Rotten Tomatoes, and Metacritic scores.
+OMDb adds IMDb vote counts, Rotten Tomatoes, and Metacritic scores.
 
 1. Open omdbapi.com/apikey.aspx and request a free key.
 2. Open the email from OMDb and activate the key.
@@ -59,8 +63,8 @@ Any provider with an OpenAI-compatible chat completions URL also works. Set it t
 1. Open the options page. Open the extension menu in the Chrome toolbar and choose **Options**, or open the extension card on `chrome://extensions`, click **Details**, and click **Extension options**.
 2. In the AI section, enter the model, the base URL, and the API key. The defaults are `deepseek-chat` and `https://api.deepseek.com/chat/completions`. The base URL must be the full chat completions URL and must start with `https`. Click **Thử kết nối** to send a 16 token test request with the form values, saved or not. Click **Lưu cài đặt AI** to save. If the base URL is not on `api.deepseek.com`, Chrome asks you to grant access to that origin, and a refusal cancels the save.
 3. In the popover theme section (**Giao diện popover**), choose **Tối**, **Sáng** or **Theo hệ thống**. It saves at once and applies to open Netflix tabs without a reload. The options page and the toolbar popup follow the same choice.
-4. In the data sources section, enter the MyAnimeList Client ID, the TMDB key, and the OMDb key. Click **Lưu nguồn dữ liệu**.
-5. In the three threshold sections (MAL, IMDb, and TMDB), edit the limits for each verdict. Click **Lưu ngưỡng** to save a section, or **Về mặc định** to restore and save the defaults. Scores accept 0 to 10. Votes and rank accept whole numbers. A bad value marks the field and lists the error under the rows. An empty rank turns the rank rule off.
+4. In the data sources section, optionally enter the MyAnimeList Client ID, the TMDB key, and the OMDb key. Leave a field empty to keep using the keyless source. Click **Lưu nguồn dữ liệu**.
+5. In the three threshold sections (MAL and AniList, IMDb, and TMDB), edit the limits for each verdict. Click **Lưu ngưỡng** to save a section, or **Về mặc định** to restore and save the defaults. Scores accept 0 to 10. Votes and rank accept whole numbers. A bad value marks the field and lists the error under the rows. An empty rank turns the rank rule off.
 6. The taste profile section shows your ratings per kind (anime, movie, series). **Xem dữ liệu đã lưu** shows every stored rating as JSON. **Xóa toàn bộ hồ sơ gu** deletes the ratings and every saved AI opinion.
 7. The cache section has **Xóa cache**, which deletes the saved lookup results and shows how many entries it removed.
 
@@ -76,17 +80,17 @@ Saving a changed MyAnimeList Client ID, TMDB key, or OMDb key clears the lookup 
 
 The badge shows one of four verdicts. The scores and thresholds behind it follow these rules.
 
-- Anime use the MAL score.
-- Movies and series use the IMDb score when OMDb returned one, and the TMDB score otherwise. The badge names the source it used.
+- Anime use the MAL score when a Client ID is set, and the AniList score otherwise. AniList scores use the MAL thresholds.
+- Movies and series use the IMDb score, from Cinemeta or OMDb, and the TMDB score when there is no IMDb score. The badge names the source it used.
 - The verdicts are "Rất nên xem", "Nên xem", "Cân nhắc", and "Bỏ qua", checked in that order. The first verdict whose limits pass wins.
-- A title with too few votes shows the warning "Ít người chấm, điểm chưa đáng tin". Missing votes count as zero.
+- A title with too few votes shows the warning "Ít người chấm, điểm chưa đáng tin". For MAL and TMDB scores, missing votes count as zero. IMDb scores from Cinemeta and AniList scores carry no vote count, so their vote checks, and AniList's rank check, are skipped and the warning never shows.
 
-The AI opinion runs only when you click the button. It adds a conclusion and a reason in the interface language. For any title whose synopsis is missing or not in that language (all anime in Vietnamese, none in English), it also writes the synopsis.
+The AI opinion is optional. It runs only when you click the button, and with no AI key the popover shows nothing about it until you click. It adds a conclusion and a reason in the interface language. For any title whose synopsis is missing or not in that language (all anime in Vietnamese, none in English), it also writes the synopsis.
 
 To turn the extension off without removing it, click the toolbar icon. The popup has these parts.
 
 - An on/off switch. It takes effect on the next hover, with no page refresh. While it is off, no popover opens and no lookup runs.
-- A status row for each key. A row says whether a key is saved. It does not check that the key works.
+- A status row for each optional key. A row says whether a key is saved and what you get without it. It does not check that the key works.
 - The number of rated titles per kind.
 - **Mở cài đặt**, which opens the options page.
 - **Xóa cache**, which clears the lookup cache.
@@ -132,8 +136,8 @@ The options page and the toolbar popup write these keys to one `settings` object
 
 | Key | Default | Set on |
 |---|---|---|
-| `malClientId` | none, Jikan is used | Options page, data sources |
-| `tmdbKey` | none | Options page, data sources |
+| `malClientId` | none, AniList is used | Options page, data sources |
+| `tmdbKey` | none, Cinemeta is used | Options page, data sources |
 | `omdbKey` | none | Options page, data sources |
 | `aiBaseUrl` | `https://api.deepseek.com/chat/completions` | Options page, AI |
 | `aiModel` | `deepseek-chat` | Options page, AI |
@@ -148,7 +152,8 @@ The options page and the toolbar popup write these keys to one `settings` object
 |---|---|
 | `storage` | Settings, the lookup cache, AI opinions, and ratings in `chrome.storage.local` |
 | `https://www.netflix.com/*` | The content script runs on Netflix |
-| `https://api.jikan.moe/*` | Jikan, the anime lookup without a Client ID |
+| `https://graphql.anilist.co/*` | AniList, the anime lookup without a Client ID |
+| `https://v3-cinemeta.strem.io/*` and `https://cinemeta-live.strem.io/*` | Cinemeta, the movie and series lookup without a TMDB key. Some ids redirect to the second host. |
 | `https://api.myanimelist.net/*` | The official MyAnimeList API |
 | `https://api.themoviedb.org/*` | TMDB lookups |
 | `https://www.omdbapi.com/*` | OMDb scores |
@@ -160,12 +165,13 @@ The options page and the toolbar popup write these keys to one `settings` object
 | Source | Key | Cost | Limit |
 |---|---|---|---|
 | MyAnimeList API v2 | Client ID | Free | The request queue sends 3 requests per second. MyAnimeList does not publish a limit. |
-| Jikan | None | Free | The request queue sends 3 requests per second and 60 per minute. |
+| AniList GraphQL | None | Free | The request queue sends 30 requests per minute. |
+| Cinemeta | None | Free | The request queue sends 5 requests per second. It is a community service with no published limit. |
 | TMDB | API key or read access token | Free | The request queue sends 20 requests per second. |
 | OMDb | API key | Free tier | 1,000 requests per day on the free tier. The extension makes one call per new movie or series. |
 | AI provider | API key | DeepSeek bills per request | Depends on your balance. Called only on click. |
 
-A 429 reply waits for the `Retry-After` header, or 1, 2, and 4 seconds, and gives up after three retries. A request that takes longer than 10 seconds fails, and an AI request fails after 30 seconds. When OMDb reports that its limit is reached, the extension shows no IMDb score and the badge uses TMDB. The MyAnimeList API rejects queries shorter than 3 characters, so those titles go to Jikan.
+A 429 reply waits for the `Retry-After` header, or 1, 2, and 4 seconds, and gives up after three retries. A request that takes longer than 10 seconds fails, and an AI request fails after 30 seconds. When OMDb reports that its limit is reached, the extension keeps the IMDb score it already has. With a TMDB key that is the TMDB score, and without one it is Cinemeta's IMDb rating. The MyAnimeList API rejects queries shorter than 3 characters, so those titles go to AniList.
 
 ### Default verdict thresholds
 
@@ -177,7 +183,7 @@ A title gets the first verdict whose limits all pass.
 | IMDb | score 8.0, 100,000 votes | score 7.2, 20,000 votes | score 6.5 | 5,000 |
 | TMDB | score 8.0, 5,000 votes | score 7.2, 2,000 votes | score 6.5 | 500 |
 
-A title that passes none of them gets "Bỏ qua". An anime without a MAL rank cannot pass the rank rule.
+A title that passes none of them gets "Bỏ qua". An anime with a MAL score but no MAL rank cannot pass the rank rule. AniList scores use the MAL row and skip the votes and rank checks. Cinemeta IMDb scores use the IMDb row and skip the votes check.
 
 ### Console log lines
 
@@ -190,13 +196,12 @@ A title that passes none of them gets "Bỏ qua". An anime without a MAL rank ca
 | `[popover] ai <id> -> <outcome>` | Netflix page | The result of an AI click |
 | `[popover] rated <id> -> <rating or none>` | Netflix page | The rating after a thumbs click |
 | `[popover] rate <rating> <id>` and `[popover] ai <id>` | Netflix page | A click on a thumbs or AI button |
-| `[sw] fetch mal-official <title>` and `[sw] fetch jikan <title>` | Service worker | Which anime source ran |
-| `[sw] fetch tmdb <title>` | Service worker | A TMDB search |
-| `[sw] second pass <name>` | Service worker | A second anime search with the TMDB name |
+| `[sw] fetch mal-official <title>` and `[sw] fetch anilist <title>` | Service worker | Which anime source ran |
+| `[sw] fetch tmdb <title>` and `[sw] fetch cinemeta <title>` | Service worker | Which film source ran |
+| `[sw] second pass <name>` | Service worker | A second anime search with the film source's name |
 | `[sw] route <anime, tmdb, or none> <title>` | Service worker | The routing decision |
 | `[sw] cache hit <key>` | Service worker | A lookup answered from the cache |
-| `[sw] no tmdb key` | Service worker | A title had no anime match and no TMDB key is set |
-| `[sw] tmdb failed <reason>, using anime` | Service worker | TMDB failed and the anime match was kept |
+| `[sw] tmdb failed <reason>, using anime` and `[sw] cinemeta failed <reason>, using anime` | Service worker | The film source failed and the anime match was kept |
 | `[sw] omdb skipped <reason>` | Service worker | OMDb returned no scores |
 | `[sw] ai fetch <id>`, `[sw] ai cache hit <id>`, and `[sw] ai error <reason>` | Service worker | An AI request, a cached opinion, and a failed request |
 | `[sw] rate <rating or clear> <id> (<kind> <count>)` | Service worker | A stored rating |
@@ -219,7 +224,7 @@ src/
   shared/                types, messages, settings, normalize, quickBadge, strings.vi, strings.en, i18n
   content/               hover controller, netflixSelectors, popover/
   background/            service worker, lookup, routing, cache, requestQueue
-    adapters/            MalOfficialAdapter, JikanAdapter, TmdbAdapter, OmdbAdapter
+    adapters/            MalOfficialAdapter, AniListAdapter, TmdbAdapter, CinemetaAdapter, OmdbAdapter
     ai/                  AI provider, prompt, validation, cache, service
     taste/               tasteStore, tasteProfile
   options/               options page
@@ -238,7 +243,7 @@ tests/                   Vitest tests and fixtures
 
 ## How routing and caching work
 
-For each hover, the service worker searches MyAnimeList (or Jikan) and TMDB in parallel. A title routes to anime when the MyAnimeList match is confident and TMDB either says the title is animated (genre 16) or has no match. A Japanese live action title goes to TMDB like any other live action. Otherwise a confident TMDB match routes to movie or series, and no confident match gives nothing. When the year on the card points to one version of a title, as with the anime and live action "One Piece", that version wins. If the anime search finds nothing and TMDB says the title is animated or Japanese, a second anime search uses the TMDB name. That helps profiles in languages MyAnimeList does not index.
+For each hover, the service worker searches the anime source (MyAnimeList with a Client ID, AniList otherwise) and the film source (TMDB with a key, Cinemeta otherwise) in parallel. A title routes to anime when the anime match is confident and the film source either says the title is animated (TMDB genre 16, or the Animation genre on Cinemeta) or has no match. A Japanese live action title goes to the film source like any other live action. Otherwise a confident film match routes to movie or series, and no confident match gives nothing. When the year on the card points to one version of a title, as with the anime and live action "One Piece", that version wins. If the anime search finds nothing and the film source says the title is animated or Japanese, a second anime search uses the film source's English name. That helps profiles in languages the anime source does not index. Cinemeta is searched by title only, because it returns nothing when the query holds a year, so the year only ranks its results.
 
 A match needs a confidence of at least 0.85. The extension lowercases both titles, strips accents, and replaces everything that is not a letter or digit with a space. It then scores them with the Dice coefficient over character bigrams, which also works for scripts without spaces between words. An exact normalized match scores 1.0. A matching year adds 0.05 and a year more than one off subtracts 0.2.
 
@@ -250,8 +255,8 @@ The taste profile is built per kind. A rating of an anime does not change the pr
 
 This product uses the TMDB API but is not endorsed or certified by TMDB.
 
-Anime data comes from MyAnimeList through its official API, with Jikan as the fallback. IMDb, Rotten Tomatoes, and Metacritic scores come from OMDb.
+Anime data comes from MyAnimeList through its official API when you set a Client ID, and from AniList otherwise. Movie and series data comes from TMDB when you set a key, and from Cinemeta otherwise. Cinemeta carries IMDb ratings. IMDb votes, Rotten Tomatoes, and Metacritic scores come from OMDb.
 
-The names and marks of IMDb, Rotten Tomatoes, Metacritic, TMDB, and MyAnimeList belong to their owners. The icons in the popover are simple drawings and not official logos, and this project is not affiliated with any of them.
+The names and marks of IMDb, Rotten Tomatoes, Metacritic, TMDB, MyAnimeList, AniList, and Cinemeta belong to their owners. The icons in the popover are simple drawings and not official logos, and this project is not affiliated with any of them.
 
 License: MIT. See the `LICENSE` file.

@@ -34,6 +34,8 @@ export const POPOVER_CSS = `
 }
 .pill-mal { background: #2e51a2; }
 .pill-tmdb { background: #0d7a9e; }
+.pill-cinemeta { background: #5b4a9e; }
+.pill-anilist { background: #0b6aa8; }
 .note { font-size: 12px; color: var(--muted); }
 .badge {
   display: inline-flex; align-items: center; height: 26px; padding: 0 12px; border-radius: 13px;

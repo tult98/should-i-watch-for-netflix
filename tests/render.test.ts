@@ -347,7 +347,7 @@ describe('AI block', () => {
     setAiLoading(el, true);
     applyAiError(el, 'missing_ai_key', () => opened++);
     const line = el.querySelector('.ai-error')!;
-    expect(line.textContent).toBe('Chưa cài API key cho AI, mở trang cài đặt');
+    expect(line.textContent).toBe('Thêm API key cho AI để nhận xét, mở trang cài đặt');
     line.querySelector<HTMLButtonElement>('button')?.click();
     expect(opened).toBe(1);
     expect(aiLabel(el)).toBe('AI nhận xét');
@@ -390,5 +390,44 @@ describe('score icons in the popover', () => {
 
   it('keeps the visible label text for screen readers', () => {
     expect(render(irishman).querySelector('.score-source')?.textContent).toBe('IMDb');
+  });
+});
+
+describe('renderTitle keyless sources', () => {
+  const anilistFrieren: AnimeInfo = {
+    ...frieren,
+    scores: [{ source: 'anilist', value: 9.1 }],
+    match: { query: 'Frieren', matchedName: 'Sousou no Frieren', confidence: 1, source: 'anilist' },
+    rank: undefined,
+    popularity: undefined,
+  };
+  const cinemetaFilm: MovieInfo = {
+    ...irishman,
+    scores: [{ source: 'imdb', value: 7.8 }],
+    match: { query: 'The Irishman', matchedName: 'The Irishman', confidence: 1, source: 'cinemeta' },
+  };
+
+  it('headlines an AniList anime without votes or a low votes warning', () => {
+    const el = render(anilistFrieren);
+    expect(el.querySelector('.pill')?.textContent).toBe('AniList');
+    expect(el.querySelector('.score-source')?.textContent).toBe('AniList');
+    expect(el.querySelector('.score-value')?.textContent).toBe('9.1');
+    expect(el.querySelector('.badge')?.textContent).toBe('Rất nên xem');
+    expect(el.querySelector('.warn')).toBeNull();
+    expect(el.querySelector('.score-meta')?.textContent).not.toMatch(/\d/);
+    expect(el.textContent).toContain('Khớp AniList: Sousou no Frieren');
+    expect(el.textContent).not.toContain('MyAnimeList');
+    expect(statLabels(el)).toEqual(['Members']);
+  });
+
+  it('headlines a Cinemeta film with an IMDb score and no vote count', () => {
+    const el = render(cinemetaFilm);
+    expect(el.querySelector('.pill')?.textContent).toBe('Cinemeta');
+    expect(el.querySelector('.score-source')?.textContent).toBe('IMDb');
+    expect(el.querySelector('.score-value')?.textContent).toBe('7.8');
+    expect(el.querySelector('.score-meta')?.textContent).not.toMatch(/\d/);
+    expect(el.querySelector('.warn')).toBeNull();
+    expect(el.textContent).not.toMatch(/\b0 (lượt|votes)/);
+    expect(el.querySelector('.badge')?.textContent).toBe('Nên xem');
   });
 });

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
-import { imdbIcon, malIcon, metacriticIcon, rtIcon, scoreIcon, tmdbIcon } from '../src/content/popover/scoreIcons';
+import { anilistIcon, imdbIcon, malIcon, metacriticIcon, rtIcon, scoreIcon, tmdbIcon } from '../src/content/popover/scoreIcons';
 
 function fills(svg: SVGSVGElement): string[] {
   return [...svg.querySelectorAll('[fill]')].map((n) => n.getAttribute('fill') ?? '');
@@ -13,6 +13,7 @@ describe('score icons', () => {
     ['metacritic', metacriticIcon(80)],
     ['tmdb', tmdbIcon()],
     ['mal', malIcon()],
+    ['anilist', anilistIcon()],
   ])('%s builds an aria-hidden svg 16px high', (_name, svg) => {
     expect(svg.tagName).toBe('svg');
     expect(svg.getAttribute('aria-hidden')).toBe('true');
@@ -41,5 +42,6 @@ describe('score icons', () => {
     expect(scoreIcon('imdb', 7).textContent).toBe('IMDb');
     expect(scoreIcon('tmdb', 7).textContent).toBe('TMDB');
     expect(scoreIcon('mal', 7).textContent).toBe('MAL');
+    expect(scoreIcon('anilist', 7).textContent).toBe('AniList');
   });
 });

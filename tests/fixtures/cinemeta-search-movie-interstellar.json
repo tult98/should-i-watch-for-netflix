@@ -1,0 +1,651 @@
+{
+ "query": "Interstellar",
+ "rank": 7.5,
+ "cacheMaxAge": 86400,
+ "metas": [
+  {
+   "awards": "Won 1 Oscar. 45 wins & 148 nominations total",
+   "cast": [
+    "Matthew McConaughey",
+    "Anne Hathaway",
+    "Jessica Chastain"
+   ],
+   "description": "In a dystopian future where Earth has become near-uninhabitable, a team of astronauts embark on a mission to find a new home for humanity.",
+   "director": [
+    "Christopher Nolan"
+   ],
+   "dvdRelease": "2016-05-24T00:00:00.000Z",
+   "genre": [
+    "Adventure",
+    "Sci-Fi"
+   ],
+   "imdbRating": "8.7",
+   "imdb_id": "tt0816692",
+   "name": "Interstellar",
+   "popularity": 2.5507666666666666,
+   "poster": "https://images.metahub.space/poster/small/tt0816692/img",
+   "released": "2014-11-07T00:00:00.000Z",
+   "runtime": "169 min",
+   "trailers": [
+    {
+     "source": "LY19rHKAaAg",
+     "type": "Trailer"
+    },
+    {
+     "source": "R8teZZ-loaI",
+     "type": "Trailer"
+    },
+    {
+     "source": "ePbKGoIGAXY",
+     "type": "Trailer"
+    },
+    {
+     "source": "zSWdZVtXT7E",
+     "type": "Trailer"
+    },
+    {
+     "source": "827FNDpQWrQ",
+     "type": "Trailer"
+    }
+   ],
+   "type": "movie",
+   "writer": [
+    "Jonathan Nolan",
+    "Christopher Nolan"
+   ],
+   "year": "2014",
+   "background": "https://images.metahub.space/background/medium/tt0816692/img",
+   "logo": "https://images.metahub.space/logo/medium/tt0816692/img",
+   "popularities": {
+    "moviedb": 68.0534,
+    "stremio": 2.5507666666666666,
+    "trakt": 135,
+    "stremio_lib": 0
+   },
+   "slug": "movie/interstellar-0816692",
+   "id": "tt0816692",
+   "score": 7.5,
+   "genres": [
+    "Adventure",
+    "Sci-Fi"
+   ],
+   "releaseInfo": "2014",
+   "trailerStreams": [
+    {
+     "title": "Interstellar",
+     "ytId": "LY19rHKAaAg"
+    },
+    {
+     "title": "Interstellar",
+     "ytId": "R8teZZ-loaI"
+    },
+    {
+     "title": "Interstellar",
+     "ytId": "ePbKGoIGAXY"
+    },
+    {
+     "title": "Interstellar",
+     "ytId": "zSWdZVtXT7E"
+    },
+    {
+     "title": "Interstellar",
+     "ytId": "827FNDpQWrQ"
+    }
+   ],
+   "links": [
+    {
+     "name": "8.7",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt0816692"
+    },
+    {
+     "name": "Interstellar",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/interstellar-0816692"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Sci-Fi",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Sci-Fi"
+    },
+    {
+     "name": "Matthew McConaughey",
+     "category": "Cast",
+     "url": "stremio:///search?search=Matthew%20McConaughey"
+    },
+    {
+     "name": "Anne Hathaway",
+     "category": "Cast",
+     "url": "stremio:///search?search=Anne%20Hathaway"
+    },
+    {
+     "name": "Jessica Chastain",
+     "category": "Cast",
+     "url": "stremio:///search?search=Jessica%20Chastain"
+    },
+    {
+     "name": "Jonathan Nolan",
+     "category": "Writers",
+     "url": "stremio:///search?search=Jonathan%20Nolan"
+    },
+    {
+     "name": "Christopher Nolan",
+     "category": "Writers",
+     "url": "stremio:///search?search=Christopher%20Nolan"
+    },
+    {
+     "name": "Christopher Nolan",
+     "category": "Directors",
+     "url": "stremio:///search?search=Christopher%20Nolan"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt0816692",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt4415360",
+   "popularity": 0.07324333333333333,
+   "name": "The Science of Interstellar",
+   "year": "2015",
+   "runtime": "51 min",
+   "genre": [
+    "Documentary"
+   ],
+   "released": "2015-03-31T00:00:00.000Z",
+   "director": [
+    "Gail Willumsen"
+   ],
+   "writer": [
+    "Gail Willumsen"
+   ],
+   "cast": [
+    "Matthew McConaughey",
+    "Kip Thorne",
+    "Christopher Nolan"
+   ],
+   "imdbRating": "7.1",
+   "poster": "https://images.metahub.space/poster/small/tt4415360/img",
+   "description": "The Science of Christopher Nolan's Sci-Fi, Interstellar.",
+   "awards": null,
+   "dvdRelease": null,
+   "type": "movie",
+   "trailers": [
+    {
+     "source": "7yxaUi8LIzE",
+     "type": "Trailer"
+    }
+   ],
+   "popularities": {
+    "moviedb": 2.1973,
+    "stremio": 0.07324333333333333,
+    "stremio_lib": 0
+   },
+   "slug": "movie/the-science-of-interstellar-4415360",
+   "background": "https://images.metahub.space/background/medium/tt4415360/img",
+   "logo": "https://images.metahub.space/logo/medium/tt4415360/img",
+   "id": "tt4415360",
+   "score": 3.75,
+   "genres": [
+    "Documentary"
+   ],
+   "releaseInfo": "2015",
+   "trailerStreams": [
+    {
+     "title": "The Science of Interstellar",
+     "ytId": "7yxaUi8LIzE"
+    }
+   ],
+   "links": [
+    {
+     "name": "7.1",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt4415360"
+    },
+    {
+     "name": "The Science of Interstellar",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/the-science-of-interstellar-4415360"
+    },
+    {
+     "name": "Documentary",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Documentary"
+    },
+    {
+     "name": "Matthew McConaughey",
+     "category": "Cast",
+     "url": "stremio:///search?search=Matthew%20McConaughey"
+    },
+    {
+     "name": "Kip Thorne",
+     "category": "Cast",
+     "url": "stremio:///search?search=Kip%20Thorne"
+    },
+    {
+     "name": "Christopher Nolan",
+     "category": "Cast",
+     "url": "stremio:///search?search=Christopher%20Nolan"
+    },
+    {
+     "name": "Gail Willumsen",
+     "category": "Writers",
+     "url": "stremio:///search?search=Gail%20Willumsen"
+    },
+    {
+     "name": "Gail Willumsen",
+     "category": "Directors",
+     "url": "stremio:///search?search=Gail%20Willumsen"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt4415360",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "awards": null,
+   "cast": [
+    "Anna Morna",
+    "Christine Nguyen",
+    "Karlie Montana"
+   ],
+   "description": "A lovely alien co-ed is sent to Earth to study human mating rituals in this steamy erotic fantasy.",
+   "director": [
+    "Dean McKendrick"
+   ],
+   "dvdRelease": null,
+   "genre": [
+    "Comedy",
+    "Sci-Fi"
+   ],
+   "imdbRating": "3.7",
+   "imdb_id": "tt3506492",
+   "name": "Lolita from Interstellar Space",
+   "popularity": 0.05643666666666667,
+   "poster": "https://images.metahub.space/poster/small/tt3506492/img",
+   "released": "2014-03-08T00:00:00.000Z",
+   "runtime": "81 min",
+   "trailers": [],
+   "type": "movie",
+   "writer": [
+    "Jules Verne",
+    "Dean McKendrick"
+   ],
+   "year": "2014",
+   "popularities": {
+    "moviedb": 1.6931,
+    "stremio": 0.05643666666666667,
+    "stremio_lib": 0,
+    "trakt": 2
+   },
+   "slug": "movie/lolita-from-interstellar-space-3506492",
+   "background": "https://images.metahub.space/background/medium/tt3506492/img",
+   "logo": "https://images.metahub.space/logo/medium/tt3506492/img",
+   "id": "tt3506492",
+   "score": 4.375,
+   "genres": [
+    "Comedy",
+    "Sci-Fi"
+   ],
+   "releaseInfo": "2014",
+   "trailerStreams": [],
+   "links": [
+    {
+     "name": "3.7",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt3506492"
+    },
+    {
+     "name": "Lolita from Interstellar Space",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/lolita-from-interstellar-space-3506492"
+    },
+    {
+     "name": "Comedy",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Comedy"
+    },
+    {
+     "name": "Sci-Fi",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Sci-Fi"
+    },
+    {
+     "name": "Anna Morna",
+     "category": "Cast",
+     "url": "stremio:///search?search=Anna%20Morna"
+    },
+    {
+     "name": "Christine Nguyen",
+     "category": "Cast",
+     "url": "stremio:///search?search=Christine%20Nguyen"
+    },
+    {
+     "name": "Karlie Montana",
+     "category": "Cast",
+     "url": "stremio:///search?search=Karlie%20Montana"
+    },
+    {
+     "name": "Jules Verne",
+     "category": "Writers",
+     "url": "stremio:///search?search=Jules%20Verne"
+    },
+    {
+     "name": "Dean McKendrick",
+     "category": "Writers",
+     "url": "stremio:///search?search=Dean%20McKendrick"
+    },
+    {
+     "name": "Dean McKendrick",
+     "category": "Directors",
+     "url": "stremio:///search?search=Dean%20McKendrick"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt3506492",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt4172224",
+   "type": "movie",
+   "name": "Interstellar: Nolan's Odyssey",
+   "year": "2014",
+   "runtime": "23 min",
+   "genre": [
+    "Documentary"
+   ],
+   "released": "2014-11-05T00:00:00.000Z",
+   "writer": [
+    "Tim Postins"
+   ],
+   "cast": [
+    "Michael Caine",
+    "Jessica Chastain",
+    "David Gyasi"
+   ],
+   "imdbRating": "7.1",
+   "description": "A travel through the stars and the space with the Nolan's Interstellar and how you can see it.",
+   "trailers": [
+    {
+     "source": "jQ2gOUwmIQQ",
+     "type": "Featurette"
+    }
+   ],
+   "popularities": {
+    "moviedb": 1.6686,
+    "stremio": 0.05562,
+    "stremio_lib": 0
+   },
+   "director": [],
+   "slug": "movie/interstellar-nolans-odyssey-4172224",
+   "poster": "https://images.metahub.space/poster/small/tt4172224/img",
+   "background": "https://images.metahub.space/background/medium/tt4172224/img",
+   "logo": "https://images.metahub.space/logo/medium/tt4172224/img",
+   "popularity": 0.05562,
+   "id": "tt4172224",
+   "score": 5.625,
+   "genres": [
+    "Documentary"
+   ],
+   "releaseInfo": "2014",
+   "trailerStreams": [],
+   "links": [
+    {
+     "name": "7.1",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt4172224"
+    },
+    {
+     "name": "Interstellar: Nolan's Odyssey",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/interstellar-nolans-odyssey-4172224"
+    },
+    {
+     "name": "Documentary",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Documentary"
+    },
+    {
+     "name": "Michael Caine",
+     "category": "Cast",
+     "url": "stremio:///search?search=Michael%20Caine"
+    },
+    {
+     "name": "Jessica Chastain",
+     "category": "Cast",
+     "url": "stremio:///search?search=Jessica%20Chastain"
+    },
+    {
+     "name": "David Gyasi",
+     "category": "Cast",
+     "url": "stremio:///search?search=David%20Gyasi"
+    },
+    {
+     "name": "Tim Postins",
+     "category": "Writers",
+     "url": "stremio:///search?search=Tim%20Postins"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt4172224",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt5083736",
+   "popularities": {
+    "moviedb": 1.4216,
+    "stremio": 0.04738666666666667,
+    "stremio_lib": 0
+   },
+   "name": "Interstellar Wars",
+   "year": "2016",
+   "runtime": "90 min",
+   "genre": [
+    "Sci-Fi"
+   ],
+   "released": "2016-03-12T00:00:00.000Z",
+   "director": [
+    "Marlene Mc&apos;Cohen"
+   ],
+   "writer": [
+    "Robert Ryan"
+   ],
+   "cast": [
+    "Brian Lally",
+    "Marlene Mc&apos;Cohen",
+    "Robert Woods"
+   ],
+   "imdbRating": "1.7",
+   "poster": "https://images.metahub.space/poster/small/tt5083736/img",
+   "description": "Beyond the dark side of the moon, an ancient portal opens, delivering a ruthless alien species which brings the planet Earth to its knees.",
+   "awards": null,
+   "dvdRelease": "2017-03-02T00:00:00.000Z",
+   "type": "movie",
+   "trailers": [],
+   "slug": "movie/interstellar-wars-5083736",
+   "background": "https://images.metahub.space/background/medium/tt5083736/img",
+   "logo": "https://images.metahub.space/logo/medium/tt5083736/img",
+   "popularity": 0.04738666666666667,
+   "id": "tt5083736",
+   "score": 6.25,
+   "genres": [
+    "Sci-Fi"
+   ],
+   "releaseInfo": "2016",
+   "trailerStreams": [],
+   "links": [
+    {
+     "name": "1.7",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt5083736"
+    },
+    {
+     "name": "Interstellar Wars",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/interstellar-wars-5083736"
+    },
+    {
+     "name": "Sci-Fi",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Sci-Fi"
+    },
+    {
+     "name": "Brian Lally",
+     "category": "Cast",
+     "url": "stremio:///search?search=Brian%20Lally"
+    },
+    {
+     "name": "Marlene Mc&apos;Cohen",
+     "category": "Cast",
+     "url": "stremio:///search?search=Marlene%20Mc%26apos%3BCohen"
+    },
+    {
+     "name": "Robert Woods",
+     "category": "Cast",
+     "url": "stremio:///search?search=Robert%20Woods"
+    },
+    {
+     "name": "Robert Ryan",
+     "category": "Writers",
+     "url": "stremio:///search?search=Robert%20Ryan"
+    },
+    {
+     "name": "Marlene Mc&apos;Cohen",
+     "category": "Directors",
+     "url": "stremio:///search?search=Marlene%20Mc%26apos%3BCohen"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt5083736",
+    "hasScheduledVideos": false
+   }
+  },
+  {
+   "imdb_id": "tt5056352",
+   "cast": [
+    "Kenzie Phillips",
+    "Brad Thornton",
+    "Clare Hoak"
+   ],
+   "description": "The Imperial Empire is attacked by an Alliance of rebels led by fanatical mystics. The ruler, Empress Nobu, the 8th generation of her family, wants to execute a bold plan to rescue a cyborg, Leah C6, trapped on the battle ravaged ...",
+   "director": [
+    "Albert Pyun"
+   ],
+   "genre": [
+    "Action",
+    "Adventure",
+    "Sci-Fi"
+   ],
+   "imdbRating": "6.6",
+   "name": "Interstellar Civil War: Shadows of the Empire",
+   "poster": "https://images.metahub.space/poster/small/tt5056352/img",
+   "released": "2017-03-17T00:00:00.000Z",
+   "runtime": "130 min",
+   "slug": "movie/interstellar-civil-war-shadows-of-the-empire-5056352",
+   "type": "movie",
+   "writer": [
+    "Cynthia Curnan",
+    "Albert Pyun"
+   ],
+   "year": "2017",
+   "popularities": {
+    "moviedb": 0.9566,
+    "stremio": 0.03188666666666667,
+    "stremio_lib": 0
+   },
+   "trailers": [
+    {
+     "source": "9Fw-J9Ik81w",
+     "type": "Trailer"
+    }
+   ],
+   "background": "https://images.metahub.space/background/medium/tt5056352/img",
+   "logo": "https://images.metahub.space/logo/medium/tt5056352/img",
+   "popularity": 0.03188666666666667,
+   "id": "tt5056352",
+   "score": 5.357142857142857,
+   "genres": [
+    "Action",
+    "Adventure",
+    "Sci-Fi"
+   ],
+   "releaseInfo": "2017",
+   "trailerStreams": [
+    {
+     "title": "Interstellar Civil War: Shadows of the Empire",
+     "ytId": "9Fw-J9Ik81w"
+    }
+   ],
+   "links": [
+    {
+     "name": "6.6",
+     "category": "imdb",
+     "url": "https://imdb.com/title/tt5056352"
+    },
+    {
+     "name": "Interstellar Civil War: Shadows of the Empire",
+     "category": "share",
+     "url": "https://www.strem.io/s/movie/interstellar-civil-war-shadows-of-the-empire-5056352"
+    },
+    {
+     "name": "Action",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Action"
+    },
+    {
+     "name": "Adventure",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Adventure"
+    },
+    {
+     "name": "Sci-Fi",
+     "category": "Genres",
+     "url": "stremio:///discover/https%3A%2F%2Fv3-cinemeta.strem.io%2Fmanifest.json/movie/top?genre=Sci-Fi"
+    },
+    {
+     "name": "Kenzie Phillips",
+     "category": "Cast",
+     "url": "stremio:///search?search=Kenzie%20Phillips"
+    },
+    {
+     "name": "Brad Thornton",
+     "category": "Cast",
+     "url": "stremio:///search?search=Brad%20Thornton"
+    },
+    {
+     "name": "Clare Hoak",
+     "category": "Cast",
+     "url": "stremio:///search?search=Clare%20Hoak"
+    },
+    {
+     "name": "Cynthia Curnan",
+     "category": "Writers",
+     "url": "stremio:///search?search=Cynthia%20Curnan"
+    },
+    {
+     "name": "Albert Pyun",
+     "category": "Writers",
+     "url": "stremio:///search?search=Albert%20Pyun"
+    },
+    {
+     "name": "Albert Pyun",
+     "category": "Directors",
+     "url": "stremio:///search?search=Albert%20Pyun"
+    }
+   ],
+   "behaviorHints": {
+    "defaultVideoId": "tt5056352",
+    "hasScheduledVideos": false
+   }
+  }
+ ]
+}

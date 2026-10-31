@@ -47,7 +47,7 @@ describe('renderThresholdSection', () => {
     const onSave = vi.fn();
     const view = renderThresholdSection('mal', { onSave, onReset: vi.fn() });
     view.fill(DEFAULT_THRESHOLDS.mal);
-    expect(view.element.querySelector('h2')?.textContent).toBe('Ngưỡng nhãn nhanh · Anime (MAL)');
+    expect(view.element.querySelector('h2')?.textContent).toBe('Ngưỡng nhãn nhanh · Anime (MAL và AniList)');
     expect(view.element.querySelectorAll('.trow')).toHaveLength(4);
     expect(view.read()).toMatchObject({ highlyScore: '8.0', highlyVotes: '100000', rankMax: '500' });
     view.showErrors([{ key: 'maybeScore', message: 'sai' }]);
