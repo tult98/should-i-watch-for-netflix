@@ -414,6 +414,83 @@ describe('hoverController popover', () => {
   });
 });
 
+describe('hoverController dismissal', () => {
+  beforeEach(() => vi.useFakeTimers());
+  afterEach(() => vi.useRealTimers());
+
+  async function showA() {
+    const s = setup();
+    const a = makeCard('A');
+    enter(s.controller, outside, a.child);
+    vi.advanceTimersByTime(300);
+    await s.answer(0, 'info-A');
+    return { ...s, a };
+  }
+
+  it('hides at once on a press in the card, with no hide delay', async () => {
+    const { controller, calls, a } = await showA();
+    controller.pointerDown(a.child);
+    expect(calls).toEqual(['show A info-A', 'hide']);
+    expect(controller.state()).toEqual({ name: 'idle' });
+  });
+
+  it('hides at once on a press in the preview', async () => {
+    const { controller, calls, a } = await showA();
+    enter(controller, a.child, preview);
+    controller.pointerDown(previewButton);
+    expect(calls).toEqual(['show A info-A', 'hide']);
+  });
+
+  it('hides on a press anywhere outside, such as the detail modal Play button', async () => {
+    const { controller, calls, a } = await showA();
+    enter(controller, a.child, outside);
+    controller.pointerDown(outside);
+    expect(calls).toEqual(['show A info-A', 'hide']);
+  });
+
+  it('keeps the popover on a press inside it', async () => {
+    const { controller, calls, a } = await showA();
+    enter(controller, a.child, popover);
+    controller.pointerDown(popover);
+    vi.advanceTimersByTime(1_000);
+    expect(calls).toEqual(['show A info-A']);
+  });
+
+  it('hides even while AI work holds the popover', async () => {
+    const { controller, calls, a } = await showA();
+    controller.hold();
+    controller.pointerDown(a.child);
+    expect(calls).toEqual(['show A info-A', 'hide']);
+  });
+
+  it('drops a lookup in flight when the card is pressed', async () => {
+    const s = setup();
+    const a = makeCard('A');
+    enter(s.controller, outside, a.child);
+    vi.advanceTimersByTime(300);
+    s.controller.pointerDown(a.child);
+    await s.answer(0, 'info-A');
+    expect(s.calls).toEqual([]);
+  });
+
+  it('does not reopen while the pointer stays on the pressed card', async () => {
+    const { controller, fires, a } = await showA();
+    controller.pointerDown(a.child);
+    controller.pointerOver(a.child);
+    vi.advanceTimersByTime(1_000);
+    expect(fires).toHaveLength(1);
+  });
+
+  it('opens again once the pointer has left the pressed card and come back', async () => {
+    const { controller, fires, a } = await showA();
+    controller.pointerDown(a.child);
+    enter(controller, a.child, outside);
+    enter(controller, outside, a.child);
+    vi.advanceTimersByTime(300);
+    expect(fires).toHaveLength(2);
+  });
+});
+
 describe('hoverController on/off switch', () => {
   beforeEach(() => vi.useFakeTimers());
   afterEach(() => vi.useRealTimers());
