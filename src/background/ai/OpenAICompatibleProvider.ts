@@ -13,11 +13,6 @@ export interface AIConfig {
 
 export type OpenAICompatibleProvider = AiClient;
 
-export function providerLabel(baseUrl: string): string {
-  const host = new URL(baseUrl).hostname;
-  return host === new URL(DEEPSEEK_ORIGIN).hostname ? 'DeepSeek' : host;
-}
-
 export function createOpenAICompatibleProvider(fetch: FetchFn, config: AIConfig): OpenAICompatibleProvider {
   const resolved = { ...config, format: 'openai' as const };
   return createAiClient(new URL(config.baseUrl).host, openaiTransport(fetch, resolved));
