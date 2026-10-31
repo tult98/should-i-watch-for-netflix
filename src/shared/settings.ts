@@ -36,11 +36,14 @@ export interface AiSettings {
   key?: string;
 }
 
-// Only https, because the optional host permission the options page can request is https://*/*.
+const LOCAL_HOSTS = ['localhost', '127.0.0.1', '[::1]'];
+
+// Only https, plus plain http for a model running on this machine.
 export function parseAiBaseUrl(value: string): URL | null {
   try {
     const url = new URL(value.trim());
-    return url.protocol === 'https:' ? url : null;
+    if (url.protocol === 'https:') return url;
+    return url.protocol === 'http:' && LOCAL_HOSTS.includes(url.hostname) ? url : null;
   } catch {
     return null;
   }

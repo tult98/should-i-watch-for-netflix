@@ -91,13 +91,21 @@ describe('AI settings', () => {
       aiModel: 'm',
       aiKey: 'sk',
     });
-    await saveSettings({ aiBaseUrl: 'http://localhost:1234/v1/chat/completions' }, store);
+    await saveSettings({ aiBaseUrl: 'http://example.com/v1/chat/completions' }, store);
     expect(await loadSettings(store)).toEqual({});
+  });
+
+  it('accepts plain http only for localhost, 127.0.0.1 and ::1 on any port', () => {
+    expect(parseAiBaseUrl('http://localhost:11434/v1/chat/completions')?.hostname).toBe('localhost');
+    expect(parseAiBaseUrl('http://127.0.0.1:8080/x')?.hostname).toBe('127.0.0.1');
+    expect(parseAiBaseUrl('http://[::1]:1234/x')?.hostname).toBe('[::1]');
+    expect(parseAiBaseUrl('http://localhost.evil.com/x')).toBeNull();
   });
 
   it('parses only https base URLs', () => {
     expect(parseAiBaseUrl('https://api.deepseek.com/chat/completions')?.origin).toBe('https://api.deepseek.com');
     expect(parseAiBaseUrl('ftp://x')).toBeNull();
+    expect(parseAiBaseUrl('http://example.com')).toBeNull();
     expect(parseAiBaseUrl('not a url')).toBeNull();
   });
 });
