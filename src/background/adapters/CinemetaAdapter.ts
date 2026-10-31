@@ -49,14 +49,14 @@ function mediaTypeOf(type: CinemetaType): FilmMediaType {
   return type === 'movie' ? 'movie' : 'tv';
 }
 
-/** "2008–2013", "2023-" and "2014" all start with the release year. */
+/** A range, an open range and a single year all start with the release year. Ranges use an en dash. */
 function startYear(releaseInfo: string | null | undefined): number | undefined {
   const parsed = Number(releaseInfo?.match(/^\d{4}/)?.[0]);
   return parsed > 0 ? parsed : undefined;
 }
 
 function endYear(releaseInfo: string | null | undefined): number | undefined {
-  const parsed = Number(releaseInfo?.match(/^\d{4}\s*[-–]\s*(\d{4})/)?.[1]);
+  const parsed = Number(releaseInfo?.match(/^\d{4}\s*[-\u2013]\s*(\d{4})/)?.[1]);
   return parsed > 0 ? parsed : undefined;
 }
 
